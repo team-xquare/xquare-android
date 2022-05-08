@@ -8,7 +8,7 @@ import javax.inject.Inject
 class FetchTodayMealUseCase @Inject constructor(
 
 ) : UseCase<Unit, Flow<MealEntity>>() {
-    
+
     override suspend fun execute(data: Unit): Flow<MealEntity> {
         TODO("Not yet implemented")
     }
