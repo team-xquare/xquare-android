@@ -1,4 +1,4 @@
-package com.semicolon.xquare_android.ui.theme
+package com.semicolon.xquare_android.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
