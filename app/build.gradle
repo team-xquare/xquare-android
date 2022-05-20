@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -56,10 +58,8 @@ dependencies {
     def nav_version = "2.4.2"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
-    implementation "com.google.dagger:hilt-android:2.39"
-    implementation "com.google.dagger:hilt-android-compiler:2.39"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:2.39"
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "com.google.dagger:hilt-android-compiler:$hilt_version"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
@@ -69,4 +69,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 }

@@ -2,9 +2,10 @@ package com.semicolon.xquare_android.feature.home
 
 import com.semicolon.domain.entity.meal.MealEntity
 import com.semicolon.domain.entity.point.DormitoryPointEntity
+import com.semicolon.domain.entity.user.HomeUserEntity
 import com.semicolon.domain.usecase.meal.FetchTodayMealUseCase
 import com.semicolon.domain.usecase.point.FetchDormitoryPointUseCase
-import com.semicolon.domain.usecase.user.FetchUserNameUseCase
+import com.semicolon.domain.usecase.user.FetchHomeUserUseCase
 import com.semicolon.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,11 +16,11 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val fetchDormitoryPointUseCase: FetchDormitoryPointUseCase,
     private val fetchTodayMealUseCase: FetchTodayMealUseCase,
-    private val fetchUserNameUseCase: FetchUserNameUseCase
+    private val fetchHomeUserUseCase: FetchHomeUserUseCase
 ) : BaseViewModel<HomeViewModel.Event>() {
 
-    private val _userName = MutableStateFlow("")
-    val userName: StateFlow<String> = _userName
+    private val _userName = MutableStateFlow(HomeUserEntity("", ""))
+    val userName: StateFlow<HomeUserEntity> = _userName
 
     private val _dormitoryPoint = MutableStateFlow(DormitoryPointEntity(0, 0))
     val dormitoryPoint: StateFlow<DormitoryPointEntity> = _dormitoryPoint
@@ -30,7 +31,7 @@ class HomeViewModel @Inject constructor(
     fun fetchUserName() {
         execute(
             job = {
-                fetchUserNameUseCase.execute(Unit)
+                fetchHomeUserUseCase.execute(Unit)
             },
             onSuccess = {
                 it.collect { name ->
@@ -38,7 +39,7 @@ class HomeViewModel @Inject constructor(
                 }
             },
             onFailure = {
-                
+
             }
         )
     }
