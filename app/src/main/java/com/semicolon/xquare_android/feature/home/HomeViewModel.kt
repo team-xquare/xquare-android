@@ -1,4 +1,4 @@
-package com.semicolon.xquare_android.feature
+package com.semicolon.xquare_android.feature.home
 
 import com.semicolon.domain.entity.meal.MealEntity
 import com.semicolon.domain.entity.point.DormitoryPointEntity
