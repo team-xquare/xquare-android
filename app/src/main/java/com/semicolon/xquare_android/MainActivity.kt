@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.semicolon.xquare_android.feature.home.HomeScreen
 import com.semicolon.xquare_android.navigation.AppNavigationItem
 import com.semicolon.xquare_android.navigation.BottomNavigationItem
 import com.semicolon.xquare_android.theme.XquareandroidTheme
@@ -52,7 +53,9 @@ fun Main(navController: NavController) {
             startDestination = BottomNavigationItem.Home.route,
             Modifier.padding(innerPadding)
         ) {
-            composable(BottomNavigationItem.Home.route) {  }
+            composable(BottomNavigationItem.Home.route) {
+                HomeScreen(navController)
+            }
         }
     }
 }
