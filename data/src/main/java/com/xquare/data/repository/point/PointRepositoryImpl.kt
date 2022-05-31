@@ -8,7 +8,7 @@ import javax.inject.Inject
 class PointRepositoryImpl @Inject constructor(
 
 ) : PointRepository {
-    
+
     override suspend fun fetchDormitoryPoint(): Flow<DormitoryPointEntity> {
         TODO("Not yet implemented")
     }
