@@ -6,7 +6,7 @@ import retrofit2.http.Path
 
 interface MealApi {
 
-    @GET("/meals/{date}")
+    @GET("meals/{date}")
     fun fetchTodayMeal(
         @Path("date") date: String
     ): TodayMealResponse

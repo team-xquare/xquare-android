@@ -18,5 +18,4 @@ class MealRepositoryImpl @Inject constructor(
         val today = LocalDate.now().format(dateFormatter)
         return flow { emit(mealRemoteDataSource.fetchTodayMeal(today)) }
     }
-
 }
