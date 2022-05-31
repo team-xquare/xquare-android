@@ -40,7 +40,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         viewModel.run {
 //            fetchUserName()
 //            fetchDormitoryPoint()
-//            fetchTodayMeal()
+            fetchTodayMeal()
         }
     }
 
