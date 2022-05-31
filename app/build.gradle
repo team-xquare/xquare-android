@@ -43,6 +43,9 @@ android {
     packagingOptions {
         exclude 'META-INF/gradle/incremental.annotation.processors'
     }
+    hilt {
+        enableAggregatingTask = true
+    }
 }
 
 dependencies {
