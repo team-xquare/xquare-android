@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class RemoteDataSourceModule {
 
     @Binds
-    abstract fun provideRemoteMealDataSource(
+    abstract fun bindRemoteMealDataSource(
         mealRemoteDataSourceImpl: MealRemoteDataSourceImpl
     ): MealRemoteDataSource
 }
