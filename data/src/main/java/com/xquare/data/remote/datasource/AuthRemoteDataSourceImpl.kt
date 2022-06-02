@@ -24,18 +24,20 @@ class AuthRemoteDataSourceImpl @Inject constructor(
 
 
     override suspend fun signUp(signUpEntity: SignUpEntity) {
-        val profileImageUrl = sendHttpRequest(
-            httpRequest = {
-                profileApi
-                    .uploadProfileImage(signUpEntity.profileImage.toMultipart())
-                    .imageUrl
-            },
-            onBadRequest = {
-                ImageBadRequestException()
-            },
-            onOtherHttpStatusCode = { code, _ ->
-                if (code == 415) UnsupportedMediaTypeException() else UnknownException()
-            })
+        val profileImageUrl = signUpEntity.profileImage?.let {
+            sendHttpRequest(
+                httpRequest = {
+                    profileApi
+                        .uploadProfileImage(it.toMultipart())
+                        .imageUrl
+                },
+                onBadRequest = {
+                    ImageBadRequestException()
+                },
+                onOtherHttpStatusCode = { code, _ ->
+                    if (code == 415) UnsupportedMediaTypeException() else UnknownException()
+                })
+        }
         sendHttpRequest(httpRequest = { authApi.signUp(signUpEntity.toRequest(profileImageUrl)) })
     }
 
