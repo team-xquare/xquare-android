@@ -18,4 +18,10 @@ class AuthRepositoryImpl(
 
     override suspend fun signUp(signUpEntity: SignUpEntity) =
         authRemoteDataSource.signUp(signUpEntity)
+
+    override suspend fun autoSignIn() {
+        val refreshToken = authLocalDataSource.fetchToken().refreshToken
+        val token = authRemoteDataSource.tokenRefresh(refreshToken)
+        authLocalDataSource.saveToken(token)
+    }
 }
