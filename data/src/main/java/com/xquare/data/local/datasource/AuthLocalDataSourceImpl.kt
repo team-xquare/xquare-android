@@ -2,8 +2,9 @@ package com.xquare.data.local.datasource
 
 import com.xquare.data.local.preference.AuthPreference
 import com.xquare.domain.entity.auth.TokenEntity
+import javax.inject.Inject
 
-class AuthLocalDataSourceImpl(
+class AuthLocalDataSourceImpl @Inject constructor(
     private val authPreference: AuthPreference
 ) : AuthLocalDataSource {
 

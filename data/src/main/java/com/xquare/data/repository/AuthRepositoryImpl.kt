@@ -5,8 +5,9 @@ import com.xquare.data.remote.datasource.AuthRemoteDataSource
 import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.domain.entity.auth.SignUpEntity
 import com.xquare.domain.repository.AuthRepository
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
+class AuthRepositoryImpl @Inject constructor(
     private val authLocalDataSource: AuthLocalDataSource,
     private val authRemoteDataSource: AuthRemoteDataSource
 ) : AuthRepository {
