@@ -1,6 +1,8 @@
 package com.xquare.di
 
+import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
+import com.xquare.data.remote.api.ProfileApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,4 +44,16 @@ object NetworkModule {
         retrofit: Retrofit
     ): MealApi =
         retrofit.create(MealApi::class.java)
+
+    @Provides
+    fun provideAuthApi(
+        retrofit: Retrofit
+    ): AuthApi =
+        retrofit.create(AuthApi::class.java)
+
+    @Provides
+    fun provideProfileApi(
+        retrofit: Retrofit
+    ): ProfileApi =
+        retrofit.create(ProfileApi::class.java)
 }
