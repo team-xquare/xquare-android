@@ -9,6 +9,6 @@ class MealRemoteDataSourceImpl @Inject constructor(
     private val mealApi: MealApi
 ) : MealRemoteDataSource {
 
-    override fun fetchTodayMeal(date: String): MealEntity =
+    override suspend fun fetchTodayMeal(date: String): MealEntity =
         mealApi.fetchTodayMeal(date).toEntity()
 }
