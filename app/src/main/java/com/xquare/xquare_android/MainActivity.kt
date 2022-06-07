@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
@@ -41,22 +42,45 @@ fun BaseApp() {
 }
 
 @Composable
-fun Main(navController: NavController) {
+fun Main(mainNavController: NavController) {
     val scaffoldState = rememberScaffoldState()
-    val navHostController = rememberNavController()
+    val navController = rememberNavController()
 
     Scaffold(
         scaffoldState = scaffoldState,
         isFloatingActionButtonDocked = true,
-        bottomBar = { }
+        bottomBar = {
+            BottomNavigation(
+                navController = navController,
+                items = listOf(
+                    BottomNavigationItem.Home,
+                    BottomNavigationItem.Schedule,
+                    BottomNavigationItem.Feed,
+                    BottomNavigationItem.Apply,
+                    BottomNavigationItem.All
+                )
+            )
+        }
     ) { innerPadding ->
         NavHost(
-            navController = navHostController,
+            navController = navController,
             startDestination = BottomNavigationItem.Home.route,
             Modifier.padding(innerPadding)
         ) {
             composable(BottomNavigationItem.Home.route) {
-                HomeScreen(navController)
+                HomeScreen(mainNavController)
+            }
+            composable(BottomNavigationItem.Schedule.route) {
+                // TODO()
+            }
+            composable(BottomNavigationItem.Feed.route) {
+                // TODO()
+            }
+            composable(BottomNavigationItem.Apply.route) {
+                // TODO()
+            }
+            composable(BottomNavigationItem.All.route) {
+                // TODO()
             }
         }
     }
