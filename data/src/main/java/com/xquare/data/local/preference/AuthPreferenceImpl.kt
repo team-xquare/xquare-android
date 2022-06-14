@@ -1,7 +1,9 @@
 package com.xquare.data.local.preference
 
 import android.content.SharedPreferences
+import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import javax.inject.Inject
 
 class AuthPreferenceImpl @Inject constructor(
@@ -27,10 +29,10 @@ class AuthPreferenceImpl @Inject constructor(
         clearPreference(REFRESH_TOKEN)
 
     override suspend fun saveExpirationAt(expiredAt: LocalDateTime) =
-        saveStringPreference(EXPIRED_AT, expiredAt.toString())
+        saveLongPreference(EXPIRED_AT, expiredAt.atZone(ZoneId.systemDefault()).toEpochSecond())
 
     override suspend fun fetchExpirationAt(): LocalDateTime =
-        LocalDateTime.parse(fetchStringPreference(EXPIRED_AT))
+        Instant.ofEpochSecond(fetchLongPreference(EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
 
     override suspend fun clearExpirationAt() =
         clearPreference(EXPIRED_AT)
@@ -40,6 +42,12 @@ class AuthPreferenceImpl @Inject constructor(
 
     private fun saveStringPreference(key: String, value: String) =
         editPreference { it.putString(key, value) }
+
+    private fun fetchLongPreference(key: String): Long =
+        sharedPreferences.getLong(key, 0)
+
+    private fun saveLongPreference(key: String, value: Long) =
+        editPreference { it.putLong(key, value) }
 
     private fun clearPreference(key: String) =
         editPreference { it.remove(key) }

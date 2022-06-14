@@ -25,6 +25,7 @@ class AuthorizationInterceptor @Inject constructor(
         )
         if (ignorePath.contains(path)) return chain.proceed(request)
         else if (path == "/users" && method == "POST") return chain.proceed(request)
+        else if (path.startsWith("/meal")) return chain.proceed(request)
 
         val expiredAt = runBlocking { authPreference.fetchExpirationAt() }
         val currentTime = LocalDateTime.now(ZoneId.systemDefault())
@@ -34,7 +35,7 @@ class AuthorizationInterceptor @Inject constructor(
             val refreshToken = runBlocking { authPreference.fetchRefreshToken() }
 
             val tokenRefreshRequest = Request.Builder()
-                .url("https://server.walkhub.co.kr/users/token")
+                .url("https://api.xquare.app/users/login")
                 .put("".toRequestBody("application/json".toMediaTypeOrNull()))
                 .addHeader("Refresh-Token", "Bearer $refreshToken")
                 .build()
