@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +41,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
         viewModel.run {
 //            fetchUserName()
 //            fetchDormitoryPoint()
-            fetchTodayMeal()
+//            fetchTodayMeal()
         }
     }
 
@@ -55,8 +56,10 @@ fun HomeContent(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity, meal
         modifier = Modifier
             .background(Gray50)
             .fillMaxSize()
+            .padding(12.dp)
     ) {
         HomeUserCard(user = user, dormitoryPoint = dormitoryPoint)
+        Spacer(modifier = Modifier.height(12.dp))
         HomeMealCard(meal = meal)
     }
 }
@@ -65,10 +68,11 @@ fun HomeContent(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity, meal
 fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
     Row(
         modifier = Modifier
-            .background(Color.White)
             .fillMaxWidth()
-            .padding(10.dp, 0.dp)
             .clip(RoundedCornerShape(15.dp))
+            .background(Color.White)
+            .padding(10.dp, 0.dp)
+
     ) {
         Image(
             painter = rememberAsyncImagePainter(model = user.profileImage),
@@ -91,21 +95,26 @@ fun HomeMealCard(meal: MealEntity) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .background(Color.White)
             .fillMaxWidth()
-            .padding(10.dp, 0.dp)
             .clip(RoundedCornerShape(15.dp))
+            .background(Color.White)
+            .padding(10.dp)
     ) {
         Text(
             text = "오늘의 메뉴",
             fontSize = 22.sp,
             color = Color.Black,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(10.dp)
         )
 
-        Row(modifier = Modifier.scrollable(scrollState, orientation = Orientation.Horizontal)) {
+        Row(
+            modifier = Modifier.horizontalScroll(scrollState)
+        ) {
             HomeMealItem(title = "아침", menus = meal.breakfast)
+            Spacer(modifier = Modifier.width(10.dp))
             HomeMealItem(title = "점심", menus = meal.lunch)
+            Spacer(modifier = Modifier.width(10.dp))
             HomeMealItem(title = "저녁", menus = meal.dinner)
         }
     }
@@ -124,13 +133,14 @@ fun HomeMealItem(title: String, menus: List<String>) {
 
     Column(
         modifier = Modifier
-            .background(Gray50)
-            .size(80.dp, 120.dp)
-            .padding(10.dp)
+            .size(145.dp, 200.dp)
             .clip(RoundedCornerShape(10.dp))
+            .background(Gray50)
+            .padding(10.dp)
+
     ) {
         Text(text = title, fontSize = 18.sp, modifier = Modifier.padding(10.dp))
-        Text(text = menuText, modifier = Modifier.padding(10.dp))
+        Text(text = menuText, fontSize = 16.sp, modifier = Modifier.padding(10.dp))
     }
 }
 
