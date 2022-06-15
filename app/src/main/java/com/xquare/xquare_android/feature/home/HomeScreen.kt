@@ -28,6 +28,7 @@ import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.point.DormitoryPointEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.xquare_android.theme.Gray50
+import com.xquare.xquare_android.theme.Gray700
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -71,7 +72,7 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(15.dp))
             .background(Color.White)
-            .padding(10.dp, 0.dp)
+            .padding(10.dp)
 
     ) {
         Image(
@@ -84,8 +85,17 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
         )
 
         Column {
-            Text(text = user.name, fontSize = 18.sp, color = Color.Black)
-            Text(text = "상점 ${dormitoryPoint.goodPoint}점 벌점 ${dormitoryPoint.badPoint}")
+            Text(
+                text = user.name,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+            Text(
+                text = "상점 ${dormitoryPoint.goodPoint}점 벌점 ${dormitoryPoint.badPoint}",
+                color = Gray700,
+                fontSize = 16.sp
+            )
         }
     }
 }

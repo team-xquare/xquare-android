@@ -19,7 +19,7 @@ class HomeViewModel @Inject constructor(
     private val fetchHomeUserUseCase: FetchHomeUserUseCase
 ) : BaseViewModel<HomeViewModel.Event>() {
 
-    private val _userName = MutableStateFlow(HomeUserEntity("", ""))
+    private val _userName = MutableStateFlow(HomeUserEntity("", "김재원"))
     val userName: StateFlow<HomeUserEntity> = _userName
 
     private val _dormitoryPoint = MutableStateFlow(DormitoryPointEntity(0, 0))
