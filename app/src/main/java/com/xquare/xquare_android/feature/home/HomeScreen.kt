@@ -2,8 +2,6 @@ package com.xquare.xquare_android.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,11 +22,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.gray.gray700
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.point.DormitoryPointEntity
 import com.xquare.domain.entity.user.HomeUserEntity
-import com.xquare.xquare_android.theme.Gray50
-import com.xquare.xquare_android.theme.Gray700
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
@@ -55,7 +53,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
 fun HomeContent(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity, meal: MealEntity) {
     Column(
         modifier = Modifier
-            .background(Gray50)
+            .background(gray50)
             .fillMaxSize()
             .padding(12.dp)
     ) {
@@ -93,7 +91,7 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
             )
             Text(
                 text = "상점 ${dormitoryPoint.goodPoint}점 벌점 ${dormitoryPoint.badPoint}",
-                color = Gray700,
+                color = gray700,
                 fontSize = 16.sp
             )
         }
@@ -145,7 +143,7 @@ fun HomeMealItem(title: String, menus: List<String>) {
         modifier = Modifier
             .size(145.dp, 200.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(Gray50)
+            .background(gray50)
             .padding(10.dp)
 
     ) {
