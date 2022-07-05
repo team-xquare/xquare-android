@@ -1,5 +1,7 @@
 package com.xquare.xquare_android
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -9,6 +11,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,21 +35,22 @@ class MainActivity : ComponentActivity() {
         )
         super.onCreate(savedInstanceState)
         setContent {
-            XquareandroidTheme {
-                BaseApp()
-            }
+            BaseApp()
         }
     }
 }
 
 @Composable
 fun BaseApp() {
+    val context = LocalContext.current
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController)
         }
         composable(AppNavigationItem.Main.route) {
+            context.getActivity()?.window?.statusBarColor =
+                ContextCompat.getColor(context, R.color.white)
             Main(navController)
         }
     }
@@ -55,7 +60,8 @@ fun BaseApp() {
 fun Main(mainNavController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
-
+    val context = LocalContext.current
+    val window = context.getActivity()?.window
     Scaffold(
         scaffoldState = scaffoldState,
         isFloatingActionButtonDocked = true,
@@ -79,19 +85,31 @@ fun Main(mainNavController: NavController) {
         ) {
             composable(BottomNavigationItem.Home.route) {
                 HomeScreen(mainNavController)
+                window?.statusBarColor = ContextCompat.getColor(context, R.color.gray50)
             }
             composable(BottomNavigationItem.Schedule.route) {
                 // TODO()
+                window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
             composable(BottomNavigationItem.Feed.route) {
                 // TODO()
+                window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
             composable(BottomNavigationItem.Apply.route) {
                 // TODO()
+                window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
             composable(BottomNavigationItem.All.route) {
                 // TODO()
+                window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
         }
     }
+}
+
+
+fun Context.getActivity(): ComponentActivity? = when (this) {
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
 }
