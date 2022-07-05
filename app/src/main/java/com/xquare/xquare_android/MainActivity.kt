@@ -1,6 +1,7 @@
 package com.xquare.xquare_android
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
@@ -14,14 +15,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.home.HomeScreen
+import com.xquare.xquare_android.feature.splash.SplashScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 import com.xquare.xquare_android.theme.XquareandroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
         super.onCreate(savedInstanceState)
         setContent {
             XquareandroidTheme {
@@ -34,7 +41,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BaseApp() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppNavigationItem.Main.route) {
+    NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
+        composable(AppNavigationItem.Splash.route) {
+            SplashScreen(navController)
+        }
         composable(AppNavigationItem.Main.route) {
             Main(navController)
         }
