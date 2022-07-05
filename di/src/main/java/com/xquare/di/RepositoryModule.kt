@@ -1,5 +1,6 @@
 package com.xquare.di
 
+import com.xquare.data.repository.AuthRepositoryImpl
 import com.xquare.data.repository.meal.MealRepositoryImpl
 import com.xquare.data.repository.point.PointRepositoryImpl
 import com.xquare.data.repository.user.UserRepositoryImpl
@@ -33,6 +34,6 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindAuthRepository(
-        authRepository: AuthRepository
+        authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
 }
