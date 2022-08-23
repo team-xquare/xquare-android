@@ -58,7 +58,7 @@ fun SplashScreen(navController: NavController) {
                 SplashViewModel.Event.AutoLoginSuccess ->
                     navController.navigate(AppNavigationItem.Main.route) { popUpTo(0) }
                 SplashViewModel.Event.AutoLoginFailure -> {
-                    // TODO()
+                    navController.navigate(AppNavigationItem.Onboard.route) { popUpTo(0) }
                 }
             }
         }
