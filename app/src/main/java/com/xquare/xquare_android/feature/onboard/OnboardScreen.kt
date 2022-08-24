@@ -58,7 +58,7 @@ private fun OnBoard(
                 modifier = Modifier.fillMaxSize(),
                 painter = images[this.currentPage],
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
         }
         Column(
