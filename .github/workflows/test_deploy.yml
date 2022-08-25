@@ -20,6 +20,9 @@ jobs:
       - name: Create deploy-android-service-key.json
         run: echo '${{ secrets.DEPLOY_ANDROID_SERVICE_KEY_JSON }}' > ./deploy-android-service-key.json
 
+      - name: Create fastlane directory
+        run: mkdir fastlane
+
       - name: Create fastlane/Appfile
         run: echo '${{ secrets.FASTLANE_APPFILE }}' > ./fastlane/Appfile
 
