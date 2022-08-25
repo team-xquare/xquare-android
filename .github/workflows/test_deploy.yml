@@ -57,7 +57,7 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF$refs/heads/release/})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/release/})"
         id: extract_branch
 
       - name: Deploy to Firebase App Distribution
