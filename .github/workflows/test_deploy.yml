@@ -51,6 +51,9 @@ jobs:
 
       - name: Run bundle install
         run: bundle install
-        
+
+      - name: Validate play store json key
+        run: bundle exec fastlane run validate_play_store_json_key
+
       - name: Deploy to Firebase App Distribution
         run: bundle exec fastlane distribute
