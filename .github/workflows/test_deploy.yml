@@ -26,7 +26,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Create deploy-android-service-key.json
-        run: echo '${{ secrets.DEPLOY_ANDROID_SERVICE_KEY_JSON }}' > ./deploy-android-service-key.json
+        run: echo ${{ secrets.DEPLOY_ANDROID_SERVICE_KEY_JSON }} | base64 --decode  > ./deploy-android-service-key.json
 
       - name: Create fastlane directory
         run: mkdir fastlane
