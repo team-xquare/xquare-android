@@ -22,9 +22,6 @@ jobs:
           ruby-version: 2.7.2
           bundler-cache: true
 
-      - name: Run bundle install
-        run: bundle install
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -51,6 +48,9 @@ jobs:
 
       - name: Add environment variable FIREBASE_TOKEN
         run: export FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Run bundle install
+        run: bundle install
 
       - name: Build with Gradle
         run: ./gradlew build
