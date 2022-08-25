@@ -32,19 +32,19 @@ jobs:
         run: mkdir fastlane
 
       - name: Create fastlane/Appfile
-        run: echo '${{ secrets.FASTLANE_APPFILE }}' > ./fastlane/Appfile
+        run: echo ${{ secrets.FASTLANE_APPFILE }} | base64 --decode > ./fastlane/Appfile
 
       - name: Create fastlane/Fastfile
-        run: echo '${{ secrets.FASTLANE_FASTFILE }}' > ./fastlane/Fastfile
+        run: echo ${{ secrets.FASTLANE_FASTFILE }} | base64 --decode > ./fastlane/Fastfile
 
       - name: Create fastlane/Pluginfile
-        run: echo '${{ secrets.FASTLANE_PLUGINFILE }}' > ./fastlane/Pluginfile
+        run: echo ${{ secrets.FASTLANE_PLUGINFILE }} | base64 --decode > ./fastlane/Pluginfile
 
       - name: Create Gemfile
-        run: echo '${{ secrets.FASTLANE_GEMFILE }}' > ./Gemfile
+        run: echo ${{ secrets.FASTLANE_GEMFILE }} | base64 --decode > ./Gemfile
 
       - name: Create Gemfile.lock
-        run: echo '${{ secrets.FASTLANE_GEMFILE_LOCK }}' > ./Gemfile.lock
+        run: echo ${{ secrets.FASTLANE_GEMFILE_LOCK }} | base64 --decode > ./Gemfile.lock
 
       - name: Add environment variable FIREBASE_TOKEN
         run: export FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}
