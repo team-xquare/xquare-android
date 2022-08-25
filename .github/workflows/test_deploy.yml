@@ -38,6 +38,9 @@ jobs:
       - name: Create Gemfile.lock
         run: echo '${{ secrets.FASTLANE_GEMFILE_Lock }}' > ./Gemfile.lock
 
+      - name: Add environment variable FIREBASE_TOKEN
+        run: export FIREBASE_TOKEN='${{ secrets.FIREBASE_TOKEN }}'
+
       - name: Build with Gradle
         run: ./gradlew build
 
