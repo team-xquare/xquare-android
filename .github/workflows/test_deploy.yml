@@ -44,7 +44,7 @@ jobs:
         run: echo '${{ secrets.FASTLANE_GEMFILE }}' > ./Gemfile
 
       - name: Create Gemfile.lock
-        run: echo ${{ secrets.FASTLANE_GEMFILE_Lock }} > ./Gemfile.lock
+        run: echo '${{ secrets.FASTLANE_GEMFILE_LOCK }}' > ./Gemfile.lock
 
       - name: Add environment variable FIREBASE_TOKEN
         run: export FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}
