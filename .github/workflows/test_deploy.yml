@@ -51,12 +51,6 @@ jobs:
 
       - name: Run bundle install
         run: bundle install
-
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Run test
-        run: ./gradlew test
-
+        
       - name: Deploy to Firebase App Distribution
         run: bundle exec fastlane distribute
