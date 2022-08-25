@@ -55,5 +55,10 @@ jobs:
       - name: Validate play store json key
         run: bundle exec fastlane run validate_play_store_json_key
 
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF$refs/heads/release/})"
+        id: extract_branch
+
       - name: Deploy to Firebase App Distribution
-        run: bundle exec fastlane distribute
+        run: bundle exec fastlane distribute version:${{steps.extract_branch.outputs.branch}}
