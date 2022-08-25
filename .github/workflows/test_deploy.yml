@@ -1,0 +1,45 @@
+on:
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create deploy-android-service-key.json
+        run: echo '${{ secrets.DEPLOY_ANDROID_SERVICE_KEY_JSON }}' > ./deploy-android-service-key.json
+
+      - name: Create fastlane/Appfile
+        run: echo '${{ secrets.FASTLANE_APPFILE }}' > ./fastlane/Appfile
+
+      - name: Create fastlane/Fastfile
+        run: echo '${{ secrets.FASTLANE_FASTFILE }}' > ./fastlane/Fastfile
+
+      - name: Create fastlane/Pluginfile
+        run: echo '${{ secrets.FASTLANE_PLUGINFILE }}' > ./fastlane/Pluginfile
+
+      - name: Create Gemfile
+        run: echo '${{ secrets.FASTLANE_GEMFILE }}' > ./Gemfile
+
+      - name: Create Gemfile.lock
+        run: echo '${{ secrets.FASTLANE_GEMFILE_Lock }}' > ./Gemfile.lock
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run test
+        run: ./gradlew test
+
+      - name: Deploy to Firebase App Distribution
+        run: fastlane distribute
