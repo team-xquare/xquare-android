@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 import com.xquare.domain.entity.auth.SignUpEntity
 
 data class SignUpRequest(
-    @SerializedName("auth_code") val authCode: String,
+    @SerializedName("verification_code") val authCode: String,
     @SerializedName("account_id") val accountId: String,
     @SerializedName("password") val password: String,
-    @SerializedName("profile_image_url") val profileImageUrl: String?
+    @SerializedName("profile_file_name") val profileImageUrl: String?
 )
 
 fun SignUpEntity.toRequest(profileImageUrl: String?) = SignUpRequest(
