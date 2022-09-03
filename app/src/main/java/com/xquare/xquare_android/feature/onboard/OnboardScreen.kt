@@ -24,12 +24,13 @@ import com.semicolon.design.button.ColoredLargeButton
 import com.semicolon.design.color.primary.dark.dark200
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
+import com.xquare.xquare_android.navigation.AppNavigationItem
 
 @Composable
 fun OnboardScreen(navController: NavController) {
     OnBoard(
         images = listOf(),
-        onSignUpClick = { TODO() },
+        onSignUpClick = { navController.navigate(AppNavigationItem.SignUp.route) },
         onSignInClick = { TODO() }
     )
 }
