@@ -1,0 +1,64 @@
+on:
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Set up ruby env
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+          bundler-cache: true
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create deploy-android-service-key.json
+        run: echo ${{ secrets.DEPLOY_ANDROID_SERVICE_KEY_JSON }} | base64 --decode  > ./deploy-android-service-key.json
+
+      - name: Create fastlane directory
+        run: mkdir fastlane
+
+      - name: Create fastlane/Appfile
+        run: echo ${{ secrets.FASTLANE_APPFILE }} | base64 --decode > ./fastlane/Appfile
+
+      - name: Create fastlane/Fastfile
+        run: echo ${{ secrets.FASTLANE_FASTFILE }} | base64 --decode > ./fastlane/Fastfile
+
+      - name: Create fastlane/Pluginfile
+        run: echo ${{ secrets.FASTLANE_PLUGINFILE }} | base64 --decode > ./fastlane/Pluginfile
+
+      - name: Create Gemfile
+        run: echo ${{ secrets.FASTLANE_GEMFILE }} | base64 --decode > ./Gemfile
+
+      - name: Create Gemfile.lock
+        run: echo ${{ secrets.FASTLANE_GEMFILE_LOCK }} | base64 --decode > ./Gemfile.lock
+
+      - name: Add environment variable FIREBASE_TOKEN
+        run: export FIREBASE_TOKEN=${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Run bundle install
+        run: bundle install
+
+      - name: Validate play store json key
+        run: bundle exec fastlane run validate_play_store_json_key
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/release/})"
+        id: extract_branch
+
+      - name: Deploy to Firebase App Distribution
+        run: bundle exec fastlane distribute version:${{steps.extract_branch.outputs.branch}}
