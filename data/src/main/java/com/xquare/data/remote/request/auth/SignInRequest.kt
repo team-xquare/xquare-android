@@ -5,10 +5,12 @@ import com.xquare.domain.entity.auth.SignInEntity
 
 data class SignInRequest(
     @SerializedName("account_id") val accountId: String,
-    @SerializedName("password") val password: String
+    @SerializedName("password") val password: String,
+    @SerializedName("device_token") val deviceToken: String
 )
 
 fun SignInEntity.toRequest() = SignInRequest(
     accountId = accountId,
-    password = password
+    password = password,
+    deviceToken = "Temporary" // TODO()
 )

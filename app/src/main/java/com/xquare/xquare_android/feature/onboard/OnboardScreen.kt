@@ -31,7 +31,7 @@ fun OnboardScreen(navController: NavController) {
     OnBoard(
         images = listOf(),
         onSignUpClick = { navController.navigate(AppNavigationItem.SignUp.route) },
-        onSignInClick = { TODO() }
+        onSignInClick = { navController.navigate(AppNavigationItem.SignIn.route) }
     )
 }
 
