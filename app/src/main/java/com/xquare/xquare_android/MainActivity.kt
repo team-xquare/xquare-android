@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
+import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
@@ -60,6 +61,11 @@ fun BaseApp() {
             context.getActivity()?.window?.statusBarColor =
                 ContextCompat.getColor(context, R.color.white)
             SignUpScreen(navController)
+        }
+        composable(AppNavigationItem.SignIn.route) {
+            context.getActivity()?.window?.statusBarColor =
+                ContextCompat.getColor(context, R.color.white)
+            SignInScreen(navController)
         }
         composable(AppNavigationItem.Main.route) {
             context.getActivity()?.window?.statusBarColor =
