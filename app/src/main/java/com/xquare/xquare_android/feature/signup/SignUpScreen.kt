@@ -1,7 +1,5 @@
 package com.xquare.xquare_android.feature.signup
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
@@ -12,6 +10,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +23,7 @@ import com.xquare.xquare_android.component.AnnotatedBody2
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.HighlightedText
 import com.xquare.xquare_android.component.TextField
+import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.makeToast
 
 @Composable
@@ -55,8 +55,11 @@ fun SignUpScreen(navController: NavController) {
         onBackClick = {
             navController.popBackStack()
         },
-        onTermsAndConditionClick = {
-            // TODO("이용약관 페이지로 이동")
+        onPrivacyPolicyClick = {
+            navController.navigate(AppNavigationItem.PrivacyPolicy.route)
+        },
+        onTermsClick = {
+            navController.navigate(AppNavigationItem.TermsOfService.route)
         },
         onSignUpClick = {
             signUpViewModel.signUp(it)
@@ -67,7 +70,8 @@ fun SignUpScreen(navController: NavController) {
 @Composable
 private fun SignUp(
     onBackClick: () -> Unit,
-    onTermsAndConditionClick: () -> Unit,
+    onPrivacyPolicyClick: () -> Unit,
+    onTermsClick: () -> Unit,
     onSignUpClick: (SignUpEntity) -> Unit
 ) {
     var verificationCode by remember { mutableStateOf("") }
@@ -80,6 +84,21 @@ private fun SignUp(
         else if (password.length < 6) false
         else if (!password.contains("[A-Za-z0-9!@#.,]".toRegex())) false
         else password == reEnteredPassword
+    val annotatedPrivacyPolicyAndTerms = buildAnnotatedString {
+        append("가입시 ")
+        pushStringAnnotation("policy", "")
+        withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+            append("개인정보처리방침")
+        }
+        pop()
+        append(" 및 ")
+        pushStringAnnotation("terms", "")
+        withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+            append("이용약관")
+        }
+        pop()
+        append("에 동의하는 것으로 간주합니다.")
+    }
     Scaffold(
         topBar = {
             AppBar(
@@ -90,24 +109,6 @@ private fun SignUp(
         },
         bottomBar = {
             Column(Modifier.padding(bottom = 16.dp)) {
-                Box(Modifier.padding(16.dp)) {
-                    AnnotatedBody2(
-                        modifier = Modifier.clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = null,
-                            enabled = true
-                        ) { onTermsAndConditionClick() },
-                        text = buildAnnotatedString {
-                            append("가입시 ")
-                            pushStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                            append("개인정보 수집 및 뭐시기 및 이용약관")
-                            pop()
-                            append("에 동의하는 것으로 간주합니다")
-                        },
-                        color = gray400,
-                        textAlign = TextAlign.Center
-                    )
-                }
                 ColoredLargeButton(text = "회원가입", isEnabled = isSignUpEnabled) {
                     onSignUpClick(SignUpEntity(verificationCode, accountId, password, null))
                 }
@@ -164,6 +165,22 @@ private fun SignUp(
                     reEnteredPassword = text
                 }
             )
+            Spacer(Modifier.size(20.dp))
+            AnnotatedBody2(
+                onClick = { offset ->
+                    annotatedPrivacyPolicyAndTerms.getStringAnnotations("policy", offset, offset)
+                        .firstOrNull()?.let {
+                            onPrivacyPolicyClick()
+                        }
+                    annotatedPrivacyPolicyAndTerms.getStringAnnotations("terms", offset, offset)
+                        .firstOrNull()?.let {
+                            onTermsClick()
+                        }
+                },
+                text = annotatedPrivacyPolicyAndTerms,
+                color = gray400,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -173,7 +190,8 @@ private fun SignUp(
 fun SignUpPreview() {
     SignUp(
         onBackClick = {},
-        onTermsAndConditionClick = {},
+        onPrivacyPolicyClick = {},
+        onTermsClick = {},
         onSignUpClick = {}
     )
 }

@@ -21,9 +21,11 @@ import androidx.navigation.compose.rememberNavController
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
+import com.xquare.xquare_android.feature.privacypolicy.PrivacyPolicyScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
+import com.xquare.xquare_android.feature.terms.TermsScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 import com.xquare.xquare_android.theme.XquareandroidTheme
@@ -56,6 +58,16 @@ fun BaseApp() {
             context.getActivity()?.window?.statusBarColor =
                 ContextCompat.getColor(context, R.color.white)
             OnboardScreen(navController)
+        }
+        composable(AppNavigationItem.PrivacyPolicy.route) {
+            context.getActivity()?.window?.statusBarColor =
+                ContextCompat.getColor(context, R.color.white)
+            PrivacyPolicyScreen(navController)
+        }
+        composable(AppNavigationItem.TermsOfService.route) {
+            context.getActivity()?.window?.statusBarColor =
+                ContextCompat.getColor(context, R.color.white)
+            TermsScreen(navController)
         }
         composable(AppNavigationItem.SignUp.route) {
             context.getActivity()?.window?.statusBarColor =
