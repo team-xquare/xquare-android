@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.component
 
 import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,7 +30,8 @@ fun AnnotatedBody2(
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
-    onTextLayout: (TextLayoutResult) -> Unit = {}
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    onClick: (Int) -> Unit = {}
 ) {
     AnnotatedTypography(
         text = text,
@@ -46,7 +48,8 @@ fun AnnotatedBody2(
         overflow = overflow,
         softWrap = softWrap,
         maxLines = maxLines,
-        onTextLayout = onTextLayout
+        onTextLayout = onTextLayout,
+        onClick = onClick
     )
 }
 
@@ -66,12 +69,13 @@ fun AnnotatedTypography(
     overflow: TextOverflow,
     softWrap: Boolean,
     maxLines: Int,
-    onTextLayout: (TextLayoutResult) -> Unit
+    onTextLayout: (TextLayoutResult) -> Unit,
+    onClick: (Int) -> Unit
 ) {
 
     val baselineModifier =
         modifier.paddingFromBaseline(top = baselineToTop.sp, bottom = baselineToBottom.sp)
-    Text(
+    ClickableText(
         style = TextStyle(
             color = color,
             lineHeight = lineHeight.sp,
@@ -87,6 +91,7 @@ fun AnnotatedTypography(
         overflow = overflow,
         softWrap = softWrap,
         maxLines = maxLines,
-        onTextLayout = onTextLayout
+        onTextLayout = onTextLayout,
+        onClick = onClick
     )
 }
