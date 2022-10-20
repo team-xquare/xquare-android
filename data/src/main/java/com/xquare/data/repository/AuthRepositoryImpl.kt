@@ -22,7 +22,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun autoSignIn() {
         val refreshToken = authLocalDataSource.fetchToken().refreshToken
-        val token = authRemoteDataSource.tokenRefresh(refreshToken)
+        val token = authRemoteDataSource.tokenRefresh("Bearer $refreshToken")
         authLocalDataSource.saveToken(token)
     }
 }
