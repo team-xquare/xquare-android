@@ -1,11 +1,15 @@
 package com.xquare.data
 
 import com.xquare.domain.exception.*
+import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 import retrofit2.HttpException
 import java.io.File
+import java.lang.NullPointerException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -49,3 +53,31 @@ suspend fun <T> sendHttpRequest(
     } catch (e: Throwable) {
         throw UnknownException()
     }
+
+fun <T> fetchDataWithOfflineCache(
+    fetchLocalData: suspend () -> T,
+    fetchRemoteData: suspend () -> T,
+    checkNeedRefresh: suspend (localData: T, remoteData: T) -> Boolean =
+        { localData, remoteData -> localData != remoteData },
+    refreshLocalData: suspend (remoteData: T) -> Unit,
+    offlineOnly: Boolean = false
+) = flow {
+    try {
+        val localData = fetchLocalData()
+        emit(localData)
+        if (offlineOnly) {
+            val remoteData = fetchRemoteData()
+            if (checkNeedRefresh(localData, remoteData)) {
+                refreshLocalData(remoteData)
+                emit(remoteData)
+            }
+        }
+    } catch (e: NullPointerException) {
+        val remoteData = fetchRemoteData()
+        refreshLocalData(remoteData)
+        emit(remoteData)
+    }
+}
+
+fun today(): LocalDate =
+    LocalDate.now()
