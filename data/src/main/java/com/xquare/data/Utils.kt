@@ -65,7 +65,7 @@ fun <T> fetchDataWithOfflineCache(
     try {
         val localData = fetchLocalData()
         emit(localData)
-        if (offlineOnly) {
+        if (!offlineOnly) {
             val remoteData = fetchRemoteData()
             if (checkNeedRefresh(localData, remoteData)) {
                 refreshLocalData(remoteData)
