@@ -2,6 +2,7 @@ package com.xquare.xquare_android.feature.home
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -29,6 +30,7 @@ import com.semicolon.design.notoSansFamily
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.point.DormitoryPointEntity
 import com.xquare.domain.entity.user.HomeUserEntity
+import com.xquare.xquare_android.navigation.AppNavigationItem
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -40,14 +42,24 @@ fun HomeScreen(navController: NavController) {
         viewModel.run {
 //            fetchUserName()
 //            fetchDormitoryPoint()
-//            fetchTodayMeal()
+            fetchTodayMeal()
         }
     }
-    HomeContent(user = userName, dormitoryPoint = dormitoryPoint, meal = meal)
+    HomeContent(
+        user = userName,
+        dormitoryPoint = dormitoryPoint,
+        meal = meal,
+        onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) }
+    )
 }
 
 @Composable
-fun HomeContent(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity, meal: MealEntity) {
+fun HomeContent(
+    user: HomeUserEntity,
+    dormitoryPoint: DormitoryPointEntity,
+    meal: MealEntity,
+    onAllMealClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .background(gray50)
@@ -57,7 +69,7 @@ fun HomeContent(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity, meal
         HomeAppBar()
         HomeUserCard(user = user, dormitoryPoint = dormitoryPoint)
         Spacer(Modifier.size(16.dp))
-        HomeMealCard(meal = meal)
+        HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
     }
 }
 
@@ -127,7 +139,10 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeMealCard(meal: MealEntity) {
+fun HomeMealCard(
+    meal: MealEntity,
+    onAllMealClick: () -> Unit
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -151,7 +166,13 @@ fun HomeMealCard(meal: MealEntity) {
             Icon(
                 painter = ColorPainter(gray200),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                        enabled = true
+                    ) { onAllMealClick() },
                 tint = Color.Unspecified
             )
         }
@@ -203,7 +224,8 @@ fun HomeContentPreview() {
             listOf("밥", "김치", "김", "생선"),
             listOf("밥", "김치", "김", "생선"),
             listOf("밥", "김치", "김", "생선")
-        )
+        ),
+        onAllMealClick = {}
     )
 }
 

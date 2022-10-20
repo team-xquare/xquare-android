@@ -2,7 +2,6 @@ package com.xquare.xquare_android
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.graphics.Color
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -19,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xquare.xquare_android.component.BottomNavigation
+import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.privacypolicy.PrivacyPolicyScreen
@@ -28,7 +28,6 @@ import com.xquare.xquare_android.feature.splash.SplashScreen
 import com.xquare.xquare_android.feature.terms.TermsScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
-import com.xquare.xquare_android.theme.XquareandroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -83,6 +82,11 @@ fun BaseApp() {
             context.getActivity()?.window?.statusBarColor =
                 ContextCompat.getColor(context, R.color.white)
             Main(navController)
+        }
+        composable(AppNavigationItem.AllMeal.route) {
+            context.getActivity()?.window?.statusBarColor =
+                ContextCompat.getColor(context, R.color.white)
+            AllMealScreen(navController)
         }
     }
 }

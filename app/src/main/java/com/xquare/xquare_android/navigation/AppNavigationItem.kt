@@ -7,5 +7,6 @@ enum class AppNavigationItem(val route: String) {
     TermsOfService("termsOfService"),
     SignUp("signup"),
     SignIn("signin"),
-    Main("main")
+    Main("main"),
+    AllMeal("allMeal")
 }
