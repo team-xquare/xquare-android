@@ -8,12 +8,12 @@ import retrofit2.http.Query
 
 interface MealApi {
 
-    @GET("meal/{date}")
+    @GET("meals/{date}")
     suspend fun fetchTodayMeal(
         @Path("date") date: String
     ): TodayMealResponse
 
-    @GET("meal")
+    @GET("meals")
     suspend fun fetchAllMeal(
         @Query("year") year: Int,
         @Query("month") month: Int,
