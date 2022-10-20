@@ -85,7 +85,7 @@ private fun SignIn(
             Column(Modifier.padding(horizontal = 16.dp)) {
                 TextField(
                     text = accountId,
-                    placeholder = "6자리를 입력해주세요",
+                    placeholder = "아이디",
                     onTextChange = { text ->
                         accountId = text
                     }
@@ -93,7 +93,7 @@ private fun SignIn(
                 Spacer(Modifier.size(8.dp))
                 TextField(
                     text = password,
-                    placeholder = "6자리를 입력해주세요",
+                    placeholder = "비밀번호",
                     isSecret = true,
                     onTextChange = { text ->
                         password = text
