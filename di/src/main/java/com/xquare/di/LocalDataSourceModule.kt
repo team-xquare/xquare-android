@@ -2,6 +2,8 @@ package com.xquare.di
 
 import com.xquare.data.local.datasource.AuthLocalDataSource
 import com.xquare.data.local.datasource.AuthLocalDataSourceImpl
+import com.xquare.data.local.datasource.MealLocalDataSource
+import com.xquare.data.local.datasource.MealLocalDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +17,9 @@ abstract class LocalDataSourceModule {
     abstract fun bindAuthLocalDataSource(
         authLocalDataSourceImpl: AuthLocalDataSourceImpl
     ): AuthLocalDataSource
+
+    @Binds
+    abstract fun bindMealLocalDataSource(
+        mealLocalDataSourceImpl: MealLocalDataSourceImpl
+    ): MealLocalDataSource
 }
