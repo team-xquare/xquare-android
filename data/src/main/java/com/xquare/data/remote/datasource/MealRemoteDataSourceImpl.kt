@@ -14,7 +14,10 @@ class MealRemoteDataSourceImpl @Inject constructor(
 ) : MealRemoteDataSource {
 
     override suspend fun fetchTodayMeal(date: LocalDate): MealEntity =
-        mealApi.fetchTodayMeal(date.toString()).toEntity()
+        sendHttpRequest(
+            httpRequest = { mealApi.fetchTodayMeal(date.toString()).toEntity() }
+        )
+
 
     override suspend fun fetchAllMeal(year: Int, month: Int): AllMealEntity =
         sendHttpRequest(
