@@ -1,5 +1,7 @@
 package com.xquare.xquare_android.feature.allmeal
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
@@ -40,6 +42,7 @@ fun AllMealScreen(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AllMeal(
     allMeal: AllMealEntity?,
@@ -52,15 +55,19 @@ private fun AllMeal(
             onIconClick = onBackPress
         )
         allMeal?.let {
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 16.dp)
+            CompositionLocalProvider(
+                LocalOverScrollConfiguration provides null
             ) {
-                items(allMeal.meals.count()) {
-                    if (it == 0) Spacer(Modifier.size(20.dp))
-                    MealDetail(allMeal.meals[it])
-                    if (it == allMeal.meals.lastIndex)
-                        Spacer(Modifier.size(20.dp))
-                    else Spacer(Modifier.size(16.dp))
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(allMeal.meals.count()) {
+                        if (it == 0) Spacer(Modifier.size(20.dp))
+                        MealDetail(allMeal.meals[it])
+                        if (it == allMeal.meals.lastIndex)
+                            Spacer(Modifier.size(20.dp))
+                        else Spacer(Modifier.size(16.dp))
+                    }
                 }
             }
         }
