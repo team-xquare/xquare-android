@@ -1,12 +1,12 @@
 package com.xquare.domain.entity.meal
 
-import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalDate
 
 data class AllMealEntity(
     val meals: List<MealWithDateEntity>
 ) {
     data class MealWithDateEntity(
-        val date: LocalDateTime,
+        val date: LocalDate,
         val breakfast: List<String>,
         val lunch: List<String>,
         val dinner: List<String>,

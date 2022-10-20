@@ -2,7 +2,7 @@ package com.xquare.data.remote.response.meal
 
 import com.google.gson.annotations.SerializedName
 import com.xquare.domain.entity.meal.AllMealEntity
-import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalDate
 
 data class AllMealResponse(
     @SerializedName("meals") val meals: List<MealWithDateResponse>
@@ -22,7 +22,7 @@ fun AllMealResponse.toEntity() =
 
 fun AllMealResponse.MealWithDateResponse.toEntity() =
     AllMealEntity.MealWithDateEntity(
-        date = LocalDateTime.parse(date),
+        date = LocalDate.parse(date),
         breakfast = breakfast.dropLast(1),
         lunch = lunch.dropLast(1),
         dinner = lunch.dropLast(1),
