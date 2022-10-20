@@ -4,72 +4,35 @@ import androidx.room.Entity
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.xquare.domain.entity.meal.AllMealEntity
-import org.threeten.bp.LocalDateTime
+import javax.inject.Inject
 
 @Entity(primaryKeys = ["year", "month"])
 data class AllMealRoomEntity(
     val year: Int,
     val month: Int,
-    val meals: List<MealWithDateRoomEntity>
-) {
-    data class MealWithDateRoomEntity(
-        val date: String,
-        val breakfast: List<String>,
-        val lunch: List<String>,
-        val dinner: List<String>,
-        val caloriesOfBreakfast: String,
-        val caloriesOfLunch: String,
-        val caloriesOfDinner: String
-    )
-}
+    val meals: AllMealEntity
+)
 
 @ProvidedTypeConverter
-class MealWithDateListTypeConverter(
+class AllMealEntityTypeConverter @Inject constructor(
     private val gson: Gson
 ) {
     @TypeConverter
-    fun fromString(value: String): List<AllMealRoomEntity.MealWithDateRoomEntity> {
-        val type = object : TypeToken<List<AllMealRoomEntity.MealWithDateRoomEntity>>() {}.type
-        return gson.fromJson(value, type)
+    fun fromString(value: String): AllMealEntity {
+        return gson.fromJson(value, AllMealEntity::class.java)
     }
 
     @TypeConverter
-    fun fromList(value: List<AllMealRoomEntity.MealWithDateRoomEntity>): String =
+    fun fromList(value: AllMealEntity): String =
         gson.toJson(value)
 }
 
-fun AllMealRoomEntity.toEntity() =
-    AllMealEntity(
-        meals = meals.map { it.toEntity() }
-    )
-
-fun AllMealRoomEntity.MealWithDateRoomEntity.toEntity() =
-    AllMealEntity.MealWithDateEntity(
-        date = LocalDateTime.parse(date),
-        breakfast = breakfast,
-        lunch = lunch,
-        dinner = dinner,
-        caloriesOfBreakfast = caloriesOfBreakfast,
-        caloriesOfLunch = caloriesOfLunch,
-        caloriesOfDinner = caloriesOfDinner
-    )
+fun AllMealRoomEntity.toEntity() = meals
 
 fun AllMealEntity.toRoomEntity(year: Int, month: Int) =
     AllMealRoomEntity(
         year = year,
         month = month,
-        meals = meals.map { it.toRoomEntity() }
-    )
-
-fun AllMealEntity.MealWithDateEntity.toRoomEntity() =
-    AllMealRoomEntity.MealWithDateRoomEntity(
-        date = date.toString(),
-        breakfast = breakfast,
-        lunch = lunch,
-        dinner = dinner,
-        caloriesOfBreakfast = caloriesOfBreakfast,
-        caloriesOfLunch = caloriesOfLunch,
-        caloriesOfDinner = caloriesOfDinner
+        meals = this
     )
