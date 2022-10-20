@@ -9,9 +9,9 @@ data class AllMealResponse(
 ) {
     data class MealWithDateResponse(
         @SerializedName("date") val date: String,
-        @SerializedName("breakfast") val breakfast: List<String>,
-        @SerializedName("lunch") val lunch: List<String>,
-        @SerializedName("dinner") val dinner: List<String>,
+        @SerializedName("breakfast") val breakfast: List<String>?,
+        @SerializedName("lunch") val lunch: List<String>?,
+        @SerializedName("dinner") val dinner: List<String>?,
     )
 }
 
@@ -23,10 +23,10 @@ fun AllMealResponse.toEntity() =
 fun AllMealResponse.MealWithDateResponse.toEntity() =
     AllMealEntity.MealWithDateEntity(
         date = LocalDate.parse(date),
-        breakfast = breakfast.dropLast(1),
-        lunch = lunch.dropLast(1),
-        dinner = lunch.dropLast(1),
-        caloriesOfBreakfast = breakfast.last(),
-        caloriesOfLunch = lunch.last(),
-        caloriesOfDinner = dinner.last()
+        breakfast = breakfast?.dropLast(1)?: listOf(),
+        lunch = lunch?.dropLast(1)?: listOf(),
+        dinner = dinner?.dropLast(1)?: listOf(),
+        caloriesOfBreakfast = breakfast?.lastOrNull()?: "",
+        caloriesOfLunch = lunch?.lastOrNull()?: "",
+        caloriesOfDinner = dinner?.lastOrNull()?: ""
     )
