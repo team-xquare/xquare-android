@@ -8,6 +8,7 @@ import com.google.gson.Gson
 import com.xquare.data.dao.MealDao
 import com.xquare.data.local.XquareDatabase
 import com.xquare.data.local.entity.meals.AllMealEntityTypeConverter
+import com.xquare.data.local.entity.meals.MealEntityTypeConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,9 +26,13 @@ object LocalModule {
 
     @Provides
     fun provideXquareDatabase(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        mealEntityTypeConverter: MealEntityTypeConverter,
+        allMealEntityTypeConverter: AllMealEntityTypeConverter
     ): XquareDatabase =
         Room.databaseBuilder(context, XquareDatabase::class.java, "XquareDatabase")
+            .addTypeConverter(mealEntityTypeConverter)
+            .addTypeConverter(allMealEntityTypeConverter)
             .build()
 
     @Provides
