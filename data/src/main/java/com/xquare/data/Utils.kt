@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 import retrofit2.HttpException
 import java.io.File
 import java.lang.NullPointerException
@@ -76,3 +78,6 @@ fun <T> fetchDataWithOfflineCache(
         emit(remoteData)
     }
 }
+
+fun today(): LocalDate =
+    LocalDate.now()
