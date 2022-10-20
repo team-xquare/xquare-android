@@ -5,14 +5,16 @@ import com.xquare.data.remote.response.meal.toEntity
 import com.xquare.data.sendHttpRequest
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.domain.entity.meal.MealEntity
+import org.threeten.bp.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class MealRemoteDataSourceImpl @Inject constructor(
     private val mealApi: MealApi
 ) : MealRemoteDataSource {
 
-    override suspend fun fetchTodayMeal(date: String): MealEntity =
-        mealApi.fetchTodayMeal(date).toEntity()
+    override suspend fun fetchTodayMeal(date: LocalDate): MealEntity =
+        mealApi.fetchTodayMeal(date.toString()).toEntity()
 
     override suspend fun fetchAllMeal(year: Int, month: Int): AllMealEntity =
         sendHttpRequest(
