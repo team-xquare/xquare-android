@@ -21,13 +21,12 @@ class MealRepositoryImpl @Inject constructor(
 
     override suspend fun fetchTodayMeal(): Flow<MealEntity> {
         val today = today()
-        fetchDataWithOfflineCache(
+        return fetchDataWithOfflineCache(
             fetchLocalData = { mealLocalDataSource.fetchMeal(today) },
             fetchRemoteData = { mealRemoteDataSource.fetchTodayMeal(today) },
             refreshLocalData = { mealLocalDataSource.saveMeal(today, it) },
             offlineOnly = true
         )
-        return flow { emit(mealRemoteDataSource.fetchTodayMeal(today)) }
     }
 
     override suspend fun fetchAllMeal(): Flow<AllMealEntity> {
