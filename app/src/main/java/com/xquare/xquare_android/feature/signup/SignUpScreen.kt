@@ -79,7 +79,7 @@ private fun SignUp(
     var password by remember { mutableStateOf("") }
     var reEnteredPassword by remember { mutableStateOf("") }
     val isSignUpEnabled =
-        if (verificationCode.length != 4) false
+        if (verificationCode.length != 6) false
         else if (accountId.length < 6 || accountId.length > 20) false
         else if (password.length < 6) false
         else if (!password.contains("[A-Za-z0-9!@#.,]".toRegex())) false
