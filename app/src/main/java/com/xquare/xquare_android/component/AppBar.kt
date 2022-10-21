@@ -22,7 +22,7 @@ import com.xquare.xquare_android.R
 fun AppBar(
     painter: Painter? = null,
     text: String,
-    onIconClick: () -> Unit
+    onIconClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
