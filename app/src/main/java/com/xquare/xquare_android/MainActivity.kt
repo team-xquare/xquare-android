@@ -21,14 +21,15 @@ import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
-import com.xquare.xquare_android.feature.privacypolicy.PrivacyPolicyScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
-import com.xquare.xquare_android.feature.terms.TermsScreen
+import com.xquare.xquare_android.feature.webview.CommonWebViewScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 
 @AndroidEntryPoint
@@ -61,12 +62,22 @@ fun BaseApp() {
         composable(AppNavigationItem.PrivacyPolicy.route) {
             context.getActivity()?.window?.statusBarColor =
                 ContextCompat.getColor(context, R.color.white)
-            PrivacyPolicyScreen(navController)
+            CommonWebViewScreen(
+                navController = navController,
+                url = "https://team-xquare.github.io/terms/PrivacyPolicy.html",
+                title = "개인정보처리방침",
+                haveBackButton = true
+            )
         }
         composable(AppNavigationItem.TermsOfService.route) {
             context.getActivity()?.window?.statusBarColor =
                 ContextCompat.getColor(context, R.color.white)
-            TermsScreen(navController)
+            CommonWebViewScreen(
+                navController = navController,
+                url = "https://team-xquare.github.io/terms/TermsOfService.html",
+                title = "이용약관",
+                haveBackButton = true
+            )
         }
         composable(AppNavigationItem.SignUp.route) {
             context.getActivity()?.window?.statusBarColor =
@@ -88,6 +99,19 @@ fun BaseApp() {
                 ContextCompat.getColor(context, R.color.white)
             AllMealScreen(navController)
         }
+        composable(AppNavigationItem.CommonWebView.route) {
+            val encodedUrl = it.arguments!!["encodedUrl"].toString()
+            val title = it.arguments!!["title"].toString()
+            val url = URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8.toString())
+            context.getActivity()?.window?.statusBarColor =
+                ContextCompat.getColor(context, R.color.white)
+            CommonWebViewScreen(
+                navController = navController,
+                url = url,
+                title = title,
+                haveBackButton = true
+            )
+        }
     }
 }
 
@@ -107,7 +131,7 @@ fun Main(mainNavController: NavController) {
                     BottomNavigationItem.Home,
                     BottomNavigationItem.Schedule,
                     BottomNavigationItem.Feed,
-                    BottomNavigationItem.Apply,
+                    BottomNavigationItem.Application,
                     BottomNavigationItem.All
                 )
             )
@@ -130,8 +154,13 @@ fun Main(mainNavController: NavController) {
                 // TODO()
                 window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
-            composable(BottomNavigationItem.Apply.route) {
-                // TODO()
+            composable(BottomNavigationItem.Application.route) {
+                CommonWebViewScreen(
+                    navController = mainNavController,
+                    url = "https://service.xquare.app/apply",
+                    title = "신청",
+                    haveBackButton = false
+                )
                 window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
             composable(BottomNavigationItem.All.route) {

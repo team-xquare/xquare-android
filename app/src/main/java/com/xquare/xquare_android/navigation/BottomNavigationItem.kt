@@ -25,7 +25,7 @@ enum class BottomNavigationItem(
         icon = { painterResource(R.drawable.ic_placeholder) },
         label = "피드"
     ),
-    Apply(
+    Application(
         route = "apply",
         icon = { painterResource(R.drawable.ic_placeholder) },
         label = "신청"
