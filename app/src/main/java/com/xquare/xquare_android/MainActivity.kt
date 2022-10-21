@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
+import com.xquare.xquare_android.feature.application.ApplicationScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.privacypolicy.PrivacyPolicyScreen
@@ -107,7 +108,7 @@ fun Main(mainNavController: NavController) {
                     BottomNavigationItem.Home,
                     BottomNavigationItem.Schedule,
                     BottomNavigationItem.Feed,
-                    BottomNavigationItem.Apply,
+                    BottomNavigationItem.Application,
                     BottomNavigationItem.All
                 )
             )
@@ -130,8 +131,8 @@ fun Main(mainNavController: NavController) {
                 // TODO()
                 window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
-            composable(BottomNavigationItem.Apply.route) {
-                // TODO()
+            composable(BottomNavigationItem.Application.route) {
+                ApplicationScreen(mainNavController)
                 window?.statusBarColor = ContextCompat.getColor(context, R.color.white)
             }
             composable(BottomNavigationItem.All.route) {
