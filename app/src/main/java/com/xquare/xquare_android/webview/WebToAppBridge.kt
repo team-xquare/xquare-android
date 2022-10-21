@@ -4,11 +4,11 @@ import android.webkit.JavascriptInterface
 import com.google.gson.Gson
 
 class WebToAppBridge(
-    val onNavigate: (String) -> Unit,
-    val onImageDetail: (Array<String>) -> Unit,
-    val onConfirmModal: (ModalInfo) -> Unit,
-    val onBack: () -> Unit,
-    val onError: (WebViewError) -> Unit,
+    val onNavigate: (String) -> Unit = {},
+    val onImageDetail: (Array<String>) -> Unit = {},
+    val onConfirmModal: (ModalInfo) -> Unit = {},
+    val onBack: () -> Unit = {},
+    val onError: (WebViewError) -> Unit = {},
     private val gson: Gson = Gson(),
 ) {
 
