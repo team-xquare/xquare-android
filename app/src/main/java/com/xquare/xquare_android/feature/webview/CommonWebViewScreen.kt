@@ -8,11 +8,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
+import com.xquare.xquare_android.component.ConfirmModal
 import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
+import com.xquare.xquare_android.webview.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 
 @Composable
 fun CommonWebViewScreen(
@@ -22,6 +25,7 @@ fun CommonWebViewScreen(
     haveBackButton: Boolean,
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
+    var modalState: ModalInfo? by remember { mutableStateOf(null) }
     val context = LocalContext.current
     val bridge = WebToAppBridge(
         onNavigate = {
@@ -33,10 +37,25 @@ fun CommonWebViewScreen(
             }
         },
         onImageDetail = { /* TODO("이미지 상세 페이지로 이동") */ },
-        onConfirmModal = { },
-        onBack = { navController.popBackStack() },
+        onConfirmModal = { modalState = it },
+        onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
     )
+    modalState?.let {
+        ConfirmModal(
+            message = it.message,
+            confirmText = it.confirmText,
+            cancelText = it.cancelText,
+            onConfirm = {
+                webView?.sendResultOfConfirmModal(true)
+                modalState = null
+            },
+            onCancel = {
+                webView?.sendResultOfConfirmModal(false)
+                modalState = null
+            }
+        )
+    }
     CommonWebView(
         haveBackButton = haveBackButton,
         title = title,
