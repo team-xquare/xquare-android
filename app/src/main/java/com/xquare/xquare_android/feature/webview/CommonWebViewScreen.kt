@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
@@ -19,6 +20,7 @@ import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun CommonWebViewScreen(
@@ -29,14 +31,15 @@ fun CommonWebViewScreen(
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
+    var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
+    val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
     val bridge = WebToAppBridge(
         onNavigate = {
             val targetUrl = url + it
             updateUi {
                 navController.navigate(
-                    AppNavigationItem.CommonWebView.createRoute(targetUrl, title)
-                )
+                    AppNavigationItem.CommonWebView.createRoute(targetUrl, title))
             }
         },
         onImageDetail = { /* TODO("이미지 상세 페이지로 이동") */ },
@@ -44,6 +47,23 @@ fun CommonWebViewScreen(
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
     )
+    LaunchedEffect(Unit) {
+        viewModel.fetchAuthorizationHeader()
+        viewModel.eventFlow.collect {
+            when (it) {
+                is WebViewViewModel.Event.FetchSuccess -> {
+                    println(it.data)
+                    headers = it.data
+                }
+                is WebViewViewModel.Event.RefreshSuccess -> {
+                    headers = it.data
+                }
+                is WebViewViewModel.Event.NeedToLogin -> {
+                    navController.navigate(AppNavigationItem.Onboard.route) { popUpTo(0) }
+                }
+            }
+        }
+    }
     modalState?.let {
         ConfirmModal(
             message = it.message,
@@ -63,7 +83,7 @@ fun CommonWebViewScreen(
         haveBackButton = haveBackButton,
         title = title,
         url = url,
-        headers = mapOf(),
+        headers = headers,
         bridges = mapOf(Pair("webview", bridge)),
         onBackClick = { navController.popBackStack() },
         onWebviewCreate = { webView = it }
@@ -88,7 +108,7 @@ private fun CommonWebView(
             text = title,
             onIconClick = onBackClick
         )
-        WebView(
+        if (headers.isNotEmpty()) WebView(
             url = url,
             headers = headers,
             bridges = bridges,
