@@ -12,7 +12,7 @@ class WebViewRepositoryImpl @Inject constructor(
 
     override suspend fun fetchAuthorizationHeaders(): Map<String, String> =
         mapOf(
-            Pair("Authorization", "Bearer ${authLocalDataSource.fetchToken().accessToken}")
+            Pair("Authorization", authLocalDataSource.fetchToken().accessToken)
         )
 
     override suspend fun refreshAuthorizationHeaders(): Map<String, String> {
@@ -20,7 +20,7 @@ class WebViewRepositoryImpl @Inject constructor(
         val newToken = authRemoteDataSource.tokenRefresh(refreshToken)
         authLocalDataSource.saveToken(newToken)
         return mapOf(
-            Pair("Authorization", "Bearer ${newToken.accessToken}")
+            Pair("Authorization", newToken.accessToken)
         )
     }
 }
