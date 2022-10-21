@@ -1,11 +1,14 @@
 package com.xquare.xquare_android.feature.webview
 
 import android.webkit.WebView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.ConfirmModal
@@ -77,7 +80,9 @@ private fun CommonWebView(
     onBackClick: () -> Unit,
     onWebviewCreate: (WebView) -> Unit,
 ) {
-    Column {
+    Column(
+        Modifier.background(color = white)
+    ) {
         AppBar(
             painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
             text = title,
