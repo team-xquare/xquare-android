@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -15,10 +16,11 @@ import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.util.makeToast
+import org.threeten.bp.LocalDate
 
 @Composable
 fun AllMealScreen(
-    navController: NavController
+    navController: NavController,
 ) {
     val context = LocalContext.current
     val viewModel: AllMealViewModel = hiltViewModel()
@@ -42,12 +44,14 @@ fun AllMealScreen(
     )
 }
 
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AllMeal(
     allMeal: AllMealEntity?,
-    onBackPress: () -> Unit
+    onBackPress: () -> Unit,
 ) {
+    val lazyListState = rememberLazyListState()
     Column {
         AppBar(
             painter = painterResource(R.drawable.ic_placeholder),
@@ -58,7 +62,9 @@ private fun AllMeal(
             CompositionLocalProvider(
                 LocalOverScrollConfiguration provides null
             ) {
+                LaunchedEffect(Unit) { lazyListState.scrollToItem(calculateScrollPosition(allMeal)) }
                 LazyColumn(
+                    state = lazyListState,
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(allMeal.meals.count()) {
@@ -72,4 +78,12 @@ private fun AllMeal(
             }
         }
     }
+}
+
+private fun calculateScrollPosition(allMeal: AllMealEntity): Int {
+    val today = LocalDate.now()
+    val meals = allMeal.meals
+    return meals
+        .firstOrNull { it.date >= today }
+        ?.let { meals.indexOf(it) } ?: meals.lastIndex
 }
