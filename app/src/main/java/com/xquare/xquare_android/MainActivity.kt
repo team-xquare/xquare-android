@@ -28,6 +28,8 @@ import com.xquare.xquare_android.feature.webview.CommonWebViewScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 
 @AndroidEntryPoint
@@ -96,6 +98,19 @@ fun BaseApp() {
             context.getActivity()?.window?.statusBarColor =
                 ContextCompat.getColor(context, R.color.white)
             AllMealScreen(navController)
+        }
+        composable(AppNavigationItem.CommonWebView.route) {
+            val encodedUrl = it.arguments!!["encodedUrl"].toString()
+            val title = it.arguments!!["title"].toString()
+            val url = URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8.toString())
+            context.getActivity()?.window?.statusBarColor =
+                ContextCompat.getColor(context, R.color.white)
+            CommonWebViewScreen(
+                navController = navController,
+                url = url,
+                title = title,
+                haveBackButton = true
+            )
         }
     }
 }
