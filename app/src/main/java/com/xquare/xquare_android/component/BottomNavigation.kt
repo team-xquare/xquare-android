@@ -1,8 +1,10 @@
 package com.xquare.xquare_android.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,7 +21,7 @@ import com.xquare.xquare_android.navigation.BottomNavigationItem
 @Composable
 fun BottomNavigation(
     navController: NavController,
-    items: List<BottomNavigationItem>
+    items: List<BottomNavigationItem>,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -32,7 +34,13 @@ fun BottomNavigation(
                 Modifier
                     .height(56.dp)
                     .weight(1f)
-                    .clickable {
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = rememberRipple(
+                            radius = 28.dp
+                        ),
+                        enabled = !selected
+                    ) {
                         navController.navigate(screen.route) { popUpTo(0) }
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
