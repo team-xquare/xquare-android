@@ -44,6 +44,7 @@ fun AllMealScreen(
     )
 }
 
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AllMeal(
