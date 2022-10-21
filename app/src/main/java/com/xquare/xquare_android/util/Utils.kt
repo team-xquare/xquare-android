@@ -2,6 +2,9 @@ package com.xquare.xquare_android.util
 
 import android.content.Context
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 
 fun makeToast(context: Context, text: String) {
@@ -9,7 +12,7 @@ fun makeToast(context: Context, text: String) {
 }
 
 fun DayOfWeek.toKorean() =
-    when(this) {
+    when (this) {
         DayOfWeek.MONDAY -> "월"
         DayOfWeek.TUESDAY -> "화"
         DayOfWeek.WEDNESDAY -> "수"
@@ -17,4 +20,9 @@ fun DayOfWeek.toKorean() =
         DayOfWeek.FRIDAY -> "금"
         DayOfWeek.SATURDAY -> "토"
         DayOfWeek.SUNDAY -> "일"
+    }
+
+fun updateUi(job: (CoroutineScope) -> Unit) =
+    CoroutineScope(Dispatchers.Main).launch {
+        job(this)
     }
