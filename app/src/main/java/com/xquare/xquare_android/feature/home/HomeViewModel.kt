@@ -16,7 +16,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val fetchDormitoryPointUseCase: FetchDormitoryPointUseCase,
     private val fetchTodayMealUseCase: FetchTodayMealUseCase,
-    private val fetchHomeUserUseCase: FetchHomeUserUseCase
+    private val fetchHomeUserUseCase: FetchHomeUserUseCase,
 ) : BaseViewModel<HomeViewModel.Event>() {
 
     private val _userName = MutableStateFlow(HomeUserEntity("", "김재원"))
@@ -25,7 +25,13 @@ class HomeViewModel @Inject constructor(
     private val _dormitoryPoint = MutableStateFlow(DormitoryPointEntity(0, 0))
     val dormitoryPoint: StateFlow<DormitoryPointEntity> = _dormitoryPoint
 
-    private val _todayMeal = MutableStateFlow(MealEntity(emptyList(), emptyList(), emptyList()))
+    private val _todayMeal = MutableStateFlow(
+        MealEntity(
+            emptyList(),
+            emptyList(),
+            emptyList(),
+            "", "", ""
+        ))
     val todayMeal: StateFlow<MealEntity> = _todayMeal
 
     fun fetchUserName() {
