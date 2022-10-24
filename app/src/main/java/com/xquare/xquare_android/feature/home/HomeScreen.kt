@@ -17,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,7 +57,7 @@ fun HomeContent(
     user: HomeUserEntity,
     dormitoryPoint: DormitoryPointEntity,
     meal: MealEntity,
-    onAllMealClick: () -> Unit
+    onAllMealClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -137,11 +136,12 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
     }
 }
 
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeMealCard(
     meal: MealEntity,
-    onAllMealClick: () -> Unit
+    onAllMealClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -186,11 +186,23 @@ fun HomeMealCard(
                 )
             ) {
                 Spacer(Modifier.size(4.dp))
-                HomeMealItem(title = "아침", menus = meal.breakfast)
+                HomeMealItem(
+                    title = "아침",
+                    menus = meal.breakfast,
+                    calorie = meal.caloriesOfBreakfast
+                )
                 Spacer(Modifier.size(8.dp))
-                HomeMealItem(title = "점심", menus = meal.lunch)
+                HomeMealItem(
+                    title = "점심",
+                    menus = meal.lunch,
+                    calorie = meal.caloriesOfLunch
+                )
                 Spacer(Modifier.size(8.dp))
-                HomeMealItem(title = "저녁", menus = meal.dinner)
+                HomeMealItem(
+                    title = "저녁",
+                    menus = meal.dinner,
+                    calorie = meal.caloriesOfDinner
+                )
                 Spacer(Modifier.size(4.dp))
             }
         }
@@ -198,7 +210,7 @@ fun HomeMealCard(
 }
 
 @Composable
-fun HomeMealItem(title: String, menus: List<String>) {
+fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
     Column(
         modifier = Modifier
             .size(148.dp, 198.dp)
@@ -211,26 +223,6 @@ fun HomeMealItem(title: String, menus: List<String>) {
         menus.forEach {
             Body2(text = it, color = gray800)
         }
+        Body2(text = calorie, color = gray800)
     }
-}
-
-@Preview
-@Composable
-fun HomeContentPreview() {
-    HomeContent(
-        user = HomeUserEntity("", "김재원"),
-        dormitoryPoint = DormitoryPointEntity(5, 2),
-        meal = MealEntity(
-            listOf("밥", "김치", "김", "생선"),
-            listOf("밥", "김치", "김", "생선"),
-            listOf("밥", "김치", "김", "생선")
-        ),
-        onAllMealClick = {}
-    )
-}
-
-@Preview
-@Composable
-fun HomeMealItemPreview() {
-    HomeMealItem(title = "아침", menus = listOf("밥", "김치", "김", "생선"))
 }
