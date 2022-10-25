@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,12 +25,19 @@ import com.semicolon.design.button.ColoredLargeButton
 import com.semicolon.design.color.primary.dark.dark200
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
+import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 
 @Composable
 fun OnboardScreen(navController: NavController) {
     OnBoard(
-        images = listOf(),
+        images = listOf(
+            painterResource(R.drawable.img_onboard_1),
+            painterResource(R.drawable.img_onboard_2),
+            painterResource(R.drawable.img_onboard_3),
+            painterResource(R.drawable.img_onboard_4),
+            painterResource(R.drawable.img_onboard_5),
+        ),
         onSignUpClick = { navController.navigate(AppNavigationItem.SignUp.route) },
         onSignInClick = { navController.navigate(AppNavigationItem.SignIn.route) }
     )
@@ -41,7 +49,7 @@ fun OnboardScreen(navController: NavController) {
 private fun OnBoard(
     images: List<Painter>,
     onSignUpClick: () -> Unit = {},
-    onSignInClick: () -> Unit = {}
+    onSignInClick: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier.background(white),
