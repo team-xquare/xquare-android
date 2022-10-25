@@ -51,8 +51,7 @@ fun SplashScreen(navController: NavController) {
                             View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
                     }
                 }
-                window.navigationBarColor =
-                    ContextCompat.getColor(context, R.color.white)
+                Unit
             }
             when (it) {
                 SplashViewModel.Event.AutoLoginSuccess ->

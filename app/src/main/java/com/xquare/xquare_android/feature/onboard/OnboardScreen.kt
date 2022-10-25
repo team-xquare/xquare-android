@@ -27,6 +27,7 @@ import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
+import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun OnboardScreen(navController: NavController) {
@@ -51,50 +52,55 @@ private fun OnBoard(
     onSignUpClick: () -> Unit = {},
     onSignInClick: () -> Unit = {},
 ) {
-    Box(
-        modifier = Modifier.background(white),
-        contentAlignment = Alignment.BottomCenter
+    Column(
+        modifier = Modifier
+            .background(white)
+            .padding(bottom = DevicePaddings.navigationBarHeightDp.dp),
     ) {
-        val pagerState = rememberPagerState()
-        HorizontalPager(
-            modifier = Modifier
-                .padding(bottom = 208.dp)
-                .fillMaxSize(),
-            count = images.count(),
-            state = pagerState
+        Box(
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = images[this.currentPage],
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            val interactionSource = remember { MutableInteractionSource() }
-            HorizontalPagerIndicator(
-                pagerState = pagerState,
-                activeColor = purple400,
-                inactiveColor = dark200
-            )
-            Spacer(Modifier.size(40.dp))
-            ColoredLargeButton(text = "바로 시작하기") { onSignUpClick() }
-            Spacer(Modifier.size(20.dp))
-            Row(
+            val pagerState = rememberPagerState()
+            HorizontalPager(
                 modifier = Modifier
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null
-                    ) {
-                        onSignInClick()
-                    },
+                    .padding(bottom = 208.dp)
+                    .fillMaxSize(),
+                count = images.count(),
+                state = pagerState
             ) {
-                Body2(text = "이미 계정이 있으신가요? ")
-                Body2(text = "로그인하기", fontWeight = FontWeight.Medium)
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = images[this.currentPage],
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
             }
-            Spacer(Modifier.size(40.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val interactionSource = remember { MutableInteractionSource() }
+                HorizontalPagerIndicator(
+                    pagerState = pagerState,
+                    activeColor = purple400,
+                    inactiveColor = dark200
+                )
+                Spacer(Modifier.size(40.dp))
+                ColoredLargeButton(text = "바로 시작하기") { onSignUpClick() }
+                Spacer(Modifier.size(20.dp))
+                Row(
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = interactionSource,
+                            indication = null
+                        ) {
+                            onSignInClick()
+                        },
+                ) {
+                    Body2(text = "이미 계정이 있으신가요? ")
+                    Body2(text = "로그인하기", fontWeight = FontWeight.Medium)
+                }
+                Spacer(Modifier.size(40.dp))
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.signup
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
@@ -17,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.button.ColoredLargeButton
 import com.semicolon.design.color.primary.gray.gray400
+import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.auth.SignUpEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AnnotatedBody2
@@ -24,6 +26,7 @@ import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.HighlightedText
 import com.xquare.xquare_android.component.TextField
 import com.xquare.xquare_android.navigation.AppNavigationItem
+import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 
 @Composable
@@ -100,6 +103,12 @@ private fun SignUp(
         append("에 동의하는 것으로 간주합니다.")
     }
     Scaffold(
+        modifier = Modifier
+            .background(white)
+            .padding(
+                top = DevicePaddings.statusBarHeightDp.dp,
+                bottom = DevicePaddings.navigationBarHeightDp.dp
+            ),
         topBar = {
             AppBar(
                 painter = painterResource(R.drawable.ic_placeholder),
