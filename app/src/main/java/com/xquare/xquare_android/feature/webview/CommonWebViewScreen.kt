@@ -36,10 +36,10 @@ fun CommonWebViewScreen(
     val context = LocalContext.current
     val bridge = WebToAppBridge(
         onNavigate = {
-            val targetUrl = url + it
-            updateUi {
+            val targetUrl = url + it.url
+            updateUi { _ ->
                 navController.navigate(
-                    AppNavigationItem.CommonWebView.createRoute(targetUrl, title))
+                    AppNavigationItem.CommonWebView.createRoute(targetUrl, it.title))
             }
         },
         onImageDetail = { /* TODO("이미지 상세 페이지로 이동") */ },
