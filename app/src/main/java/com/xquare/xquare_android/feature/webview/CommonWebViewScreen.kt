@@ -3,10 +3,12 @@ package com.xquare.xquare_android.feature.webview
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
@@ -15,6 +17,7 @@ import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.ConfirmModal
 import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
+import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.ModalInfo
@@ -101,7 +104,12 @@ private fun CommonWebView(
     onWebviewCreate: (WebView) -> Unit,
 ) {
     Column(
-        Modifier.background(color = white)
+        modifier = Modifier
+            .background(color = white)
+            .padding(
+                top = DevicePaddings.statusBarHeightDp.dp,
+                bottom = DevicePaddings.navigationBarHeightDp.dp
+            )
     ) {
         AppBar(
             painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,

@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.feature.allmeal
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,9 +13,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
+import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import org.threeten.bp.LocalDate
 
@@ -52,7 +55,14 @@ private fun AllMeal(
     onBackPress: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
-    Column {
+    Column(
+        modifier = Modifier
+            .background(white)
+            .padding(
+                top = DevicePaddings.statusBarHeightDp.dp,
+                bottom = DevicePaddings.navigationBarHeightDp.dp
+            ),
+    ) {
         AppBar(
             painter = painterResource(R.drawable.ic_placeholder),
             text = "전체 급식",

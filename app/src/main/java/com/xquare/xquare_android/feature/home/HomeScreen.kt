@@ -30,6 +30,7 @@ import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.point.DormitoryPointEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.xquare_android.navigation.AppNavigationItem
+import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -62,6 +63,7 @@ fun HomeContent(
     Column(
         modifier = Modifier
             .background(gray50)
+            .padding(top = DevicePaddings.statusBarHeightDp.dp)
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {

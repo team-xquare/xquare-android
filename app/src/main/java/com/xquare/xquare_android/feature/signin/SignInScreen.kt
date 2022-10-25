@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.signin
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -19,11 +20,13 @@ import androidx.navigation.NavController
 import com.semicolon.design.Body2
 import com.semicolon.design.button.ColoredLargeButton
 import com.semicolon.design.color.primary.gray.gray700
+import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.TextField
 import com.xquare.xquare_android.navigation.AppNavigationItem
+import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 
 @Composable
@@ -64,12 +67,18 @@ fun SignInScreen(navController: NavController) {
 private fun SignIn(
     onBackClick: () -> Unit,
     onSignInClick: (SignInEntity) -> Unit,
-    onFindAccountClick: () -> Unit
+    onFindAccountClick: () -> Unit,
 ) {
     var accountId by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val isSignInEnabled = accountId.isNotEmpty() && password.isNotEmpty()
     Scaffold(
+        modifier = Modifier
+            .background(white)
+            .padding(
+                top = DevicePaddings.statusBarHeightDp.dp,
+                bottom = DevicePaddings.navigationBarHeightDp.dp
+            ),
         topBar = {
             AppBar(
                 painter = painterResource(R.drawable.ic_placeholder),
