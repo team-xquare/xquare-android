@@ -4,7 +4,7 @@ import android.webkit.JavascriptInterface
 import com.google.gson.Gson
 
 class WebToAppBridge(
-    val onNavigate: (String) -> Unit = {},
+    val onNavigate: (NavigateInfo) -> Unit = {},
     val onImageDetail: (Array<String>) -> Unit = {},
     val onConfirmModal: (ModalInfo) -> Unit = {},
     val onBack: () -> Unit = {},
@@ -14,7 +14,7 @@ class WebToAppBridge(
 
     @JavascriptInterface
     fun navigate(data: String) =
-        onNavigate(data)
+        onNavigate(gson.fromJson(data, NavigateInfo::class.java))
 
     @JavascriptInterface
     fun imageDetail(data: String) =
