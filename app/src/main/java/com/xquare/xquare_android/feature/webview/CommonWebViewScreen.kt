@@ -45,7 +45,9 @@ fun CommonWebViewScreen(
                     AppNavigationItem.CommonWebView.createRoute(targetUrl, it.title))
             }
         },
-        onImageDetail = { /* TODO("이미지 상세 페이지로 이동") */ },
+        onImageDetail = { images ->
+            updateUi { navController.navigate(AppNavigationItem.ImageDetail.createRoute(images)) }
+        },
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
