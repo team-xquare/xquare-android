@@ -27,6 +27,7 @@ import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
+import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
@@ -102,6 +103,13 @@ fun BaseApp() {
                 haveBackButton = true
             )
         }
+        composable(AppNavigationItem.ImageDetail.route) {
+            val joinedEncodedImage = it.arguments!!["joinedEncodedImage"].toString()
+            val images = joinedEncodedImage.split(",")
+                .map { encoded -> URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString()) }
+                .toTypedArray()
+            ImageDetailScreen(navController, images)
+        }
     }
 }
 
@@ -149,7 +157,7 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Application.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/apply",
+                    url = "https://service.xquare.app/xbridge-test",
                     title = "신청",
                     haveBackButton = false
                 )

@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Subtitle4
+import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.gray50
 import com.xquare.xquare_android.R
 
@@ -22,12 +24,14 @@ import com.xquare.xquare_android.R
 fun AppBar(
     painter: Painter? = null,
     text: String,
-    onIconClick: () -> Unit = {}
+    backgroundColor: Color = Color.Unspecified,
+    onIconClick: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier
             .height(56.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(backgroundColor),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(Modifier.size(16.dp))

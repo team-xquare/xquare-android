@@ -27,4 +27,13 @@ sealed class AppNavigationItem(val route: String) {
             return "commonWebView/$encodedUrl/$title";
         }
     }
+
+    object ImageDetail : AppNavigationItem("imageDetail/{joinedEncodedImage}") {
+        fun createRoute(images: Array<String>): String {
+            val joinedEncodedImage = images.joinToString(",") {
+                URLEncoder.encode(it, StandardCharsets.UTF_8.toString())
+            }
+            return "imageDetail/$joinedEncodedImage"
+        }
+    }
 }
