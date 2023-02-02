@@ -1,6 +1,8 @@
 package com.xquare.domain.entity.user
 
 data class HomeUserEntity(
-    val profileImage: String,
-    val name: String
+    val profileFileImage: String,
+    val name: String,
+    val goodPoint: Int,
+    val badPoint: Int,
 )

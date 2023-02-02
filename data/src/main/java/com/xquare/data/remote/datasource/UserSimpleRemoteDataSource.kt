@@ -1,9 +1,10 @@
-package com.xquare.domain.repository.user
+package com.xquare.data.remote.datasource
 
 import com.xquare.domain.entity.user.HomeUserEntity
 import kotlinx.coroutines.flow.Flow
 
-interface UserRepository {
+
+interface UserSimpleRemoteDataSource {
 
     suspend fun fetchUserSimpleData(): HomeUserEntity
 }
