@@ -72,7 +72,7 @@ private fun AllMeal(
             CompositionLocalProvider(
                 LocalOverScrollConfiguration provides null
             ) {
-                LaunchedEffect(Unit) { lazyListState.scrollToItem(calculateScrollPosition(allMeal)) }
+              //  LaunchedEffect(Unit) { lazyListState.scrollToItem(calculateScrollPosition(allMeal)) }
                 LazyColumn(
                     state = lazyListState,
                     contentPadding = PaddingValues(horizontal = 16.dp)

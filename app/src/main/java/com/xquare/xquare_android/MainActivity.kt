@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.component.BottomNavigation
+import com.xquare.xquare_android.feature.alarm.AlarmScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
@@ -91,6 +92,9 @@ fun BaseApp() {
         }
         composable(AppNavigationItem.AllMeal.route) {
             AllMealScreen(navController)
+        }
+        composable(AppNavigationItem.Alarm.route) {
+            AlarmScreen(navController)
         }
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()

@@ -49,7 +49,8 @@ fun HomeScreen(navController: NavController) {
         user = userName,
         dormitoryPoint = dormitoryPoint,
         meal = meal,
-        onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) }
+        onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
+        onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) }
     )
 }
 
@@ -59,6 +60,7 @@ fun HomeContent(
     dormitoryPoint: DormitoryPointEntity,
     meal: MealEntity,
     onAllMealClick: () -> Unit,
+    onAlarmClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -67,7 +69,7 @@ fun HomeContent(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        HomeAppBar()
+        HomeAppBar(onAlarmClick = onAlarmClick)
         HomeUserCard(user = user, dormitoryPoint = dormitoryPoint)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
@@ -75,7 +77,7 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeAppBar() {
+fun HomeAppBar(onAlarmClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -86,7 +88,10 @@ fun HomeAppBar() {
         Icon(
             painter = ColorPainter(gray200),
             contentDescription = null,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier
+                .size(24.dp)
+                .clickable { onAlarmClick() }
+            ,
             tint = Color.Unspecified
         )
         Spacer(Modifier.size(16.dp))
