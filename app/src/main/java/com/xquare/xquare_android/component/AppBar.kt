@@ -49,10 +49,7 @@ fun AppBar(
             )
             Spacer(Modifier.size(12.dp))
         }
-        Subtitle4(
-            text = text,
-            modifier = textModifier,
-        )
+        Subtitle4(text = text)
     }
 }
 
