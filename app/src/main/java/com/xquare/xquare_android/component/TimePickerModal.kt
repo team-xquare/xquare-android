@@ -175,23 +175,6 @@ fun <T>TimePicker(
             val currentX = i * spaceForEachItem - currentDragX -
                     ((listCount-1+correctionValue - showAmount)/2*spaceForEachItem)
 
-            val lineStart = Offset(
-                x = currentX,
-                y = 0f
-            )
-
-            val lineEnd = Offset(
-                x = currentX,
-                y = 45f
-            )
-
-            drawLine(
-                color = blue400,
-                strokeWidth = 1.5.dp.toPx(),
-                start = lineStart,
-                end = lineEnd
-            )
-
             drawContext.canvas.nativeCanvas.apply {
                 val y = 45f + 5.dp.toPx() + 16.sp.toPx()
 
