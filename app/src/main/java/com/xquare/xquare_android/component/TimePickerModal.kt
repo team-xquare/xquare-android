@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -75,10 +76,6 @@ fun TimePickerModal(
     }
 }
 
-data class PickerStyle(
-    val lineColor: Color = purple400,
-)
-
 @Composable
 fun <T>TimePicker(
     list: List<T>,
@@ -95,15 +92,15 @@ fun <T>TimePicker(
         }
     }
 
-    var dragStartedX by remember {
+    var dragStartedY by remember {
         mutableStateOf(0f)
     }
 
-    var currentDragX by remember {
+    var currentDragY by remember {
         mutableStateOf(0f)
     }
 
-    var oldX by remember {
+    var oldY by remember {
         mutableStateOf(0f)
     }
 
@@ -112,44 +109,44 @@ fun <T>TimePicker(
             .pointerInput(true) {
                 detectDragGestures(
                     onDragStart = {
-                        dragStartedX = it.x
+                        dragStartedY = it.y
                     },
                     onDragEnd = {
-                        val spacerPerItem = size.width / showAmount
-                        val rest = currentDragX % spacerPerItem
+                        val spacerPerItem = size.height / showAmount
+                        val rest = currentDragY % spacerPerItem
 
                         val roundUp = abs(rest / spacerPerItem).roundToInt() == 1
-                        val newX = if (roundUp) {
+                        val newY = if (roundUp) {
                             if (rest < 0) {
-                                currentDragX + abs(rest) - spacerPerItem
+                                currentDragY + abs(rest) - spacerPerItem
                             } else {
-                                currentDragX - rest + spacerPerItem
+                                currentDragY - rest + spacerPerItem
                             }
                         } else {
                             if (rest < 0) {
-                                currentDragX + abs(rest)
+                                currentDragY + abs(rest)
                             } else {
-                                currentDragX - rest
+                                currentDragY - rest
                             }
                         }
-                        currentDragX = newX.coerceIn(
+                        currentDragY = newY.coerceIn(
                             minimumValue = -(listCount/2f) * spacerPerItem,
                             maximumValue = listCount/2f*spacerPerItem
                         )
-                        val index = ((listCount/2)+(currentDragX/spacerPerItem)).toInt()
+                        val index = ((listCount/2)+(currentDragY/spacerPerItem)).toInt()
                         onValueChanged(list[index])
+                        oldY = currentDragY
                     },
                     onDrag = { change, dragAmount ->
-                        val changeX = change.position.x
-                        val newX = oldX + (dragStartedX - changeX)
-                        val spacerPerItem = size.width / showAmount
-                        currentDragX = newX.coerceIn(
+                        val changeY = change.position.y
+                        val newY = oldY + (dragStartedY - changeY)
+                        val spacerPerItem = size.height / showAmount
+                        currentDragY = newY.coerceIn(
                             minimumValue = -(listCount / 2f) * spacerPerItem,
                             maximumValue = (listCount / 2f) * spacerPerItem
                         )
-                        val index = (listCount / 2) + (currentDragX / spacerPerItem).toInt()
+                        val index = (listCount / 2) + (currentDragY / spacerPerItem).toInt()
                         onValueChanged(list[index])
-                        oldX = currentDragX
                     }
                 )
             }
@@ -170,18 +167,18 @@ fun <T>TimePicker(
                 }
             )
         }
-        val spaceForEachItem = size.width/showAmount
+        val spaceForEachItem = size.height/showAmount
         for (i in 0 until listCount) {
-            val currentX = i * spaceForEachItem - currentDragX -
+            val currentY = i * spaceForEachItem - currentDragY -
                     ((listCount-1+correctionValue - showAmount)/2*spaceForEachItem)
 
             drawContext.canvas.nativeCanvas.apply {
-                val y = 45f + 5.dp.toPx() + 16.sp.toPx()
+                val x = 45f + 5.dp.toPx() + 16.sp.toPx()
 
                 drawText(
                     list[i].toString(),
-                    currentX,
-                    y,
+                    x,
+                    currentY,
                     Paint().apply {
                         textSize = 16.sp.toPx()
                         textAlign = Paint.Align.CENTER
@@ -202,14 +199,14 @@ fun ShowTimePickerModal() {
     Column(
         modifier = Modifier
             .background(white)
-            .fillMaxWidth()
+            .fillMaxHeight()
     ) {
         TimePicker(
             list = (1..31).toList(),
             onValueChanged = {
                 num = it.toString()
             },
-            showAmount = 5
+            showAmount = 2
         )
     }
 
