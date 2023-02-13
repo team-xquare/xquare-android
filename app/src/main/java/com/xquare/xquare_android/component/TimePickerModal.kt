@@ -136,7 +136,7 @@ fun <T>TimePicker(
                             minimumValue = -(listCount/2f) * spacerPerItem,
                             maximumValue = listCount/2f*spacerPerItem
                         )
-                        val index = ((listCount/2f)+(currentDragX/spacerPerItem)).toInt()
+                        val index = ((listCount/2)+(currentDragX/spacerPerItem)).toInt()
                         onValueChanged(list[index])
                     },
                     onDrag = { change, dragAmount ->
