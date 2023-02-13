@@ -132,6 +132,12 @@ fun <T>TimePicker(
                                 currentDragX - rest
                             }
                         }
+                        currentDragX = newX.coerceIn(
+                            minimumValue = -(listCount/2f) * spacerPerItem,
+                            maximumValue = listCount/2f*spacerPerItem
+                        )
+                        val index = ((listCount/2f)+(currentDragX/spacerPerItem)).toInt()
+                        onValueChanged(list[index])
                     },
                     onDrag = { change, dragAmount ->
                         val changeX = change.position.x
