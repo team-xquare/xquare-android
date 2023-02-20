@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DatePickerSpinnerStyle" parent="@android:style/Widget.DeviceDefault.DatePicker">
+        <item name="colorControlNormal">@color/purple_200</item>
+        <item name="android:textColorPrimary">@color/purple_700</item>
+        <item name="android:datePickerMode">spinner</item>
+    </style>
+</resources>
