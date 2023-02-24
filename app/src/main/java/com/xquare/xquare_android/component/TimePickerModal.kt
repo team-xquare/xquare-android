@@ -2,7 +2,6 @@ package com.xquare.xquare_android.component
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +31,7 @@ import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.semicolon.design.notoSansFamily
-
+import java.util.Calendar
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -73,7 +69,7 @@ fun TimePickerDialog(
             ) {
                 PickerItem(
                     value = hour,
-                    itemList = (0..24).settingTimerList(),
+                    itemList = (1..24).settingTimerList(),
                 ) {
                     hour = it
                 }
@@ -99,10 +95,106 @@ fun TimePickerDialog(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun DatePickerDialog(
+    defaultYear: String? = null,
+    defaultMonth: String? = null,
+    defaultDate: String? = null,
+    cancelText: String = "취소하기",
+    confirmText: String = "선택하기",
+    onCancel: () -> Unit,
+    onConfirm: (String, String, String) -> Unit,
+) {
+    val calendar = Calendar.getInstance()
+    val thisYear = calendar.get(Calendar.YEAR)
+    val thisMonth = (calendar.get(Calendar.MONTH) + 1)
+    val thisDay = calendar.get(Calendar.DATE)
+
+    var year by remember { mutableStateOf(defaultYear ?: thisYear.toString()) }
+    var month by remember { mutableStateOf(defaultMonth ?: thisMonth.subString()) }
+    var day by remember { mutableStateOf(defaultDate ?: thisDay.subString()) }
+
+    Dialog(
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        ),
+        onDismissRequest = onCancel
+    ) {
+        Column(
+            Modifier
+                .padding(horizontal = 32.dp)
+                .background(color = white, shape = RoundedCornerShape(12.dp))
+                .padding(20.dp),
+        ) {
+            Spacer(Modifier.size(12.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+            ) {
+                PickerItem(
+                    value = year,
+                    itemList = (thisYear..thisYear + 5).settingTimerList(),
+                ) {
+                    year = it
+                    day = dayOver(year,month,day)
+                }
+                Spacer(modifier = Modifier.size(24.dp))
+                PickerItem(
+                    value = month,
+                    itemList = (1..12).settingTimerList(),
+                ) {
+                    month = it
+                    day = dayOver(year, month, day)
+                }
+                Spacer(modifier = Modifier.size(24.dp))
+                PickerItem(
+                    value = day,
+                    itemList = (0..lastDay(year, month)).settingTimerList(),
+                ) {
+                    day = it
+                }
+            }
+            Spacer(Modifier.size(16.dp))
+            Row {
+                DefaultModalButton(
+                    Modifier.weight(1f), text = cancelText) { onCancel() }
+                Spacer(Modifier.size(16.dp))
+                PrimaryModalButton(
+                    Modifier.weight(1f), text = confirmText) {
+                    onConfirm(year, month, day)
+                }
+            }
+        }
+    }
+}
+
 private fun IntRange.settingTimerList():
         List<String> = (this).map { it.subString() }
 
 private fun Int.subString() = "%02d".format(this)
+
+private fun lastDay(year: String, month: String): Int {
+    val cal = Calendar.getInstance()
+    cal.set(year.toInt(),month.toInt() - 1,1)
+    return cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+}
+
+private fun dayOver(
+    year: String,
+    month: String,
+    day: String
+): String {
+    val cal = Calendar.getInstance()
+    cal.set(year.toInt(), month.toInt() - 1, 1)
+    val lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+
+    return if (day.toInt() > lastDay) lastDay.toString()
+    else day
+}
 
 @Composable
 fun PickerItem(
@@ -127,15 +219,30 @@ fun PickerItem(
             textAlign = null,
         )
     )
+
 }
 
 @Composable
 @Preview(showBackground = true)
 fun ShowTimePickerModal() {
-    TimePickerDialog(
-        onCancel = {  },
-        onConfirm = { hour, min ->
-            Log.d("TAG", "ShowTimePickerModal: $hour:$min")
+//    TimePickerDialog(
+//        onCancel = {  },
+//        onConfirm = { hour, min ->
+//            Log.d("TAG", "ShowTimePickerModal: $hour:$min")
+//        }
+//    )
+    DatePickerDialog(
+        onCancel = {},
+        onConfirm = { year, month, day ->
+            Log.d("TAG", "ShowTimePickerModal: $year$month$day")
         }
     )
+//    var hour by remember { mutableStateOf(3) }
+//    NumberPicker(
+//        value = hour,
+//        onValueChange = { hour = it },
+//        range = (1..24),
+//        modifier = Modifier
+//            .fillMaxSize()
+//    )
 }
