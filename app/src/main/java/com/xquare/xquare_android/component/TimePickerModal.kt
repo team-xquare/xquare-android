@@ -1,11 +1,8 @@
 package com.xquare.xquare_android.component
 
-import android.os.Build
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.widget.NumberPicker
-import android.widget.TimePicker
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,24 +21,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.chargemap.compose.numberpicker.ListItemPicker
-import com.semicolon.design.Body1
-import com.semicolon.design.color.primary.gray.gray900
-import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
-import com.semicolon.design.color.system.blue.blue
-import com.semicolon.design.color.system.blue.blue400
-import com.semicolon.design.notoSansFamily
 import com.xquare.xquare_android.R
 import java.util.Calendar
 
