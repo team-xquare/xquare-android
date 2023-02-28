@@ -1,6 +1,11 @@
 package com.xquare.xquare_android.component
 
+import android.os.Build
 import android.util.Log
+import android.view.ContextThemeWrapper
+import android.widget.NumberPicker
+import android.widget.TimePicker
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,33 +24,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.chargemap.compose.numberpicker.ListItemPicker
+import com.semicolon.design.Body1
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
+import com.semicolon.design.color.system.blue.blue
+import com.semicolon.design.color.system.blue.blue400
 import com.semicolon.design.notoSansFamily
+import com.xquare.xquare_android.R
 import java.util.Calendar
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TimePickerDialog(
-    defaultHour: String = "00",
-    defaultMin: String = "00",
+    defaultTime: String,
     cancelText: String = "취소하기",
     confirmText: String = "선택하기",
     onCancel: () -> Unit,
-    onConfirm: (String, String) -> Unit,
+    onConfirm: (String) -> Unit,
 ) {
-    var hour by remember { mutableStateOf(defaultHour) }
-    var min by remember { mutableStateOf(defaultMin) }
+    var hour by remember { mutableStateOf(defaultTime.substring(0..1)) }
+    var min by remember { mutableStateOf(defaultTime.substring(3..4)) }
 
     Dialog(
         properties = DialogProperties(
@@ -64,19 +74,18 @@ fun TimePickerDialog(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
                 PickerItem(
-                    value = hour,
-                    itemList = (1..24).settingTimerList(),
+                    defaultValue = hour,
+                    itemList = (0..23).settingTimerList(),
                 ) {
                     hour = it
                 }
                 Spacer(modifier = Modifier.size(24.dp))
                 PickerItem(
-                    value = min,
-                    itemList = (0..60).settingTimerList(),
+                    defaultValue = min,
+                    itemList = (0..59).settingTimerList(),
                 ) {
                     min = it
                 }
@@ -88,7 +97,7 @@ fun TimePickerDialog(
                 Spacer(Modifier.size(16.dp))
                 PrimaryModalButton(
                     Modifier.weight(1f), text = confirmText) {
-                    onConfirm(hour, min)
+                    onConfirm("$hour:$min")
                 }
             }
         }
@@ -136,24 +145,24 @@ fun DatePickerDialog(
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
                 PickerItem(
-                    value = year,
-                    itemList = (thisYear..thisYear + 5).settingTimerList(),
+                    defaultValue = year,
+                    itemList = arrayOf(),
                 ) {
                     year = it
                     day = dayOver(year,month,day)
                 }
                 Spacer(modifier = Modifier.size(24.dp))
                 PickerItem(
-                    value = month,
-                    itemList = (1..12).settingTimerList(),
+                    defaultValue = month,
+                    itemList = arrayOf(),
                 ) {
                     month = it
                     day = dayOver(year, month, day)
                 }
                 Spacer(modifier = Modifier.size(24.dp))
                 PickerItem(
-                    value = day,
-                    itemList = (0..lastDay(year, month)).settingTimerList(),
+                    defaultValue = day,
+                    itemList = arrayOf(),
                 ) {
                     day = it
                 }
@@ -173,7 +182,7 @@ fun DatePickerDialog(
 }
 
 private fun IntRange.settingTimerList():
-        List<String> = (this).map { it.subString() }
+        Array<String> = (this.map { it.subString() }).toTypedArray()
 
 private fun Int.subString() = "%02d".format(this)
 
@@ -198,51 +207,34 @@ private fun dayOver(
 
 @Composable
 fun PickerItem(
-    value: String,
-    itemList: List<String>,
+    defaultValue: String,
+    itemList: Array<String>,
     onValueChange: (String) -> Unit,
 ) {
-    ListItemPicker(
-        label = { it },
-        list = itemList,
-        value = value,
-        onValueChange = onValueChange,
-        dividersColor = purple400,
-        textStyle = TextStyle(
-            color = gray900,
-            lineHeight = 21.sp,
-            letterSpacing = 0.sp,
-            fontSize = 14.sp,
-            fontFamily = notoSansFamily,
-            fontWeight = FontWeight.Normal,
-            textDecoration = null,
-            textAlign = null,
-        )
+    AndroidView(
+        factory = { context ->
+            val style = R.style.PickerItemStyle
+            NumberPicker(ContextThemeWrapper(context, style)).apply {
+                minValue = 0
+                maxValue = itemList.size - 1
+                value = defaultValue.toInt()
+                displayedValues = itemList
+                this.setOnValueChangedListener { _,_,value ->
+                    onValueChange(value.subString())
+                }
+            }
+        }
     )
-
 }
 
 @Composable
 @Preview(showBackground = true)
 fun ShowTimePickerModal() {
-//    TimePickerDialog(
-//        onCancel = {  },
-//        onConfirm = { hour, min ->
-//            Log.d("TAG", "ShowTimePickerModal: $hour:$min")
-//        }
-//    )
-    DatePickerDialog(
-        onCancel = {},
-        onConfirm = { year, month, day ->
-            Log.d("TAG", "ShowTimePickerModal: $year$month$day")
-        }
-    )
-//    var hour by remember { mutableStateOf(3) }
-//    NumberPicker(
-//        value = hour,
-//        onValueChange = { hour = it },
-//        range = (1..24),
-//        modifier = Modifier
-//            .fillMaxSize()
-//    )
+    TimePickerDialog(
+        defaultTime = "12:38",
+        onCancel = {  },
+    ) {
+        Log.d("TAG", "Time: $it")
+    }
+
 }
