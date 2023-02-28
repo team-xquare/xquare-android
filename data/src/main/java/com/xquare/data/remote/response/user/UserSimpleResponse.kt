@@ -5,7 +5,7 @@ import com.xquare.domain.entity.user.HomeUserEntity
 
 data class UserSimpleResponse(
     @SerializedName("name") val name: String,
-    @SerializedName("profile_file_name") val profileFileName: String,
+    @SerializedName("profile_file_name") val profileFileName: String?,
     @SerializedName("good_point") val goodPoint: Int,
     @SerializedName("bad_point") val badPoint: Int,
 )

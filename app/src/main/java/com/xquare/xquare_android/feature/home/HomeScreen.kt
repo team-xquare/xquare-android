@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.home
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,8 +40,8 @@ fun HomeScreen(navController: NavController) {
     val meal = viewModel.todayMeal.collectAsState().value
     LaunchedEffect(Unit) {
         viewModel.run {
-            fetchUserSimpleData()
             fetchTodayMeal()
+            fetchUserSimpleData()
         }
     }
     HomeContent(

@@ -43,7 +43,7 @@ class AuthorizationInterceptor @Inject constructor(
 
             if (response.isSuccessful) {
                 val token = Gson().fromJson(
-                    response.body!!.toString(),
+                    response.body!!.string(),
                     TokenResponse::class.java
                 )
                 runBlocking {
