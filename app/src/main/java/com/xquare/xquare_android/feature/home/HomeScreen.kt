@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -114,6 +115,7 @@ fun HomeUserCard(userData: HomeUserEntity) {
                 error = ColorPainter(gray200)
             ),
             contentDescription = "profileImage",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(44.dp)
                 .clip(RoundedCornerShape(22.dp))
