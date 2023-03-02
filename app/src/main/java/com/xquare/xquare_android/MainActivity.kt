@@ -95,11 +95,13 @@ fun BaseApp() {
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
             val title = it.arguments!!["title"].toString()
+            val rightButtonText = it.arguments!!["rightButtonText"].toString()
             val url = URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8.toString())
             CommonWebViewScreen(
                 navController = navController,
                 url = url,
                 title = title,
+                rightButtonText = rightButtonText,
                 haveBackButton = true
             )
         }
@@ -149,18 +151,41 @@ fun Main(mainNavController: NavController) {
                 HomeScreen(mainNavController)
             }
             composable(BottomNavigationItem.Schedule.route) {
-                // TODO()
-            }
-            composable(BottomNavigationItem.Feed.route) {
-                // TODO()
-            }
-            composable(BottomNavigationItem.Application.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
                     url = "https://service.xquare.app/xbridge-test",
                     title = "신청",
                     haveBackButton = false
                 )
+
+                }
+            composable(BottomNavigationItem.Feed.route) {
+                CommonWebViewScreen(
+                    navController = mainNavController,
+                    url = "https://service.xquare.app/feed",
+                    title = "피드",
+                    haveBackButton = false
+                )
+            }
+            composable(BottomNavigationItem.Application.route) {
+//                CommonWebViewScreen(
+//                    navController = mainNavController,
+//                    url = "https://service.xquare.app/xbridge-test",
+//                    title = "신청",
+//                    haveBackButton = false
+//                )
+                CommonWebViewScreen(
+                    navController = mainNavController,
+                    url = "https://service.xquare.app/apply",
+                    title = "신청",
+                    haveBackButton = false
+                )
+//                CommonWebViewScreen(
+//                    navController = mainNavController,
+//                    url = "http://192.168.174.214:3001",
+//                    title = "신청",
+//                    haveBackButton = false
+//                )
             }
             composable(BottomNavigationItem.All.route) {
                 // TODO()
