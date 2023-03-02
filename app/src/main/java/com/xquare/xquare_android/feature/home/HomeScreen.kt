@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.home
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,19 +37,16 @@ import com.xquare.xquare_android.util.DevicePaddings
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel: HomeViewModel = hiltViewModel()
-    val userName = viewModel.userName.collectAsState().value
-    val dormitoryPoint = viewModel.dormitoryPoint.collectAsState().value
+    val userData = viewModel.userSimpleData.collectAsState().value
     val meal = viewModel.todayMeal.collectAsState().value
     LaunchedEffect(Unit) {
         viewModel.run {
-//            fetchUserName()
-//            fetchDormitoryPoint()
             fetchTodayMeal()
+            fetchUserSimpleData()
         }
     }
     HomeContent(
-        user = userName,
-        dormitoryPoint = dormitoryPoint,
+        userData = userData,
         meal = meal,
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) }
     )
@@ -55,8 +54,7 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun HomeContent(
-    user: HomeUserEntity,
-    dormitoryPoint: DormitoryPointEntity,
+    userData: HomeUserEntity,
     meal: MealEntity,
     onAllMealClick: () -> Unit,
 ) {
@@ -68,7 +66,7 @@ fun HomeContent(
             .padding(horizontal = 16.dp)
     ) {
         HomeAppBar()
-        HomeUserCard(user = user, dormitoryPoint = dormitoryPoint)
+        HomeUserCard(userData = userData)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
     }
@@ -100,7 +98,7 @@ fun HomeAppBar() {
 }
 
 @Composable
-fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
+fun HomeUserCard(userData: HomeUserEntity) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,11 +110,12 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                model = user.profileImage,
+                model = userData.profileFileImage,
                 placeholder = ColorPainter(gray200),
                 error = ColorPainter(gray200)
             ),
             contentDescription = "profileImage",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(44.dp)
                 .clip(RoundedCornerShape(22.dp))
@@ -124,14 +123,14 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
         Spacer(Modifier.size(12.dp))
         Column {
             Text(
-                text = user.name,
+                text = userData.name,
                 fontSize = 18.sp,
                 fontFamily = notoSansFamily,
                 fontWeight = FontWeight.Medium,
                 color = gray900
             )
             Body2(
-                text = "상점 ${dormitoryPoint.goodPoint}점 벌점 ${dormitoryPoint.badPoint}",
+                text = "상점 ${userData.goodPoint}점 벌점 ${userData.badPoint}",
                 color = gray700
             )
         }
