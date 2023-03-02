@@ -1,4 +1,4 @@
-package com.xquare.xquare_android.webview
+package com.xquare.xquare_android.webview.data
 
 data class ModalInfo(
     val message: String,

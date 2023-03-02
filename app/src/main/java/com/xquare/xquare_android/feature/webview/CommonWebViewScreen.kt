@@ -20,10 +20,10 @@ import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
-import com.xquare.xquare_android.webview.ModalInfo
+import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.data.PhotoPickerInfo
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun CommonWebViewScreen(
@@ -35,6 +35,7 @@ fun CommonWebViewScreen(
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
+    var photoPickerState: PhotoPickerInfo? by remember { mutableStateOf(null) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
     val bridge = WebToAppBridge(
@@ -51,6 +52,7 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onPhotoPicker = { photoPickerState = it },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -83,6 +85,9 @@ fun CommonWebViewScreen(
                 modalState = null
             }
         )
+    }
+    photoPickerState?.let {
+        
     }
     CommonWebView(
         haveBackButton = haveBackButton,
