@@ -18,13 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
 import com.semicolon.design.Body3
 import com.semicolon.design.color.primary.gray.gray800
-import com.xquare.xquare_android.R
 
 @Composable
 fun Header(
@@ -56,7 +54,6 @@ fun Header(
             painter?.let {
                 Image(
                     modifier = Modifier
-                        .size(24.dp)
                         .clickable(
                             interactionSource = MutableInteractionSource(),
                             indication = null,
