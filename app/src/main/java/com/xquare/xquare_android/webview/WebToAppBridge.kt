@@ -2,7 +2,10 @@ package com.xquare.xquare_android.webview
 
 import android.webkit.JavascriptInterface
 import com.google.gson.Gson
+import com.xquare.xquare_android.webview.data.ModalInfo
+import com.xquare.xquare_android.webview.data.NavigateInfo
 import com.xquare.xquare_android.webview.data.RightButtonEnabled
+import com.xquare.xquare_android.webview.data.WebViewError
 
 class WebToAppBridge(
     val onNavigate: (NavigateInfo) -> Unit = {},

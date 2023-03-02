@@ -17,6 +17,7 @@ import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
+import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import org.threeten.bp.LocalDate
@@ -63,9 +64,9 @@ private fun AllMeal(
                 bottom = DevicePaddings.navigationBarHeightDp.dp
             ),
     ) {
-        AppBar(
-            painter = painterResource(R.drawable.ic_placeholder),
-            text = "전체 급식",
+        Header(
+            painter = painterResource(R.drawable.ic_back),
+            title = "전체 급식",
             onIconClick = onBackPress
         )
         allMeal?.let {

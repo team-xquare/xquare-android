@@ -21,12 +21,11 @@ import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
-import com.xquare.xquare_android.webview.ModalInfo
+import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.data.RightButtonEnabled
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 import com.xquare.xquare_android.webview.sendResultOfRightButton
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun CommonWebViewScreen(
