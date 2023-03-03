@@ -48,7 +48,8 @@ fun HomeScreen(navController: NavController) {
     HomeContent(
         userData = userData,
         meal = meal,
-        onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) }
+        onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
+        onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
     )
 }
 
@@ -56,6 +57,7 @@ fun HomeScreen(navController: NavController) {
 fun HomeContent(
     userData: HomeUserEntity,
     meal: MealEntity,
+    onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
 ) {
     Column(
@@ -66,7 +68,7 @@ fun HomeContent(
             .padding(horizontal = 16.dp)
     ) {
         HomeAppBar()
-        HomeUserCard(userData = userData)
+        HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
     }
@@ -98,7 +100,7 @@ fun HomeAppBar() {
 }
 
 @Composable
-fun HomeUserCard(userData: HomeUserEntity) {
+fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,6 +108,11 @@ fun HomeUserCard(userData: HomeUserEntity) {
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .padding(16.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+                enabled = true
+            ) { onClick() }
 
     ) {
         Image(
@@ -138,6 +145,7 @@ fun HomeUserCard(userData: HomeUserEntity) {
 }
 
 
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeMealCard(

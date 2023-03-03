@@ -37,6 +37,15 @@ class AuthPreferenceImpl @Inject constructor(
     override suspend fun clearExpirationAt() =
         clearPreference(EXPIRED_AT)
 
+    override suspend fun saveUserId(userId: String) =
+        saveStringPreference(USER_ID, userId)
+
+    override suspend fun fetchUserId(): String =
+        fetchStringPreference(USER_ID)
+
+    override suspend fun clearUserId() =
+        clearPreference(USER_ID)
+
     private fun fetchStringPreference(key: String): String =
         sharedPreferences.getString(key, null) ?: ""
 
@@ -62,5 +71,6 @@ class AuthPreferenceImpl @Inject constructor(
         const val ACCESS_TOKEN = "ACCESS_TOKEN"
         const val REFRESH_TOKEN = "REFRESH_TOKEN"
         const val EXPIRED_AT = "EXPIRED_AT"
+        const val USER_ID = "USER_ID"
     }
 }
