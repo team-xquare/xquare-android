@@ -41,7 +41,7 @@ fun CommonWebViewScreen(
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     var galleryState: PhotoPickerInfo? by remember { mutableStateOf(null) }
-    var photos: List<String> by remember { mutableStateOf(listOf()) }
+    var photos: ArrayList<String> = ArrayList()
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
 
@@ -103,16 +103,23 @@ fun CommonWebViewScreen(
         onBackClick = { navController.popBackStack() },
         onWebviewCreate = { webView = it }
     )
-
     val openWebViewGallery =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            // TODO 리스트 갯수 10개로 제한
+             if (it.resultCode == Activity.RESULT_OK) {
                 it.data!!.clipData?.run {
-                    for (i in 0 until itemCount) {
-                        Log.d("TAG", "openWebViewGallery: "+getItemAt(i).uri)
+                    if (itemCount > 10) {
+                        makeToast(context, "사진은 10장까지 선택할 수 있습니다.")
+                    } else {
+                        for (i in 0 until itemCount) {
+                            photos.add(getItemAt(i).uri.toString())
+                        }
                     }
                 }
             }
+            galleryState = null
         }
     val openGalleryLauncher =
         Intent(Intent.ACTION_PICK).apply {
