@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    suspend fun fetchUserName(): Flow<HomeUserEntity>
-
     suspend fun fetchProfile(): Flow<ProfileEntity>
+
+    suspend fun fetchUserSimpleData(): HomeUserEntity
 }

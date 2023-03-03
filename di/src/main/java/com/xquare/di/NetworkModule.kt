@@ -5,6 +5,7 @@ import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
 import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.api.ProfileApi
+import com.xquare.data.remote.api.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -62,8 +64,15 @@ object NetworkModule {
         retrofit.create(ProfileApi::class.java)
 
     @Provides
+
     fun providePointApi(
         retrofit: Retrofit
     ): PointApi =
         retrofit.create(PointApi::class.java)
+
+    @Provides
+    fun provideUserApi(
+        retrofit: Retrofit
+    ): UserApi =
+        retrofit.create(UserApi::class.java)
 }
