@@ -3,6 +3,7 @@ package com.xquare.di
 import com.xquare.data.interceptor.AuthorizationInterceptor
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
+import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.api.ProfileApi
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.xquare.app/"
+    private const val BASE_URL = "https://stag-api.xquare.app/"
 
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
@@ -59,4 +60,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): ProfileApi =
         retrofit.create(ProfileApi::class.java)
+
+    @Provides
+    fun providePointApi(
+        retrofit: Retrofit
+    ): PointApi =
+        retrofit.create(PointApi::class.java)
 }

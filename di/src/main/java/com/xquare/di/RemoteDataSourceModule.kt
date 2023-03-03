@@ -1,9 +1,6 @@
 package com.xquare.di
 
-import com.xquare.data.remote.datasource.AuthRemoteDataSource
-import com.xquare.data.remote.datasource.AuthRemoteDataSourceImpl
-import com.xquare.data.remote.datasource.MealRemoteDataSource
-import com.xquare.data.remote.datasource.MealRemoteDataSourceImpl
+import com.xquare.data.remote.datasource.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -22,4 +19,14 @@ abstract class RemoteDataSourceModule {
     abstract fun bindAuthRemoteDataSource(
         authRemoteDataSourceImpl: AuthRemoteDataSourceImpl
     ): AuthRemoteDataSource
+
+    @Binds
+    abstract fun bindPointRemoteDataSource(
+        pointRemoteDataSourceImpl: PointRemoteDataSourceImpl
+    ): PointRemoteDataSource
+
+    @Binds
+    abstract fun bindUserRemoteDataSource(
+        userRemoteDataSourceImpl: UserRemoteDataSourceImpl
+    ): UserRemoteDataSource
 }

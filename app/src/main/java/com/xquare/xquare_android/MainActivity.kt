@@ -2,33 +2,30 @@ package com.xquare.xquare_android
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.component.BottomNavigation
+import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
+import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
+import com.xquare.xquare_android.feature.profile.ProfileScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
@@ -92,6 +89,12 @@ fun BaseApp() {
         composable(AppNavigationItem.AllMeal.route) {
             AllMealScreen(navController)
         }
+        composable(AppNavigationItem.PointHistory.route) {
+            PointHistoryScreen(navController)
+        }
+        composable(AppNavigationItem.Profile.route) {
+            ProfileScreen(navController)
+        }
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
             val title = it.arguments!!["title"].toString()
@@ -117,8 +120,6 @@ fun BaseApp() {
 fun Main(mainNavController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
-    val context = LocalContext.current
-    val window = context.getActivity()?.window
     Scaffold(
         modifier = Modifier
             .background(white)
@@ -163,7 +164,7 @@ fun Main(mainNavController: NavController) {
                 )
             }
             composable(BottomNavigationItem.All.route) {
-                // TODO()
+                AllScreen(mainNavController)
             }
         }
     }

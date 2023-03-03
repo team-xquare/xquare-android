@@ -1,6 +1,7 @@
 package com.xquare.data.repository
 
 import com.xquare.data.local.datasource.AuthLocalDataSource
+import com.xquare.data.local.preference.AuthPreference
 import com.xquare.data.remote.datasource.AuthRemoteDataSource
 import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.domain.entity.auth.SignUpEntity
@@ -9,12 +10,15 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val authLocalDataSource: AuthLocalDataSource,
-    private val authRemoteDataSource: AuthRemoteDataSource
+    private val authRemoteDataSource: AuthRemoteDataSource,
+    private val authPreference: AuthPreference
 ) : AuthRepository {
 
     override suspend fun signIn(signInEntity: SignInEntity) {
         val token = authRemoteDataSource.signIn(signInEntity)
+        val userId = signInEntity.accountId
         authLocalDataSource.saveToken(token)
+        authPreference.saveUserId(userId)
     }
 
     override suspend fun signUp(signUpEntity: SignUpEntity) =
