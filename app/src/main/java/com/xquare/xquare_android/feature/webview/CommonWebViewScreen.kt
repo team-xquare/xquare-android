@@ -1,6 +1,11 @@
 package com.xquare.xquare_android.feature.webview
 
+import android.app.Activity
+import android.content.Intent
+import android.util.Log
 import android.webkit.WebView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -35,9 +40,11 @@ fun CommonWebViewScreen(
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
-    var photoPickerState: PhotoPickerInfo? by remember { mutableStateOf(null) }
+    var galleryState: PhotoPickerInfo? by remember { mutableStateOf(null) }
+    var photos: List<String> by remember { mutableStateOf(listOf()) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
+
     val bridge = WebToAppBridge(
         onNavigate = {
             val targetUrl = url + it.url
@@ -52,7 +59,7 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
-        onPhotoPicker = { photoPickerState = it },
+        onPhotoPicker = { galleryState = it },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -86,9 +93,7 @@ fun CommonWebViewScreen(
             }
         )
     }
-    photoPickerState?.let {
-        
-    }
+
     CommonWebView(
         haveBackButton = haveBackButton,
         title = title,
@@ -98,6 +103,26 @@ fun CommonWebViewScreen(
         onBackClick = { navController.popBackStack() },
         onWebviewCreate = { webView = it }
     )
+
+    val openWebViewGallery =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                it.data!!.clipData?.run {
+                    for (i in 0 until itemCount) {
+                        Log.d("TAG", "openWebViewGallery: "+getItemAt(i).uri)
+                    }
+                }
+            }
+        }
+    val openGalleryLauncher =
+        Intent(Intent.ACTION_PICK).apply {
+            this.type = "image/*"
+            this.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+
+    galleryState?.run {
+        openWebViewGallery.launch(openGalleryLauncher)
+    }
 }
 
 @Composable
