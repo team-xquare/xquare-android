@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.component
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView

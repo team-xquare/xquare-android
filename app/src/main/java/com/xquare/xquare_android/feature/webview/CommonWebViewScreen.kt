@@ -1,8 +1,7 @@
 package com.xquare.xquare_android.feature.webview
 
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.util.Log
 import android.webkit.WebView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,10 +23,13 @@ import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
+import com.xquare.xquare_android.util.parseBitmap
+import com.xquare.xquare_android.util.toBase64
 import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.data.PhotoPickerInfo
+import com.xquare.xquare_android.webview.sendImagesOfPhotoPicker
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 
 @Composable
@@ -41,7 +43,7 @@ fun CommonWebViewScreen(
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     var galleryState: PhotoPickerInfo? by remember { mutableStateOf(null) }
-    var photos: ArrayList<String> = ArrayList()
+    val photos: ArrayList<String> = ArrayList()
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
 
@@ -101,21 +103,23 @@ fun CommonWebViewScreen(
         headers = headers,
         bridges = mapOf(Pair("webview", bridge)),
         onBackClick = { navController.popBackStack() },
-        onWebviewCreate = { webView = it }
+        onWebviewCreate = { webView = it },
     )
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) {
-            // TODO 리스트 갯수 10개로 제한
-             if (it.resultCode == Activity.RESULT_OK) {
-                it.data!!.clipData?.run {
+        ) { result ->
+             if (result.resultCode == RESULT_OK) {
+                 result.data!!.clipData?.run {
                     if (itemCount > 10) {
                         makeToast(context, "사진은 10장까지 선택할 수 있습니다.")
                     } else {
                         for (i in 0 until itemCount) {
-                            photos.add(getItemAt(i).uri.toString())
+                            val listItem = getItemAt(i).uri.parseBitmap(context).toBase64().replace("\\r\\n|\\r|\\n|\\n\\r".toRegex(),"")
+                            photos.add("'data:image/png;base64,${listItem}'")
                         }
+                        webView?.sendImagesOfPhotoPicker(galleryState!!.id,photos)
+                        photos.clear()
                     }
                 }
             }
