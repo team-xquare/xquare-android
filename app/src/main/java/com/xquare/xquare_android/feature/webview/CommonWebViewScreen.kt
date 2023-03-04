@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.webview
 
+import android.util.Log
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,10 +21,10 @@ import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
-import com.xquare.xquare_android.webview.ModalInfo
+import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.data.ActionSheetInfo
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun CommonWebViewScreen(
@@ -34,6 +35,7 @@ fun CommonWebViewScreen(
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
+    var actionSheetState: ActionSheetInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -51,6 +53,7 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onActionSheet = { actionSheetState = it },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -83,6 +86,9 @@ fun CommonWebViewScreen(
                 modalState = null
             }
         )
+    }
+    actionSheetState?.let {
+        Log.d("TAG", "ActionSheetInfo: $it")
     }
     CommonWebView(
         haveBackButton = haveBackButton,
