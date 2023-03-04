@@ -7,3 +7,10 @@ fun WebView.sendResultOfConfirmModal(
 ) = this.loadUrl(
     "javascript:window.dispatchEvent(new CustomEvent('confirmXBridge', { detail: { success: $isConfirmed }}))"
 )
+
+fun WebView.sendIndexOfActionSheet(
+    id: String,
+    index: Int
+) = this.loadUrl(
+    "javascript:window.dispatchEvent(new CustomEvent('actionSheetXBridge', { detail: { id: '$id', index: $index }}))"
+)

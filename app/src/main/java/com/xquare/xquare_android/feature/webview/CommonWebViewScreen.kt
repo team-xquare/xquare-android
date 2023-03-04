@@ -1,10 +1,23 @@
 package com.xquare.xquare_android.feature.webview
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -14,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
+import com.xquare.xquare_android.component.ActionSheet
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.ConfirmModal
 import com.xquare.xquare_android.component.WebView
@@ -24,8 +38,11 @@ import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.data.ActionSheetInfo
+import com.xquare.xquare_android.webview.sendIndexOfActionSheet
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CommonWebViewScreen(
     navController: NavController,
@@ -35,7 +52,9 @@ fun CommonWebViewScreen(
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
-    var actionSheetState: ActionSheetInfo? by remember { mutableStateOf(null) }
+    val actionSheetScope = rememberCoroutineScope()
+    val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var actionSheetInfo: ActionSheetInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -53,7 +72,12 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
-        onActionSheet = { actionSheetState = it },
+        onActionSheet = {
+            actionSheetInfo = it
+            actionSheetScope.launch {
+                actionSheetState.show()
+            }
+        },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -87,18 +111,28 @@ fun CommonWebViewScreen(
             }
         )
     }
-    actionSheetState?.let {
-        Log.d("TAG", "ActionSheetInfo: $it")
+
+    ActionSheet(
+        state = actionSheetState,
+        list = actionSheetInfo?.menu ?: listOf(),
+        onClick = {
+            actionSheetScope.launch {
+                actionSheetState.hide()
+            }
+            webView?.sendIndexOfActionSheet(actionSheetInfo!!.id, it)
+            actionSheetInfo = null
+        }
+    ) {
+        CommonWebView(
+            haveBackButton = haveBackButton,
+            title = title,
+            url = url,
+            headers = headers,
+            bridges = mapOf(Pair("webview", bridge)),
+            onBackClick = { navController.popBackStack() },
+            onWebviewCreate = { webView = it }
+        )
     }
-    CommonWebView(
-        haveBackButton = haveBackButton,
-        title = title,
-        url = url,
-        headers = headers,
-        bridges = mapOf(Pair("webview", bridge)),
-        onBackClick = { navController.popBackStack() },
-        onWebviewCreate = { webView = it }
-    )
 }
 
 @Composable
