@@ -49,7 +49,7 @@ fun Uri.parseBitmap(context: Context): Bitmap {
 
 fun Bitmap.toBase64(): String {
     val byteArrayOutputStream = ByteArrayOutputStream()
-    this.compress(Bitmap.CompressFormat.JPEG, 30, byteArrayOutputStream)
+    this.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream)
     val byteArray = byteArrayOutputStream.toByteArray()
     return Base64.encodeToString(byteArray, Base64.DEFAULT)
 }
