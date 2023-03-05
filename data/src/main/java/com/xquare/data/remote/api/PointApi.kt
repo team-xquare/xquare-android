@@ -5,12 +5,12 @@ import retrofit2.http.GET
 
 interface PointApi {
 
-    @GET("points/history?type=null")
+    @GET("points/history?type=ALL")
     suspend fun fetchPointSummary(): PointHistoriesResponse
 
-    @GET("points/history?type=true")
+    @GET("pointsstory?type=GOODPOINT")
     suspend fun fetchGoodPointHistories(): PointHistoriesResponse
 
-    @GET("points/history?type=false")
+    @GET("pointsstory?type=BADPOINT")
     suspend fun fetchBadPointHistories(): PointHistoriesResponse
 }
