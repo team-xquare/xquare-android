@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,38 +29,36 @@ import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.notoSansFamily
 import com.xquare.domain.entity.meal.MealEntity
-import com.xquare.domain.entity.point.DormitoryPointEntity
 import com.xquare.domain.entity.user.HomeUserEntity
+import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel: HomeViewModel = hiltViewModel()
-    val userName = viewModel.userName.collectAsState().value
-    val dormitoryPoint = viewModel.dormitoryPoint.collectAsState().value
+    val userData = viewModel.userSimpleData.collectAsState().value
     val meal = viewModel.todayMeal.collectAsState().value
     LaunchedEffect(Unit) {
         viewModel.run {
-//            fetchUserName()
-//            fetchDormitoryPoint()
             fetchTodayMeal()
+            fetchUserSimpleData()
         }
     }
     HomeContent(
-        user = userName,
-        dormitoryPoint = dormitoryPoint,
+        userData = userData,
         meal = meal,
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
-        onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) }
+        onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
+        onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
     )
 }
 
 @Composable
 fun HomeContent(
-    user: HomeUserEntity,
-    dormitoryPoint: DormitoryPointEntity,
+    userData: HomeUserEntity,
     meal: MealEntity,
+    onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
     onAlarmClick: () -> Unit,
 ) {
@@ -70,7 +70,7 @@ fun HomeContent(
             .padding(horizontal = 16.dp)
     ) {
         HomeAppBar(onAlarmClick = onAlarmClick)
-        HomeUserCard(user = user, dormitoryPoint = dormitoryPoint)
+        HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
     }
@@ -85,27 +85,24 @@ fun HomeAppBar(onAlarmClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
-        Icon(
-            painter = ColorPainter(gray200),
-            contentDescription = null,
-            modifier = Modifier
-                .size(24.dp)
-                .clickable { onAlarmClick() }
-            ,
-            tint = Color.Unspecified
-        )
         Spacer(Modifier.size(16.dp))
         Icon(
-            painter = ColorPainter(gray200),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = Color.Unspecified
+            painter = painterResource(id = R.drawable.ic_alarm),
+            contentDescription = "alarm",
+            modifier = Modifier
+                .size(24.dp)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                ) {
+                    onAlarmClick()
+                }
         )
     }
 }
 
 @Composable
-fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
+fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,15 +110,21 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .padding(16.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+                enabled = true
+            ) { onClick() }
 
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                model = user.profileImage,
+                model = userData.profileFileImage,
                 placeholder = ColorPainter(gray200),
-                error = ColorPainter(gray200)
+                error = painterResource(id = R.drawable.ic_profile_default),
             ),
             contentDescription = "profileImage",
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(44.dp)
                 .clip(RoundedCornerShape(22.dp))
@@ -129,14 +132,14 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
         Spacer(Modifier.size(12.dp))
         Column {
             Text(
-                text = user.name,
+                text = userData.name,
                 fontSize = 18.sp,
                 fontFamily = notoSansFamily,
                 fontWeight = FontWeight.Medium,
                 color = gray900
             )
             Body2(
-                text = "상점 ${dormitoryPoint.goodPoint}점 벌점 ${dormitoryPoint.badPoint}",
+                text = "상점 ${userData.goodPoint}점 벌점 ${userData.badPoint}",
                 color = gray700
             )
         }
@@ -144,6 +147,7 @@ fun HomeUserCard(user: HomeUserEntity, dormitoryPoint: DormitoryPointEntity) {
 }
 
 
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeMealCard(
@@ -171,10 +175,10 @@ fun HomeMealCard(
                 fontWeight = FontWeight.Medium,
             )
             Icon(
-                painter = ColorPainter(gray200),
+                painter = painterResource(id = R.drawable.ic_arrow),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(24.dp)
+                    .padding(5.dp)
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = null,
@@ -225,11 +229,19 @@ fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
             .background(gray50)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        Body1(text = title, color = gray800)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Body1(text = title, color = gray800)
+            Body2(
+                text = calorie,
+                color = gray800,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(align = Alignment.End)
+            )
+        }
         Spacer(Modifier.size(8.dp))
         menus.forEach {
             Body2(text = it, color = gray800)
         }
-        Body2(text = calorie, color = gray800)
     }
 }

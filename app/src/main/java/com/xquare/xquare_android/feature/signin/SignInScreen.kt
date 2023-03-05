@@ -81,7 +81,7 @@ private fun SignIn(
             ),
         topBar = {
             AppBar(
-                painter = painterResource(R.drawable.ic_placeholder),
+                painter = painterResource(R.drawable.ic_back),
                 text = "로그인",
                 onIconClick = onBackClick
             )
