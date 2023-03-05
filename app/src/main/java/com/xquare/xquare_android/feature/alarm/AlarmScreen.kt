@@ -32,6 +32,7 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
+import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
@@ -55,10 +56,10 @@ fun Alarm(
                 bottom = DevicePaddings.navigationBarHeightDp.dp
             ),
     ) {
-        AppBar(
-            painter = painterResource(R.drawable.ic_placeholder),
-            text = "알림",
-            onIconClick = onBackPress,
+        Header(
+            painter = painterResource(id = R.drawable.ic_back),
+            title = "알림",
+            onIconClick = onBackPress
         )
 
         Body3(
