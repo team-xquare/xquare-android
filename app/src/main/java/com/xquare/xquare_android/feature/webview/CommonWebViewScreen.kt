@@ -49,6 +49,7 @@ fun CommonWebViewScreen(
     url: String,
     title: String,
     haveBackButton: Boolean,
+    changeActionSheetState: (Boolean) -> Unit = {}
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
@@ -77,6 +78,7 @@ fun CommonWebViewScreen(
             actionSheetScope.launch {
                 actionSheetState.show()
             }
+            changeActionSheetState(true)
         },
     )
     LaunchedEffect(Unit) {
@@ -96,6 +98,12 @@ fun CommonWebViewScreen(
             }
         }
     }
+    LaunchedEffect(actionSheetState.isVisible) {
+        if (!actionSheetState.isVisible) {
+            changeActionSheetState(false)
+        }
+    }
+
     modalState?.let {
         ConfirmModal(
             message = it.message,
@@ -119,6 +127,7 @@ fun CommonWebViewScreen(
             actionSheetScope.launch {
                 actionSheetState.hide()
             }
+            changeActionSheetState(false)
             webView?.sendIndexOfActionSheet(actionSheetInfo!!.id, it)
             actionSheetInfo = null
         }

@@ -30,9 +30,6 @@ private val BottomSheetShape = RoundedCornerShape(
     topEnd = 16.dp,
 )
 
-@Stable
-private val scrimColor = Color(0xFF929292)
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ActionSheet(
@@ -60,10 +57,10 @@ fun ActionSheet(
             }
         },
         sheetBackgroundColor = Color.Transparent,
-        scrimColor = scrimColor,
     ) {
         content()
     }
+
 }
 
 @Composable
