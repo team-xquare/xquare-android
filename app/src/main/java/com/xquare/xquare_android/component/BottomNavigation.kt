@@ -9,13 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.semicolon.design.Body3
+import com.semicolon.design.color.primary.gray.gray300
+import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
+import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 
 @Composable
@@ -29,7 +33,7 @@ fun BottomNavigation(
         items.forEach { screen ->
             val selected =
                 currentDestination?.hierarchy?.any { it.route == screen.route } == true
-//            val color = TODO()
+            val color = if (selected) gray800 else gray300
             Column(
                 Modifier
                     .height(56.dp)
@@ -49,10 +53,10 @@ fun BottomNavigation(
                 Icon(
                     painter = screen.icon(),
                     contentDescription = null,
-//                    tint = color,
+                    tint = color,
                     modifier = Modifier.size(24.dp)
                 )
-                Body3(text = screen.label, color = gray900)
+                Body3(text = screen.label, color = color)
             }
         }
     }

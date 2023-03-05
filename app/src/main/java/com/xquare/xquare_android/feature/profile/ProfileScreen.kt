@@ -69,7 +69,7 @@ private fun Profile(
             ),
         topBar = {
             AppBar(
-                painter = painterResource(R.drawable.ic_placeholder),
+                painter = painterResource(R.drawable.ic_back),
                 text = "마이페이지",
                 onIconClick = onBackPress
             )
@@ -89,7 +89,7 @@ private fun Profile(
                 painter = rememberAsyncImagePainter(
                     model = profile?.profileFileName,
                     placeholder = ColorPainter(gray200),
-                    error = ColorPainter(gray200)
+                    error = painterResource(id = R.drawable.ic_profile_default),
                 ),
                 contentDescription = null
             )

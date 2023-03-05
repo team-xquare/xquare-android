@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.all.AllScreen
