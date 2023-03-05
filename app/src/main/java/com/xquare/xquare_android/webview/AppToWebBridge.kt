@@ -7,3 +7,7 @@ fun WebView.sendResultOfConfirmModal(
 ) = this.loadUrl(
     "javascript:window.dispatchEvent(new CustomEvent('confirmXBridge', { detail: { success: $isConfirmed }}))"
 )
+
+fun WebView.sendResultOfRightButton() = this.loadUrl(
+    "javascript:window.dispatchEvent(new CustomEvent('rightButtonTapedXBridge', { detail: {}))"
+)

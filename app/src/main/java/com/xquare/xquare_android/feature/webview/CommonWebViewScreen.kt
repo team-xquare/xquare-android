@@ -15,26 +15,30 @@ import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.ConfirmModal
+import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
-import com.xquare.xquare_android.webview.ModalInfo
+import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.data.RightButtonEnabled
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
-import kotlinx.coroutines.flow.collect
+import com.xquare.xquare_android.webview.sendResultOfRightButton
 
 @Composable
 fun CommonWebViewScreen(
     navController: NavController,
     url: String,
     title: String,
+    rightButtonText: String? = null,
     haveBackButton: Boolean,
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
+    var isRightButtonEnabled: RightButtonEnabled by remember { mutableStateOf(RightButtonEnabled(false)) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
     val bridge = WebToAppBridge(
@@ -51,6 +55,7 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onIsRightButtonEnabled = { isRightButtonEnabled = it },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -88,9 +93,12 @@ fun CommonWebViewScreen(
         haveBackButton = haveBackButton,
         title = title,
         url = url,
+        rightButtonText = rightButtonText,
+        rightButtonEnabled = isRightButtonEnabled.isEnabled,
         headers = headers,
         bridges = mapOf(Pair("webview", bridge)),
         onBackClick = { navController.popBackStack() },
+        onTextBtnClick = { webView?.sendResultOfRightButton() },
         onWebviewCreate = { webView = it }
     )
 }
@@ -100,9 +108,12 @@ private fun CommonWebView(
     haveBackButton: Boolean,
     title: String,
     url: String,
+    rightButtonText: String?,
+    rightButtonEnabled: Boolean,
     headers: Map<String, String>,
     bridges: Map<String, Any>,
     onBackClick: () -> Unit,
+    onTextBtnClick: () -> Unit,
     onWebviewCreate: (WebView) -> Unit,
 ) {
     Column(
@@ -113,11 +124,28 @@ private fun CommonWebView(
                 bottom = DevicePaddings.navigationBarHeightDp.dp
             )
     ) {
-        AppBar(
-            painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
-            text = title,
-            onIconClick = onBackClick
+        val appBarUrlList = listOf(
+            "https://service.xquare.app/xbridge-test",
+            "https://service.xquare.app/feed",
+            "https://service.xquare.app/apply",
         )
+        if (appBarUrlList.contains(url)) {
+            AppBar(
+                painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
+                text = title,
+                onIconClick = onBackClick
+            )
+        } else {
+            Header(
+                painter = painterResource(id = R.drawable.ic_back),
+                title = title,
+                btnText = rightButtonText,
+                btnEnabled = rightButtonEnabled,
+                onIconClick = onBackClick,
+                onBtnClick = onTextBtnClick,
+            )
+        }
+
         if (headers.isNotEmpty()) WebView(
             url = url,
             headers = headers,
