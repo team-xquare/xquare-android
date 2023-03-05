@@ -2,6 +2,7 @@ package com.xquare.xquare_android.feature.webview
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -70,7 +71,8 @@ fun CommonWebViewScreen(
             val targetUrl = url + it.url
             updateUi { _ ->
                 navController.navigate(
-                    AppNavigationItem.CommonWebView.createRoute(targetUrl, it.title))
+                    AppNavigationItem.CommonWebView.createRoute(targetUrl, it.title)
+                )
             }
         },
         onImageDetail = { images ->
@@ -79,7 +81,10 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
-        onPhotoPicker = { galleryState = it },
+        onPhotoPicker = {
+            makeToast(context, "사진은 최대 10장까지 올릴 수 있습니다")
+            galleryState = it
+        },
         onActionSheet = {
             actionSheetInfo = it
             actionSheetScope.launch {
@@ -114,19 +119,16 @@ fun CommonWebViewScreen(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
+            // TODO 이미지가 나오지 않는 오류가 가끔 발생
             if (result.resultCode == RESULT_OK) {
                 result.data!!.clipData?.run {
-                    if (itemCount > 10) {
-                        makeToast(context, "사진은 10장까지 선택할 수 있습니다.")
-                    } else {
-                        for (i in 0 until itemCount) {
-                            val listItem = getItemAt(i).uri.parseBitmap(context).toBase64()
-                                .replace("\\r\\n|\\r|\\n|\\n\\r".toRegex(), "")
-                            photos.add("'data:image/png;base64,${listItem}'")
-                        }
-                        webView?.sendImagesOfPhotoPicker(galleryState!!.id, photos)
-                        photos.clear()
+                    for (i in 0 until itemCount) {
+                        val listItem = getItemAt(i).uri.parseBitmap(context).toBase64()
+                            .replace("\\r\\n|\\r|\\n|\\n\\r".toRegex(), "")
+                        photos.add("'data:image/png;base64,${listItem}'")
                     }
+                    webView?.sendImagesOfPhotoPicker(galleryState!!.id, photos)
+                    photos.clear()
                 }
             }
             galleryState = null
