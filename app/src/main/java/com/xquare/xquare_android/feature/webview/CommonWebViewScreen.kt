@@ -4,6 +4,9 @@ import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -13,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
+import com.xquare.xquare_android.component.ActionSheet
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.ConfirmModal
 import com.xquare.xquare_android.component.Header
@@ -23,10 +27,14 @@ import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
-import com.xquare.xquare_android.webview.data.RightButtonEnabled
+import com.xquare.xquare_android.webview.data.ActionSheetInfo
+import com.xquare.xquare_android.webview.sendIndexOfActionSheet
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
+import kotlinx.coroutines.launch
+import com.xquare.xquare_android.webview.data.RightButtonEnabled
 import com.xquare.xquare_android.webview.sendResultOfRightButton
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CommonWebViewScreen(
     navController: NavController,
@@ -34,9 +42,13 @@ fun CommonWebViewScreen(
     title: String,
     rightButtonText: String? = null,
     haveBackButton: Boolean,
+    changeActionSheetState: (Boolean) -> Unit = {}
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
+    val actionSheetScope = rememberCoroutineScope()
+    val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var actionSheetInfo: ActionSheetInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     var isRightButtonEnabled: RightButtonEnabled by remember { mutableStateOf(RightButtonEnabled(false)) }
     val viewModel: WebViewViewModel = hiltViewModel()
@@ -55,6 +67,13 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onActionSheet = {
+            actionSheetInfo = it
+            actionSheetScope.launch {
+                actionSheetState.show()
+            }
+            changeActionSheetState(true)
+        },
         onIsRightButtonEnabled = { isRightButtonEnabled = it },
     )
     LaunchedEffect(Unit) {
@@ -74,6 +93,12 @@ fun CommonWebViewScreen(
             }
         }
     }
+    LaunchedEffect(actionSheetState.isVisible) {
+        if (!actionSheetState.isVisible) {
+            changeActionSheetState(false)
+        }
+    }
+
     modalState?.let {
         ConfirmModal(
             message = it.message,
@@ -89,18 +114,32 @@ fun CommonWebViewScreen(
             }
         )
     }
-    CommonWebView(
-        haveBackButton = haveBackButton,
-        title = title,
-        url = url,
-        rightButtonText = rightButtonText,
-        rightButtonEnabled = isRightButtonEnabled.isEnabled,
-        headers = headers,
-        bridges = mapOf(Pair("webview", bridge)),
-        onBackClick = { navController.popBackStack() },
-        onTextBtnClick = { webView?.sendResultOfRightButton() },
-        onWebviewCreate = { webView = it }
-    )
+    ActionSheet(
+        state = actionSheetState,
+        list = actionSheetInfo?.menu ?: listOf(),
+        onClick = {
+            actionSheetScope.launch {
+                actionSheetState.hide()
+            }
+            changeActionSheetState(false)
+            webView?.sendIndexOfActionSheet(actionSheetInfo!!.id, it)
+            actionSheetInfo = null
+        }
+    ) {
+        CommonWebView(
+            haveBackButton = haveBackButton,
+            title = title,
+            url = url,
+            rightButtonText = rightButtonText,
+            rightButtonEnabled = isRightButtonEnabled.isEnabled,
+            headers = headers,
+            bridges = mapOf(Pair("webview", bridge)),
+            onBackClick = { navController.popBackStack() },
+            onTextBtnClick = { webView?.sendResultOfRightButton() },
+            onWebviewCreate = { webView = it }
+        )
+    }
+
 }
 
 @Composable
