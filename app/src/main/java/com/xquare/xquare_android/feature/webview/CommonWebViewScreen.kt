@@ -1,6 +1,10 @@
 package com.xquare.xquare_android.feature.webview
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.webkit.WebView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -24,12 +28,16 @@ import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
+import com.xquare.xquare_android.util.parseBitmap
+import com.xquare.xquare_android.util.toBase64
 import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.data.PhotoPickerInfo
+import com.xquare.xquare_android.webview.sendImagesOfPhotoPicker
+import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 import com.xquare.xquare_android.webview.data.ActionSheetInfo
 import com.xquare.xquare_android.webview.sendIndexOfActionSheet
-import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 import kotlinx.coroutines.launch
 import com.xquare.xquare_android.webview.data.RightButtonEnabled
 import com.xquare.xquare_android.webview.sendResultOfRightButton
@@ -50,9 +58,12 @@ fun CommonWebViewScreen(
     val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var actionSheetInfo: ActionSheetInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
+    var galleryState: PhotoPickerInfo? by remember { mutableStateOf(null) }
+    val photos: ArrayList<String> = ArrayList()
     var isRightButtonEnabled: RightButtonEnabled by remember { mutableStateOf(RightButtonEnabled(false)) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
+
     val bridge = WebToAppBridge(
         onNavigate = {
             val targetUrl = url + it.url
@@ -67,6 +78,7 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onPhotoPicker = { galleryState = it },
         onActionSheet = {
             actionSheetInfo = it
             actionSheetScope.launch {
@@ -113,6 +125,35 @@ fun CommonWebViewScreen(
                 modalState = null
             }
         )
+    }
+    val openWebViewGallery =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+             if (result.resultCode == RESULT_OK) {
+                 result.data!!.clipData?.run {
+                    if (itemCount > 10) {
+                        makeToast(context, "사진은 10장까지 선택할 수 있습니다.")
+                    } else {
+                        for (i in 0 until itemCount) {
+                            val listItem = getItemAt(i).uri.parseBitmap(context).toBase64().replace("\\r\\n|\\r|\\n|\\n\\r".toRegex(),"")
+                            photos.add("'data:image/png;base64,${listItem}'")
+                        }
+                        webView?.sendImagesOfPhotoPicker(galleryState!!.id,photos)
+                        photos.clear()
+                    }
+                }
+            }
+            galleryState = null
+        }
+    val openGalleryLauncher =
+        Intent(Intent.ACTION_PICK).apply {
+            this.type = "image/*"
+            this.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+
+    galleryState?.run {
+        openWebViewGallery.launch(openGalleryLauncher)
     }
     ActionSheet(
         state = actionSheetState,

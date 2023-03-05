@@ -8,6 +8,13 @@ fun WebView.sendResultOfConfirmModal(
     "javascript:window.dispatchEvent(new CustomEvent('confirmXBridge', { detail: { success: $isConfirmed }}))"
 )
 
+fun WebView.sendImagesOfPhotoPicker(
+    id: String,
+    photos: List<String>,
+) = this.loadUrl(
+    "javascript:window.dispatchEvent(new CustomEvent('photoPickerXBridge', { detail: { id: '$id',photos: $photos}}))"
+)
+
 fun WebView.sendIndexOfActionSheet(
     id: String,
     index: Int
