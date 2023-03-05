@@ -155,9 +155,15 @@ fun Main(mainNavController: NavController) {
                 // TODO()
             }
             composable(BottomNavigationItem.Application.route) {
+//                CommonWebViewScreen(
+//                    navController = mainNavController,
+//                    url = "https://service.xquare.app/xbridge-test",
+//                    title = "신청",
+//                    haveBackButton = false
+//                )
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/xbridge-test",
+                    url = "http://192.168.34.214:3000",
                     title = "신청",
                     haveBackButton = false
                 )

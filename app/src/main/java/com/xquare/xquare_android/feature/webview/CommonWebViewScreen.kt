@@ -15,15 +15,16 @@ import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.ConfirmModal
+import com.xquare.xquare_android.component.TimePickerDialog
 import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
-import com.xquare.xquare_android.webview.ModalInfo
+import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.data.TimePickerInfo
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun CommonWebViewScreen(
@@ -34,6 +35,7 @@ fun CommonWebViewScreen(
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
+    var timePickerState: TimePickerInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -51,6 +53,7 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onTimePicker = { timePickerState = it },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -81,6 +84,15 @@ fun CommonWebViewScreen(
             onCancel = {
                 webView?.sendResultOfConfirmModal(false)
                 modalState = null
+            }
+        )
+    }
+    timePickerState?.let {
+        TimePickerDialog(
+            defaultTime = it.time,
+            onCancel = { timePickerState = null },
+            onConfirm = {
+
             }
         )
     }

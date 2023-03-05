@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.component
 
+import android.os.Build
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.widget.NumberPicker
@@ -28,7 +29,21 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+
+private fun setDefaultTimer(defaultTime: String): String {
+    return defaultTime.ifEmpty {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val thisTime = LocalTime.now()
+            val formatter = DateTimeFormatter.ofPattern("HH:mm")
+            thisTime.format(formatter)
+        } else {
+            "00:00"
+        }
+    }
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -39,6 +54,7 @@ fun TimePickerDialog(
     onCancel: () -> Unit,
     onConfirm: (String) -> Unit,
 ) {
+    val defaultTime = setDefaultTimer(defaultTime)
     var hour by remember { mutableStateOf(defaultTime.substring(0..1)) }
     var min by remember { mutableStateOf(defaultTime.substring(3..4)) }
 
