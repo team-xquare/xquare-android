@@ -3,6 +3,7 @@ package com.xquare.xquare_android.webview
 import android.webkit.JavascriptInterface
 import com.google.gson.Gson
 import com.xquare.xquare_android.webview.data.ActionSheetInfo
+import com.xquare.xquare_android.webview.data.ImageInfo
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.data.NavigateInfo
 import com.xquare.xquare_android.webview.data.PhotoPickerInfo
@@ -11,7 +12,7 @@ import com.xquare.xquare_android.webview.data.WebViewError
 
 class WebToAppBridge(
     val onNavigate: (NavigateInfo) -> Unit = {},
-    val onImageDetail: (Array<String>) -> Unit = {},
+    val onImageDetail: (ImageInfo) -> Unit = {},
     val onConfirmModal: (ModalInfo) -> Unit = {},
     val onBack: () -> Unit = {},
     val onError: (WebViewError) -> Unit = {},
@@ -27,7 +28,7 @@ class WebToAppBridge(
 
     @JavascriptInterface
     fun imageDetail(data: String) =
-        onImageDetail(gson.fromJson(data, Array<String>::class.java))
+        onImageDetail(gson.fromJson(data, ImageInfo::class.java))
 
     @JavascriptInterface
     fun back(data: Boolean) =

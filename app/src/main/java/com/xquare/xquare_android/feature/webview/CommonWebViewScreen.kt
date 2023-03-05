@@ -2,6 +2,7 @@ package com.xquare.xquare_android.feature.webview
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.util.Log
 import android.webkit.WebView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
