@@ -64,7 +64,7 @@ private fun AllMeal(
             ),
     ) {
         AppBar(
-            painter = painterResource(R.drawable.ic_placeholder),
+            painter = painterResource(R.drawable.ic_back),
             text = "전체 급식",
             onIconClick = onBackPress
         )

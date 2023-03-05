@@ -69,7 +69,7 @@ private fun Profile(
             ),
         topBar = {
             AppBar(
-                painter = painterResource(R.drawable.ic_placeholder),
+                painter = painterResource(R.drawable.ic_back),
                 text = "마이페이지",
                 onIconClick = onBackPress
             )

@@ -23,7 +23,6 @@ import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun CommonWebViewScreen(
@@ -114,7 +113,7 @@ private fun CommonWebView(
             )
     ) {
         AppBar(
-            painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
+            painter = if (haveBackButton) painterResource(R.drawable.ic_back) else null,
             text = title,
             onIconClick = onBackClick
         )
