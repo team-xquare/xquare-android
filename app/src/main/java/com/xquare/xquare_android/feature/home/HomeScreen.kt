@@ -119,7 +119,7 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
             painter = rememberAsyncImagePainter(
                 model = userData.profileFileImage,
                 placeholder = ColorPainter(gray200),
-                error = ColorPainter(gray200)
+                error = painterResource(id = R.drawable.ic_profile_default),
             ),
             contentDescription = "profileImage",
             contentScale = ContentScale.Crop,

@@ -89,7 +89,7 @@ private fun Profile(
                 painter = rememberAsyncImagePainter(
                     model = profile?.profileFileName,
                     placeholder = ColorPainter(gray200),
-                    error = ColorPainter(gray200)
+                    error = painterResource(id = R.drawable.ic_profile_default),
                 ),
                 contentDescription = null
             )
