@@ -34,8 +34,6 @@ fun CommonWebViewScreen(
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
-    var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
-    val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
     val bridge = WebToAppBridge(
         onNavigate = {
@@ -52,23 +50,6 @@ fun CommonWebViewScreen(
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
     )
-    LaunchedEffect(Unit) {
-        viewModel.fetchAuthorizationHeader()
-        viewModel.eventFlow.collect {
-            when (it) {
-                is WebViewViewModel.Event.FetchSuccess -> {
-                    println(it.data)
-                    headers = it.data
-                }
-                is WebViewViewModel.Event.RefreshSuccess -> {
-                    headers = it.data
-                }
-                is WebViewViewModel.Event.NeedToLogin -> {
-                    navController.navigate(AppNavigationItem.Onboard.route) { popUpTo(0) }
-                }
-            }
-        }
-    }
     modalState?.let {
         ConfirmModal(
             message = it.message,
@@ -88,12 +69,14 @@ fun CommonWebViewScreen(
         haveBackButton = haveBackButton,
         title = title,
         url = url,
-        headers = headers,
         bridges = mapOf(Pair("webview", bridge)),
         onBackClick = { navController.popBackStack() },
         onWebviewCreate = {
             webView = it
-            CookieManager.getInstance().acceptThirdPartyCookies(it)
+            CookieManager.getInstance().apply {
+                setAcceptCookie(true)
+                setAcceptThirdPartyCookies(it, true)
+            }
         }
     )
 }
@@ -103,7 +86,6 @@ private fun CommonWebView(
     haveBackButton: Boolean,
     title: String,
     url: String,
-    headers: Map<String, String>,
     bridges: Map<String, Any>,
     onBackClick: () -> Unit,
     onWebviewCreate: (WebView) -> Unit,
@@ -121,9 +103,8 @@ private fun CommonWebView(
             text = title,
             onIconClick = onBackClick
         )
-        if (headers.isNotEmpty()) WebView(
+        WebView(
             url = url,
-            headers = headers,
             bridges = bridges,
             onCreate = onWebviewCreate
         )

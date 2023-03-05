@@ -39,7 +39,7 @@ fun PointHistoryItem(pointHistoryEntity: PointHistoryEntity) {
 fun PointHistoryItemPreview() {
     PointHistoryItem(pointHistoryEntity =
     PointHistoryEntity(
-        0,
+        "",
         LocalDate.parse("2022-12-31"),
         "그냥",
         false,

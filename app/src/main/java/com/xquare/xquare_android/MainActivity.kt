@@ -11,7 +11,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -158,7 +157,7 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Application.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/xbridge-test",
+                    url = "https://service.xquare.app/apply",
                     title = "신청",
                     haveBackButton = false
                 )

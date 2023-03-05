@@ -1,6 +1,5 @@
 package com.xquare.data
 
-import android.content.Context
 import android.webkit.CookieManager
 import com.xquare.domain.AppCookieManager
 import com.xquare.domain.entity.auth.TokenEntity
@@ -31,10 +30,10 @@ class AppCookieManagerImpl @Inject constructor() : AppCookieManager {
     }
 
     private fun writeCookie(key: String, value: String) {
-        cookieManager.setCookie(DOMAIN, "$key=$value")
+        cookieManager.setCookie(DOMAIN, "$key=$value; Secure; HttpOnly")
     }
 
     companion object {
-        const val DOMAIN = "https://service.xquare.app"
+        const val DOMAIN = "https://.xquare.app"
     }
 }
