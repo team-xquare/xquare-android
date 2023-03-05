@@ -12,27 +12,27 @@ enum class BottomNavigationItem(
 ) {
     Home(
         route = "home",
-        icon = { painterResource(R.drawable.ic_placeholder) },
+        icon = { painterResource(R.drawable.ic_home) },
         label = "홈"
     ),
     Schedule(
         route = "schedule",
-        icon = { painterResource(R.drawable.ic_placeholder) },
+        icon = { painterResource(R.drawable.ic_schedule) },
         label = "일정"
     ),
     Feed(
         route = "feed",
-        icon = { painterResource(R.drawable.ic_placeholder) },
+        icon = { painterResource(R.drawable.ic_feed) },
         label = "피드"
     ),
     Application(
         route = "apply",
-        icon = { painterResource(R.drawable.ic_placeholder) },
+        icon = { painterResource(R.drawable.ic_apply) },
         label = "신청"
     ),
     All(
         route = "all",
-        icon = { painterResource(R.drawable.ic_placeholder) },
+        icon = { painterResource(R.drawable.ic_all) },
         label = "전체"
     ),
 }

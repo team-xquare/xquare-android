@@ -69,7 +69,7 @@ fun PointHistory(
             ),
         topBar = {
             AppBar(
-                painter = painterResource(R.drawable.ic_placeholder),
+                painter = painterResource(R.drawable.ic_back),
                 text = "상벌점 내역",
                 onIconClick = onBackPress
             )
