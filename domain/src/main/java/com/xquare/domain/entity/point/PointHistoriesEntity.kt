@@ -9,7 +9,7 @@ data class PointHistoriesEntity(
 )
 
 data class PointHistoryEntity(
-    val id: Int,
+    val id: String,
     val date: LocalDate,
     val reason: String,
     val pointType: Boolean,

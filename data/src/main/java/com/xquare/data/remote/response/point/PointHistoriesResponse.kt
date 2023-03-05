@@ -12,7 +12,7 @@ data class PointHistoriesResponse(
 )
 
 data class PointHistoryResponse(
-    @SerializedName("id") val id: Int,
+    @SerializedName("id") val id: String,
     @SerializedName("date") val date: String,
     @SerializedName("reason") val reason: String,
     @SerializedName("pointType") val pointType: Boolean,
