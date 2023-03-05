@@ -14,8 +14,8 @@ import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
-import com.xquare.xquare_android.component.ConfirmModal
-import com.xquare.xquare_android.component.TimePickerDialog
+import com.xquare.xquare_android.component.modal.ConfirmModal
+import com.xquare.xquare_android.component.modal.TimePickerDialog
 import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
