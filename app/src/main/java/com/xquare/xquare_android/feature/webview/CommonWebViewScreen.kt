@@ -17,12 +17,14 @@ import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.modal.ConfirmModal
 import com.xquare.xquare_android.component.modal.TimePickerDialog
 import com.xquare.xquare_android.component.WebView
+import com.xquare.xquare_android.component.modal.PeriodPickerModal
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.data.PeriodPickerInfo
 import com.xquare.xquare_android.webview.data.TimePickerInfo
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 import com.xquare.xquare_android.webview.sendResultOfTimePicker
@@ -37,6 +39,7 @@ fun CommonWebViewScreen(
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
     var timePickerState: TimePickerInfo? by remember { mutableStateOf(null) }
+    var periodPickerState: PeriodPickerInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -55,6 +58,7 @@ fun CommonWebViewScreen(
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
         onTimePicker = { timePickerState = it },
+        onPeriodPicker = { periodPickerState = it },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -95,6 +99,15 @@ fun CommonWebViewScreen(
             onConfirm = { time ->
                 webView?.sendResultOfTimePicker(it.id, time)
                 timePickerState = null
+            }
+        )
+    }
+    periodPickerState?.let {
+        PeriodPickerModal(
+            defaultPeriod = it.period,
+            onCancel = { periodPickerState = null },
+            onConfirm = {
+                periodPickerState = null
             }
         )
     }

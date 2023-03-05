@@ -4,6 +4,7 @@ import android.webkit.JavascriptInterface
 import com.google.gson.Gson
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.data.NavigateInfo
+import com.xquare.xquare_android.webview.data.PeriodPickerInfo
 import com.xquare.xquare_android.webview.data.TimePickerInfo
 import com.xquare.xquare_android.webview.data.WebViewError
 
@@ -14,6 +15,7 @@ class WebToAppBridge(
     val onBack: () -> Unit = {},
     val onError: (WebViewError) -> Unit = {},
     val onTimePicker: (TimePickerInfo) -> Unit = {},
+    val onPeriodPicker: (PeriodPickerInfo) -> Unit = {},
     private val gson: Gson = Gson(),
 ) {
 
@@ -40,4 +42,8 @@ class WebToAppBridge(
     @JavascriptInterface
     fun timePicker(data: String) =
         onTimePicker(gson.fromJson(data, TimePickerInfo::class.java))
+
+    @JavascriptInterface
+    fun periodPicker(data: String) =
+        onPeriodPicker(gson.fromJson(data, PeriodPickerInfo::class.java))
 }
