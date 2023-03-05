@@ -102,11 +102,11 @@ fun CommonWebViewScreen(
             confirmText = it.confirmText,
             cancelText = it.cancelText,
             onConfirm = {
-                webView?.sendResultOfConfirmModal(true)
+                webView?.sendResultOfConfirmModal(it.id,true)
                 modalState = null
             },
             onCancel = {
-                webView?.sendResultOfConfirmModal(false)
+                webView?.sendResultOfConfirmModal(it.id,false)
                 modalState = null
             }
         )
