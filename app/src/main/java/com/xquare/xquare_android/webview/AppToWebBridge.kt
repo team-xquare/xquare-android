@@ -7,3 +7,10 @@ fun WebView.sendResultOfConfirmModal(
 ) = this.loadUrl(
     "javascript:window.dispatchEvent(new CustomEvent('confirmXBridge', { detail: { success: $isConfirmed }}))"
 )
+
+fun WebView.sendResultOfTimePicker(
+    id: String,
+    time: String
+) = this.loadUrl(
+    "javascript:window.dispatchEvent(new CustomEvent('timePickerXBridge', { detail: { id: '$id', time: '$time' }}))"
+)

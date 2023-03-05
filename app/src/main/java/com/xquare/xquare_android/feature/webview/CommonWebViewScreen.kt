@@ -25,6 +25,7 @@ import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.data.TimePickerInfo
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
+import com.xquare.xquare_android.webview.sendResultOfTimePicker
 
 @Composable
 fun CommonWebViewScreen(
@@ -91,8 +92,9 @@ fun CommonWebViewScreen(
         TimePickerDialog(
             defaultTime = it.time,
             onCancel = { timePickerState = null },
-            onConfirm = {
-
+            onConfirm = { time ->
+                webView?.sendResultOfTimePicker(it.id, time)
+                timePickerState = null
             }
         )
     }
