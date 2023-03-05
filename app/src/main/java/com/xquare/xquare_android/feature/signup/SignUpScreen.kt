@@ -111,7 +111,7 @@ private fun SignUp(
             ),
         topBar = {
             AppBar(
-                painter = painterResource(R.drawable.ic_placeholder),
+                painter = painterResource(R.drawable.ic_back),
                 text = "회원가입",
                 onIconClick = onBackClick
             )
