@@ -2,33 +2,35 @@ package com.xquare.xquare_android
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.white.white
+import com.xquare.xquare_android.component.ActionSheet
 import com.xquare.xquare_android.component.BottomNavigation
+import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
+import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
+import com.xquare.xquare_android.feature.profile.ProfileScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
@@ -87,19 +89,28 @@ fun BaseApp() {
             SignInScreen(navController)
         }
         composable(AppNavigationItem.Main.route) {
+
             Main(navController)
         }
         composable(AppNavigationItem.AllMeal.route) {
             AllMealScreen(navController)
         }
+        composable(AppNavigationItem.PointHistory.route) {
+            PointHistoryScreen(navController)
+        }
+        composable(AppNavigationItem.Profile.route) {
+            ProfileScreen(navController)
+        }
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
             val title = it.arguments!!["title"].toString()
+            val rightButtonText = it.arguments!!["rightButtonText"].toString()
             val url = URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8.toString())
             CommonWebViewScreen(
                 navController = navController,
                 url = url,
                 title = title,
+                rightButtonText = rightButtonText,
                 haveBackButton = true
             )
         }
@@ -117,8 +128,8 @@ fun BaseApp() {
 fun Main(mainNavController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
-    val context = LocalContext.current
-    val window = context.getActivity()?.window
+    var actionSheetState by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier
             .background(white)
@@ -136,7 +147,8 @@ fun Main(mainNavController: NavController) {
                     BottomNavigationItem.Feed,
                     BottomNavigationItem.Application,
                     BottomNavigationItem.All
-                )
+                ),
+                actionSheetState = actionSheetState,
             )
         }
     ) { innerPadding ->
@@ -149,10 +161,21 @@ fun Main(mainNavController: NavController) {
                 HomeScreen(mainNavController)
             }
             composable(BottomNavigationItem.Schedule.route) {
-                // TODO()
+                CommonWebViewScreen(
+                    navController = mainNavController,
+                    url = "https://service.xquare.app/xbridge-test",
+                    title = "테스트",
+                    haveBackButton = false
+                )
+
             }
             composable(BottomNavigationItem.Feed.route) {
-                // TODO()
+                CommonWebViewScreen(
+                    navController = mainNavController,
+                    url = "https://service.xquare.app/feed",
+                    title = "피드",
+                    haveBackButton = false
+                )
             }
             composable(BottomNavigationItem.Application.route) {
 //                CommonWebViewScreen(
@@ -163,13 +186,14 @@ fun Main(mainNavController: NavController) {
 //                )
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "http://192.168.34.214:3000",
+                    url = "https://service.xquare.app/apply",
                     title = "신청",
-                    haveBackButton = false
+                    haveBackButton = false,
+                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.All.route) {
-                // TODO()
+                AllScreen(mainNavController)
             }
         }
     }
