@@ -33,15 +33,15 @@ import java.time.format.DateTimeParseException
 import kotlin.math.ceil
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun String.setDefaultTime(): String = this.ifEmpty {
+private fun String.setDefaultTime(): String = this.ifEmpty {
     LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
 }
 
-fun String.addZeroBack(length: Int): String =
+private fun String.addZeroBack(length: Int): String =
     this.padEnd(length,'0')
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun String.toHourMin(): LocalTime {
+private fun String.toHourMin(): LocalTime {
     return try {
         val localTime = LocalTime.parse(this, DateTimeFormatter.ofPattern("HH:mm"))
         localTime
@@ -51,7 +51,7 @@ fun String.toHourMin(): LocalTime {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun LocalTime.toMinCail(): LocalTime {
+private fun LocalTime.toMinCeil(): LocalTime {
     var hour = this.hour
     var minute = ceil(this.minute.toDouble()/10).toInt()*10
     if (minute >= 60) {
@@ -74,8 +74,8 @@ fun TimePickerDialog(
     onConfirm: (String) -> Unit,
 ) {
     val defaultTime = defaultTime.setDefaultTime()
-    var hour by remember { mutableStateOf(defaultTime.toHourMin().toMinCail().hour.toString().addZeroBack(2)) }
-    var min by remember { mutableStateOf(defaultTime.toHourMin().toMinCail().minute.toString().addZeroBack(2)) }
+    var hour by remember { mutableStateOf(defaultTime.toHourMin().toMinCeil().hour.toString().addZeroBack(2)) }
+    var min by remember { mutableStateOf(defaultTime.toHourMin().toMinCeil().minute.toString().addZeroBack(2)) }
 
     Dialog(
         properties = DialogProperties(

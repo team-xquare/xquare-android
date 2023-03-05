@@ -1,5 +1,8 @@
 package com.xquare.xquare_android.component.modal
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,33 +21,45 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.component.DefaultModalButton
 import com.xquare.xquare_android.component.PrimaryModalButton
-import java.util.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
+@RequiresApi(Build.VERSION_CODES.O)
+private fun String.setDefaultDay(): LocalDate =
+    if (this.isEmpty()) {
+        LocalDate.now()
+    } else {
+        try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            LocalDate.parse(this, formatter)
+        } catch (e: DateTimeParseException) {
+            LocalDate.now()
+        }
+    }
+
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DatePickerDialog(
-    defaultYear: String? = null,
-    defaultMonth: String? = null,
-    defaultDate: String? = null,
+fun DatePickerModal(
+    defaultDate: String,
     cancelText: String = "취소하기",
     confirmText: String = "선택하기",
     onCancel: () -> Unit,
-    onConfirm: (String, String, String) -> Unit,
+    onConfirm: (String) -> Unit,
 ) {
-    val calendar = Calendar.getInstance()
-    val thisYear = calendar.get(Calendar.YEAR)
-    val thisMonth = (calendar.get(Calendar.MONTH) + 1)
-    val thisDay = calendar.get(Calendar.DATE)
 
-    var year by remember { mutableStateOf(defaultYear ?: thisYear.toString()) }
-    var month by remember { mutableStateOf(defaultMonth ?: thisMonth.subString()) }
-    var day by remember { mutableStateOf(defaultDate ?: thisDay.subString()) }
+    val defaultDate = defaultDate.setDefaultDay()
+    var year by remember { mutableStateOf(defaultDate.year) }
+    var month by remember { mutableStateOf(defaultDate.monthValue) }
+    var day by remember { mutableStateOf(defaultDate.dayOfMonth) }
 
     Dialog(
         properties = DialogProperties(
@@ -66,25 +81,24 @@ fun DatePickerDialog(
                     .height(120.dp)
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
-                PickerItem(
+                CalendarPickerItem(
                     defaultValue = year,
-                    itemList = arrayOf(),
+                    itemList = (year..year).settingCalendarList(),
                 ) {
                     year = it
-                    day = dayOver(year,month,day)
                 }
                 Spacer(modifier = Modifier.size(24.dp))
-                PickerItem(
+                CalendarPickerItem(
                     defaultValue = month,
-                    itemList = arrayOf(),
+                    itemList = (1..12).settingCalendarList(),
                 ) {
                     month = it
                     day = dayOver(year, month, day)
                 }
                 Spacer(modifier = Modifier.size(24.dp))
-                PickerItem(
+                CalendarPickerItem(
                     defaultValue = day,
-                    itemList = arrayOf(),
+                    itemList = (1..lastDay(year, month)).settingCalendarList(),
                 ) {
                     day = it
                 }
@@ -96,9 +110,23 @@ fun DatePickerDialog(
                 Spacer(Modifier.size(16.dp))
                 PrimaryModalButton(
                     Modifier.weight(1f), text = confirmText) {
-                    onConfirm(year, month, day)
+                    onConfirm("$year-${month.subString()}-${day.subString()}")
                 }
             }
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+@Preview(showBackground = true)
+fun ShowDatePickerModal() {
+    DatePickerModal(
+        defaultDate = "2023-10-09",
+        onCancel = {
+        },
+        onConfirm = {
+            Log.d("TAG", "ShowDatePickerModal: $it")
+        }
+    )
 }
