@@ -27,6 +27,7 @@ import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.data.PeriodPickerInfo
 import com.xquare.xquare_android.webview.data.TimePickerInfo
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
+import com.xquare.xquare_android.webview.sendResultOfPeriodPicker
 import com.xquare.xquare_android.webview.sendResultOfTimePicker
 
 @Composable
@@ -106,7 +107,8 @@ fun CommonWebViewScreen(
         PeriodPickerModal(
             defaultPeriod = it.period,
             onCancel = { periodPickerState = null },
-            onConfirm = {
+            onConfirm = { period ->
+                webView?.sendResultOfPeriodPicker(it.id, period)
                 periodPickerState = null
             }
         )
