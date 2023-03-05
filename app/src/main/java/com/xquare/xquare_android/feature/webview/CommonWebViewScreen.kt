@@ -1,22 +1,11 @@
 package com.xquare.xquare_android.feature.webview
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -30,6 +19,7 @@ import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.ActionSheet
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.ConfirmModal
+import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.component.WebView
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
@@ -41,6 +31,8 @@ import com.xquare.xquare_android.webview.data.ActionSheetInfo
 import com.xquare.xquare_android.webview.sendIndexOfActionSheet
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 import kotlinx.coroutines.launch
+import com.xquare.xquare_android.webview.data.RightButtonEnabled
+import com.xquare.xquare_android.webview.sendResultOfRightButton
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -48,6 +40,7 @@ fun CommonWebViewScreen(
     navController: NavController,
     url: String,
     title: String,
+    rightButtonText: String? = null,
     haveBackButton: Boolean,
     changeActionSheetState: (Boolean) -> Unit = {}
 ) {
@@ -57,6 +50,7 @@ fun CommonWebViewScreen(
     val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var actionSheetInfo: ActionSheetInfo? by remember { mutableStateOf(null) }
     var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
+    var isRightButtonEnabled: RightButtonEnabled by remember { mutableStateOf(RightButtonEnabled(false)) }
     val viewModel: WebViewViewModel = hiltViewModel()
     val context = LocalContext.current
     val bridge = WebToAppBridge(
@@ -80,6 +74,7 @@ fun CommonWebViewScreen(
             }
             changeActionSheetState(true)
         },
+        onIsRightButtonEnabled = { isRightButtonEnabled = it },
     )
     LaunchedEffect(Unit) {
         viewModel.fetchAuthorizationHeader()
@@ -119,7 +114,6 @@ fun CommonWebViewScreen(
             }
         )
     }
-
     ActionSheet(
         state = actionSheetState,
         list = actionSheetInfo?.menu ?: listOf(),
@@ -136,12 +130,16 @@ fun CommonWebViewScreen(
             haveBackButton = haveBackButton,
             title = title,
             url = url,
+            rightButtonText = rightButtonText,
+            rightButtonEnabled = isRightButtonEnabled.isEnabled,
             headers = headers,
             bridges = mapOf(Pair("webview", bridge)),
             onBackClick = { navController.popBackStack() },
+            onTextBtnClick = { webView?.sendResultOfRightButton() },
             onWebviewCreate = { webView = it }
         )
     }
+
 }
 
 @Composable
@@ -149,9 +147,12 @@ private fun CommonWebView(
     haveBackButton: Boolean,
     title: String,
     url: String,
+    rightButtonText: String?,
+    rightButtonEnabled: Boolean,
     headers: Map<String, String>,
     bridges: Map<String, Any>,
     onBackClick: () -> Unit,
+    onTextBtnClick: () -> Unit,
     onWebviewCreate: (WebView) -> Unit,
 ) {
     Column(
@@ -162,11 +163,28 @@ private fun CommonWebView(
                 bottom = DevicePaddings.navigationBarHeightDp.dp
             )
     ) {
-        AppBar(
-            painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
-            text = title,
-            onIconClick = onBackClick
+        val appBarUrlList = listOf(
+            "https://service.xquare.app/xbridge-test",
+            "https://service.xquare.app/feed",
+            "https://service.xquare.app/apply",
         )
+        if (appBarUrlList.contains(url)) {
+            AppBar(
+                painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
+                text = title,
+                onIconClick = onBackClick
+            )
+        } else {
+            Header(
+                painter = painterResource(id = R.drawable.ic_back),
+                title = title,
+                btnText = rightButtonText,
+                btnEnabled = rightButtonEnabled,
+                onIconClick = onBackClick,
+                onBtnClick = onTextBtnClick,
+            )
+        }
+
         if (headers.isNotEmpty()) WebView(
             url = url,
             headers = headers,

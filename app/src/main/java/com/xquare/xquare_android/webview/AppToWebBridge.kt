@@ -14,3 +14,7 @@ fun WebView.sendIndexOfActionSheet(
 ) = this.loadUrl(
     "javascript:window.dispatchEvent(new CustomEvent('actionSheetXBridge', { detail: { id: '$id', index: $index }}))"
 )
+
+fun WebView.sendResultOfRightButton() = this.loadUrl(
+    "javascript:window.dispatchEvent(new CustomEvent('rightButtonTapedXBridge', { detail: {}))"
+)
