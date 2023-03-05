@@ -8,9 +8,9 @@ interface PointApi {
     @GET("points/history?type=null")
     suspend fun fetchPointSummary(): PointHistoriesResponse
 
-    @GET("points/history?type=true")
+    @GET("points/history?type=GOODPOINT")
     suspend fun fetchGoodPointHistories(): PointHistoriesResponse
 
-    @GET("points/history?type=false")
+    @GET("points/history?type=BADPOINT")
     suspend fun fetchBadPointHistories(): PointHistoriesResponse
 }

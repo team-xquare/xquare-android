@@ -2,7 +2,7 @@ package com.xquare.xquare_android.feature.webview
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.util.Log
+import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
@@ -51,18 +50,19 @@ fun CommonWebViewScreen(
     title: String,
     rightButtonText: String? = null,
     haveBackButton: Boolean,
-    changeActionSheetState: (Boolean) -> Unit = {}
+    changeActionSheetState: (Boolean) -> Unit = {},
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
     val actionSheetScope = rememberCoroutineScope()
-    val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val actionSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var actionSheetInfo: ActionSheetInfo? by remember { mutableStateOf(null) }
-    var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
     var galleryState: PhotoPickerInfo? by remember { mutableStateOf(null) }
     val photos: ArrayList<String> = ArrayList()
-    var isRightButtonEnabled: RightButtonEnabled by remember { mutableStateOf(RightButtonEnabled(false)) }
-    val viewModel: WebViewViewModel = hiltViewModel()
+    var isRightButtonEnabled: RightButtonEnabled by remember {
+        mutableStateOf(RightButtonEnabled(false))
+    }
     val context = LocalContext.current
 
     val bridge = WebToAppBridge(
@@ -89,23 +89,6 @@ fun CommonWebViewScreen(
         },
         onIsRightButtonEnabled = { isRightButtonEnabled = it },
     )
-    LaunchedEffect(Unit) {
-        viewModel.fetchAuthorizationHeader()
-        viewModel.eventFlow.collect {
-            when (it) {
-                is WebViewViewModel.Event.FetchSuccess -> {
-                    println(it.data)
-                    headers = it.data
-                }
-                is WebViewViewModel.Event.RefreshSuccess -> {
-                    headers = it.data
-                }
-                is WebViewViewModel.Event.NeedToLogin -> {
-                    navController.navigate(AppNavigationItem.Onboard.route) { popUpTo(0) }
-                }
-            }
-        }
-    }
     LaunchedEffect(actionSheetState.isVisible) {
         if (!actionSheetState.isVisible) {
             changeActionSheetState(false)
@@ -131,16 +114,17 @@ fun CommonWebViewScreen(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-             if (result.resultCode == RESULT_OK) {
-                 result.data!!.clipData?.run {
+            if (result.resultCode == RESULT_OK) {
+                result.data!!.clipData?.run {
                     if (itemCount > 10) {
                         makeToast(context, "사진은 10장까지 선택할 수 있습니다.")
                     } else {
                         for (i in 0 until itemCount) {
-                            val listItem = getItemAt(i).uri.parseBitmap(context).toBase64().replace("\\r\\n|\\r|\\n|\\n\\r".toRegex(),"")
+                            val listItem = getItemAt(i).uri.parseBitmap(context).toBase64()
+                                .replace("\\r\\n|\\r|\\n|\\n\\r".toRegex(), "")
                             photos.add("'data:image/png;base64,${listItem}'")
                         }
-                        webView?.sendImagesOfPhotoPicker(galleryState!!.id,photos)
+                        webView?.sendImagesOfPhotoPicker(galleryState!!.id, photos)
                         photos.clear()
                     }
                 }
@@ -174,11 +158,16 @@ fun CommonWebViewScreen(
             url = url,
             rightButtonText = rightButtonText,
             rightButtonEnabled = isRightButtonEnabled.isEnabled,
-            headers = headers,
             bridges = mapOf(Pair("webview", bridge)),
             onBackClick = { navController.popBackStack() },
             onTextBtnClick = { webView?.sendResultOfRightButton() },
-            onWebviewCreate = { webView = it }
+            onWebviewCreate = {
+                webView = it
+                CookieManager.getInstance().apply {
+                    setAcceptCookie(true)
+                    setAcceptThirdPartyCookies(it, true)
+                }
+            }
         )
     }
 
@@ -191,7 +180,6 @@ private fun CommonWebView(
     url: String,
     rightButtonText: String?,
     rightButtonEnabled: Boolean,
-    headers: Map<String, String>,
     bridges: Map<String, Any>,
     onBackClick: () -> Unit,
     onTextBtnClick: () -> Unit,
@@ -226,10 +214,8 @@ private fun CommonWebView(
                 onBtnClick = onTextBtnClick,
             )
         }
-
-        if (headers.isNotEmpty()) WebView(
+        WebView(
             url = url,
-            headers = headers,
             bridges = bridges,
             onCreate = onWebviewCreate
         )
