@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.home
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,8 +29,8 @@ import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.notoSansFamily
 import com.xquare.domain.entity.meal.MealEntity
-import com.xquare.domain.entity.point.DormitoryPointEntity
 import com.xquare.domain.entity.user.HomeUserEntity
+import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 
@@ -48,7 +48,8 @@ fun HomeScreen(navController: NavController) {
     HomeContent(
         userData = userData,
         meal = meal,
-        onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) }
+        onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
+        onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
     )
 }
 
@@ -56,6 +57,7 @@ fun HomeScreen(navController: NavController) {
 fun HomeContent(
     userData: HomeUserEntity,
     meal: MealEntity,
+    onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
 ) {
     Column(
@@ -66,7 +68,7 @@ fun HomeContent(
             .padding(horizontal = 16.dp)
     ) {
         HomeAppBar()
-        HomeUserCard(userData = userData)
+        HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
     }
@@ -82,23 +84,23 @@ fun HomeAppBar() {
         horizontalArrangement = Arrangement.End
     ) {
         Icon(
-            painter = ColorPainter(gray200),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = Color.Unspecified
-        )
-        Spacer(Modifier.size(16.dp))
-        Icon(
-            painter = ColorPainter(gray200),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = Color.Unspecified
+            painter = painterResource(id = R.drawable.ic_alarm),
+            contentDescription = "alarm",
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .size(24.dp)
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                ) {
+                    // TODO 알림 페이지 이동
+                }
         )
     }
 }
 
 @Composable
-fun HomeUserCard(userData: HomeUserEntity) {
+fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,13 +108,18 @@ fun HomeUserCard(userData: HomeUserEntity) {
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .padding(16.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+                enabled = true
+            ) { onClick() }
 
     ) {
         Image(
             painter = rememberAsyncImagePainter(
                 model = userData.profileFileImage,
                 placeholder = ColorPainter(gray200),
-                error = ColorPainter(gray200)
+                error = painterResource(id = R.drawable.ic_profile_default),
             ),
             contentDescription = "profileImage",
             contentScale = ContentScale.Crop,
@@ -138,6 +145,7 @@ fun HomeUserCard(userData: HomeUserEntity) {
 }
 
 
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeMealCard(
@@ -165,10 +173,10 @@ fun HomeMealCard(
                 fontWeight = FontWeight.Medium,
             )
             Icon(
-                painter = ColorPainter(gray200),
+                painter = painterResource(id = R.drawable.ic_arrow),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(24.dp)
+                    .padding(5.dp)
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = null,
@@ -219,11 +227,19 @@ fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
             .background(gray50)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        Body1(text = title, color = gray800)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Body1(text = title, color = gray800)
+            Body2(
+                text = calorie,
+                color = gray800,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(align = Alignment.End)
+            )
+        }
         Spacer(Modifier.size(8.dp))
         menus.forEach {
             Body2(text = it, color = gray800)
         }
-        Body2(text = calorie, color = gray800)
     }
 }

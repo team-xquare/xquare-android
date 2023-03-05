@@ -59,7 +59,7 @@ fun ImageDetail(images: Array<String>, onBackClick: () -> Unit) {
             ),
         topBar = {
             AppBar(
-                painter = painterResource(R.drawable.ic_placeholder),
+                painter = painterResource(R.drawable.ic_back),
                 text = "",
                 backgroundColor = black,
                 onIconClick = onBackClick

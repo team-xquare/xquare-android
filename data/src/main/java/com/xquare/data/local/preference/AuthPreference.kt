@@ -21,4 +21,10 @@ interface AuthPreference {
     suspend fun fetchExpirationAt(): LocalDateTime
 
     suspend fun clearExpirationAt()
+
+    suspend fun saveUserId(userId: String)
+
+    suspend fun fetchUserId(): String
+
+    suspend fun clearUserId()
 }

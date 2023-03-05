@@ -3,6 +3,7 @@ package com.xquare.di
 import com.xquare.data.interceptor.AuthorizationInterceptor
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
+import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.api.ProfileApi
 import com.xquare.data.remote.api.UserApi
 import dagger.Module
@@ -61,6 +62,13 @@ object NetworkModule {
         retrofit: Retrofit
     ): ProfileApi =
         retrofit.create(ProfileApi::class.java)
+
+    @Provides
+
+    fun providePointApi(
+        retrofit: Retrofit
+    ): PointApi =
+        retrofit.create(PointApi::class.java)
 
     @Provides
     fun provideUserApi(
