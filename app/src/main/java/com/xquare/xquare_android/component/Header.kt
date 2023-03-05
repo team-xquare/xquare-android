@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.component
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -65,9 +66,9 @@ fun Header(
                     contentDescription = null
                 )
             }
-            btnText?.let { text ->
+            if (btnText != null && btnText != "null") {
                 Body3(
-                    text = text,
+                    text = btnText,
                     color = btnColor,
                     modifier = Modifier
                         .fillMaxWidth()
