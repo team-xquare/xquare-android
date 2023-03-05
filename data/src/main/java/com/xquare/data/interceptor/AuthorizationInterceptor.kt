@@ -3,6 +3,8 @@ package com.xquare.data.interceptor
 import com.google.gson.Gson
 import com.xquare.data.local.preference.AuthPreference
 import com.xquare.data.remote.response.auth.TokenResponse
+import com.xquare.data.remote.response.auth.toEntity
+import com.xquare.domain.AppCookieManager
 import com.xquare.domain.exception.NeedLoginException
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
@@ -13,7 +15,8 @@ import org.threeten.bp.ZoneId
 import javax.inject.Inject
 
 class AuthorizationInterceptor @Inject constructor(
-    private val authPreference: AuthPreference
+    private val authPreference: AuthPreference,
+    private val appCookieManager: AppCookieManager,
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -46,6 +49,7 @@ class AuthorizationInterceptor @Inject constructor(
                     response.body!!.string(),
                     TokenResponse::class.java
                 )
+                appCookieManager.writeToken(token.toEntity())
                 runBlocking {
                     authPreference.saveAccessToken(token.accessToken)
                     authPreference.saveRefreshToken(token.refreshToken)

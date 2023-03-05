@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.webview
 
+import android.webkit.CookieManager
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,6 @@ import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
 import com.xquare.xquare_android.webview.sendResultOfConfirmModal
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun CommonWebViewScreen(
@@ -91,7 +91,10 @@ fun CommonWebViewScreen(
         headers = headers,
         bridges = mapOf(Pair("webview", bridge)),
         onBackClick = { navController.popBackStack() },
-        onWebviewCreate = { webView = it }
+        onWebviewCreate = {
+            webView = it
+            CookieManager.getInstance().acceptThirdPartyCookies(it)
+        }
     )
 }
 
