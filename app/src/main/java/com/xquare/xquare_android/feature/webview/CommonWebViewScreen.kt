@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.webview
 
+import android.os.Build
 import android.webkit.WebView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -94,14 +95,18 @@ fun CommonWebViewScreen(
         )
     }
     timePickerState?.let {
-        TimePickerDialog(
-            defaultTime = it.time,
-            onCancel = { timePickerState = null },
-            onConfirm = { time ->
-                webView?.sendResultOfTimePicker(it.id, time)
-                timePickerState = null
-            }
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            TimePickerDialog(
+                defaultTime = it.time,
+                onCancel = { timePickerState = null },
+                onConfirm = { time ->
+                    webView?.sendResultOfTimePicker(it.id, time)
+                    timePickerState = null
+                }
+            )
+        } else {
+            makeToast(context, "안드로이드 버전이 낮아 사용할 수 없습니다.")
+        }
     }
     periodPickerState?.let {
         PeriodPickerModal(

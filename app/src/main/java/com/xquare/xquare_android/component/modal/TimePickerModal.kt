@@ -2,14 +2,12 @@ package com.xquare.xquare_android.component.modal
 
 import android.os.Build
 import android.util.Log
-import android.view.ContextThemeWrapper
-import android.widget.NumberPicker
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -24,29 +22,48 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.semicolon.design.color.primary.white.white
-import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.DefaultModalButton
 import com.xquare.xquare_android.component.PrimaryModalButton
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Calendar
+import java.time.format.DateTimeParseException
+import kotlin.math.ceil
 
-private fun setDefaultTimer(defaultTime: String): String {
-    return defaultTime.ifEmpty {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val thisTime = LocalTime.now()
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
-            thisTime.format(formatter)
-        } else {
-            "00:00"
-        }
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.setDefaultTime(): String = this.ifEmpty {
+    LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+}
+
+fun String.addZeroBack(length: Int): String =
+    this.padEnd(length,'0')
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.toHourMin(): LocalTime {
+    return try {
+        val localTime = LocalTime.parse(this, DateTimeFormatter.ofPattern("HH:mm"))
+        localTime
+    } catch (e: DateTimeParseException) {
+        LocalTime.of(0,0)
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun LocalTime.toMinCail(): LocalTime {
+    var hour = this.hour
+    var minute = ceil(this.minute.toDouble()/10).toInt()*10
+    if (minute >= 60) {
+        minute -= 60
+        if (hour == 23) { hour = 0 } else { hour ++ }
+    }
+    return LocalTime.of(hour, minute)
+}
+
+
+
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TimePickerDialog(
@@ -56,9 +73,9 @@ fun TimePickerDialog(
     onCancel: () -> Unit,
     onConfirm: (String) -> Unit,
 ) {
-    val defaultTime = setDefaultTimer(defaultTime)
-    var hour by remember { mutableStateOf(defaultTime.substring(0..1)) }
-    var min by remember { mutableStateOf(defaultTime.substring(3..4)) }
+    val defaultTime = defaultTime.setDefaultTime()
+    var hour by remember { mutableStateOf(defaultTime.toHourMin().toMinCail().hour.toString().addZeroBack(2)) }
+    var min by remember { mutableStateOf(defaultTime.toHourMin().toMinCail().minute.toString().addZeroBack(2)) }
 
     Dialog(
         properties = DialogProperties(
@@ -73,7 +90,7 @@ fun TimePickerDialog(
                 .padding(20.dp),
         ) {
             Spacer(Modifier.size(12.dp))
-            
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -81,14 +98,14 @@ fun TimePickerDialog(
             ) {
                 PickerItem(
                     defaultValue = hour,
-                    itemList = (0..23).settingTimerList(),
+                    itemList = (0..23).settingHourList(),
                 ) {
                     hour = it
                 }
                 Spacer(modifier = Modifier.size(24.dp))
-                PickerItem(
-                    defaultValue = min,
-                    itemList = (0..59).settingTimerList(),
+                MinPickerItem(
+                    defaultValue = min[0].toString(),
+                    itemList = (0..5).settingMinList(),
                 ) {
                     min = it
                 }
@@ -107,12 +124,14 @@ fun TimePickerDialog(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showBackground = true)
 fun ShowTimePickerModal() {
     TimePickerDialog(
-        defaultTime = "12:38",
-        onCancel = {  },
+        defaultTime = "34:32",
+        onCancel = {
+        },
     ) {
         Log.d("TAG", "Time: $it")
     }

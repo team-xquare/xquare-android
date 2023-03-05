@@ -9,8 +9,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.xquare.xquare_android.R
 import java.util.*
 
-internal fun IntRange.settingTimerList():
+//all
+internal fun IntRange.settingHourList():
         Array<String> = (this.map { it.subString() }).toTypedArray()
+
+internal fun IntRange.settingMinList():
+        Array<String> = (this.map { (it*10).subString() }).toTypedArray()
 
 internal fun Int.subString() = "%02d".format(this)
 
@@ -52,6 +56,28 @@ fun PickerItem(
                 displayedValues = itemList
                 this.setOnValueChangedListener { _,_,value ->
                     onValueChange(value.subString())
+                }
+            }
+        }
+    )
+}
+
+@Composable
+fun MinPickerItem(
+    defaultValue: String,
+    itemList: Array<String>,
+    onValueChange: (String) -> Unit,
+) {
+    AndroidView(
+        factory = { context ->
+            val style = R.style.PickerItemStyle
+            NumberPicker(ContextThemeWrapper(context, style)).apply {
+                minValue = 0
+                maxValue = itemList.size - 1
+                value = defaultValue.toInt()
+                displayedValues = itemList
+                this.setOnValueChangedListener { _,_,value ->
+                    onValueChange(value.toString() + "0")
                 }
             }
         }
