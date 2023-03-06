@@ -5,6 +5,7 @@ import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
 import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.api.ProfileApi
+import com.xquare.data.remote.api.TimetablesApi
 import com.xquare.data.remote.api.UserApi
 import dagger.Module
 import dagger.Provides
@@ -64,7 +65,6 @@ object NetworkModule {
         retrofit.create(ProfileApi::class.java)
 
     @Provides
-
     fun providePointApi(
         retrofit: Retrofit
     ): PointApi =
@@ -75,4 +75,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): UserApi =
         retrofit.create(UserApi::class.java)
+
+    @Provides
+    fun provideTimetablesApi(
+        retrofit: Retrofit
+    ): TimetablesApi =
+        retrofit.create(TimetablesApi::class.java)
 }
