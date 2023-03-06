@@ -26,6 +26,7 @@ import com.xquare.xquare_android.component.ActionSheet
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
+import com.xquare.xquare_android.feature.bug.BugReportScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
@@ -101,6 +102,9 @@ fun BaseApp() {
         composable(AppNavigationItem.Profile.route) {
             ProfileScreen(navController)
         }
+        composable(AppNavigationItem.Bug.route) {
+            BugReportScreen(navController)
+        }
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
             val title = it.arguments!!["title"].toString()
@@ -165,25 +169,31 @@ fun Main(mainNavController: NavController) {
                     navController = mainNavController,
                     url = "https://service.xquare.app/xbridge-test",
                     title = "테스트",
-                    haveBackButton = false
+                    haveBackButton = false,
+                    changeActionSheetState = { actionSheetState = it }
                 )
-
             }
             composable(BottomNavigationItem.Feed.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
                     url = "https://service.xquare.app/feed",
                     title = "피드",
-                    haveBackButton = false
+                    haveBackButton = false,
+                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.Application.route) {
+//                CommonWebViewScreen(
+//                    navController = mainNavController,
+//                    url = "https://service.xquare.app/xbridge-test",
+//                    title = "신청",
+//                    haveBackButton = false
+//                )
                 CommonWebViewScreen(
                     navController = mainNavController,
                     url = "https://service.xquare.app/apply",
                     title = "신청",
                     haveBackButton = false,
-                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.All.route) {
