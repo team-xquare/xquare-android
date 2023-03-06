@@ -19,4 +19,8 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun fetchUserSimpleData(): HomeUserEntity =
         userSimpleRemoteDataSource.fetchUserSimpleData()
+
+    override suspend fun fixProfileImage(image: String?) =
+        userSimpleRemoteDataSource.fixProfileImage(image)
+
 }
