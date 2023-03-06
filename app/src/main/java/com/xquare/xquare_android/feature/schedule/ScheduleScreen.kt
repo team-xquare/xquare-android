@@ -12,11 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -196,122 +194,6 @@ private fun TimetableItem(
 @Composable
 private fun Schedule() {
 
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScheduleScreenPreview() {
-    ScheduleScreen(navController = rememberNavController())
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TimetablePreview() {
-    Timetable(
-        TimetableEntity(
-            listOf(
-                TimetableEntity.WeekTimetableEntity(
-                    1,
-                    "2023-03-07",
-                    listOf(
-                        TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                            1,
-                            "8:30",
-                            "9:30",
-                            "창체",
-                            ""
-                        ),
-                        TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                            1,
-                            "8:30",
-                            "9:30",
-                            "창체",
-                            ""
-                        )
-                    )
-                ),
-                TimetableEntity.WeekTimetableEntity(
-                    1,
-                    "2023-03-07",
-                    listOf(
-                        TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                            1,
-                            "8:30",
-                            "9:30",
-                            "창체",
-                            ""
-                        ),
-                        TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                            1,
-                            "8:30",
-                            "9:30",
-                            "창체",
-                            ""
-                        )
-                    )
-                ),
-                TimetableEntity.WeekTimetableEntity(
-                    1,
-                    "2023-03-07",
-                    listOf(
-                        TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                            1,
-                            "8:30",
-                            "9:30",
-                            "창체",
-                            ""
-                        ),
-                        TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                            1,
-                            "8:30",
-                            "9:30",
-                            "창체",
-                            ""
-                        )
-                    )
-                )
-            )
-        )
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TimetablePagePreview() {
-    TimetablePage(
-        TimetableEntity.WeekTimetableEntity(
-            1,
-            "2023-03-07",
-            listOf(
-                TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                    1,
-                    "8:30",
-                    "9:30",
-                    "창체",
-                    ""
-                ),
-                TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-                    1,
-                    "8:30",
-                    "9:30",
-                    "창체",
-                    ""
-                )
-            )
-        )
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TimetableItemPreview() {
-    TimetableItem(TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
-        1,
-        "8:30",
-        "9:30",
-        "창체",
-        "")
-    )
 }
 
 private fun getWeekdayStringByInt(int: Int) =
