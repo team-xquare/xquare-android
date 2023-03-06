@@ -62,7 +62,7 @@ fun AllScreen(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.size(8.dp))
                 RowMenuItem(painterResource(id = R.drawable.ic_warning), "버그 제보") {
-                    // TODO
+                    navController.navigate(AppNavigationItem.Bug.route)
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))
