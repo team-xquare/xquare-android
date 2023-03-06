@@ -169,7 +169,8 @@ fun Main(mainNavController: NavController) {
                     navController = mainNavController,
                     url = "https://service.xquare.app/xbridge-test",
                     title = "테스트",
-                    haveBackButton = false
+                    haveBackButton = false,
+                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.Feed.route) {
@@ -177,7 +178,8 @@ fun Main(mainNavController: NavController) {
                     navController = mainNavController,
                     url = "https://service.xquare.app/feed",
                     title = "피드",
-                    haveBackButton = false
+                    haveBackButton = false,
+                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.Application.route) {
@@ -192,7 +194,6 @@ fun Main(mainNavController: NavController) {
                     url = "https://service.xquare.app/apply",
                     title = "신청",
                     haveBackButton = false,
-                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.All.route) {
