@@ -4,12 +4,14 @@ import com.xquare.data.repository.AuthRepositoryImpl
 import com.xquare.data.repository.PointRepositoryImpl
 import com.xquare.data.repository.WebViewRepositoryImpl
 import com.xquare.data.repository.meal.MealRepositoryImpl
+import com.xquare.data.repository.schedules.SchedulesRepositoryImpl
 import com.xquare.data.repository.timetables.TimetablesRepositoryImpl
 import com.xquare.data.repository.user.UserRepositoryImpl
 import com.xquare.domain.repository.AuthRepository
 import com.xquare.domain.repository.PointRepository
 import com.xquare.domain.repository.WebViewRepository
 import com.xquare.domain.repository.meal.MealRepository
+import com.xquare.domain.repository.schedules.SchedulesRepository
 import com.xquare.domain.repository.timetables.TimetablesRepository
 import com.xquare.domain.repository.user.UserRepository
 import dagger.Binds
@@ -55,4 +57,9 @@ abstract class RepositoryModule {
     abstract fun bindTimetablesRepository(
         timetablesRepositoryImpl: TimetablesRepositoryImpl
     ): TimetablesRepository
+
+    @Binds
+    abstract fun bindSchedulesRepository(
+        schedulesRepositoryImpl: SchedulesRepositoryImpl
+    ): SchedulesRepository
 }

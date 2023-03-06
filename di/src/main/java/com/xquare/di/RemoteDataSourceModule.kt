@@ -39,4 +39,9 @@ abstract class RemoteDataSourceModule {
     abstract fun bindTimetablesDataSource(
         timetablesRemoteDataSourceImpl: TimetablesRemoteDataSourceImpl
     ): TimetablesRemoteDataSource
+
+    @Binds
+    abstract fun bindSchedulesRemoteDataSource(
+        schedulesRemoteDataSourceImpl: SchedulesRemoteDataSourceImpl
+    ): SchedulesRemoteDataSource
 }
