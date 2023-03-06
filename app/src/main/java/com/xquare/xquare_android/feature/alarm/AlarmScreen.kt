@@ -13,39 +13,61 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
-import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.white.white
+import com.xquare.domain.entity.notification.AlarmEntity
 import com.xquare.xquare_android.R
-import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
+import com.xquare.xquare_android.util.makeToast
 
 @Composable
 fun AlarmScreen(
     navController: NavController,
 ) {
+    val context = LocalContext.current
+    val viewModel: AlarmViewModel = hiltViewModel()
+    var alarmList: AlarmEntity?  by remember { mutableStateOf(null) }
+    /*LaunchedEffect(Unit) {
+        viewModel.fetchAlarmList()
+        viewModel.eventFlow.collect {
+            when (it) {
+                is AlarmViewModel.Event.Success -> alarmList = it.data
+                is AlarmViewModel.Event.Failure -> {
+                    makeToast(context, "알림을 불러오는데 실패했습니다")
+                }
+            }
+        }
+    }*/
     Alarm(
+        alarmList = alarmList,
         onBackPress = { navController.popBackStack() }
     )
 }
 
 @Composable
 fun Alarm(
+    alarmList: AlarmEntity?,
     onBackPress: () -> Unit,
 ) {
     Column(
@@ -62,12 +84,20 @@ fun Alarm(
             onIconClick = onBackPress
         )
 
-        Body3(
-            text = "알림이 존재하지 않습니다.",
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(align = Alignment.Center)
-        )
+        if (alarmList == null) {
+            Body3(
+                text = "알림이 존재하지 않습니다.",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(align = Alignment.Center)
+            )
+        } else {
+            LazyColumn {
+                items(alarmList.notifications) {
+
+                }
+            }
+        }
     }
 }
 

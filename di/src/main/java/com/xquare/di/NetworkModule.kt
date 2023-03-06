@@ -3,6 +3,7 @@ package com.xquare.di
 import com.xquare.data.interceptor.AuthorizationInterceptor
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
+import com.xquare.data.remote.api.NotificationApi
 import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.api.ProfileApi
 import com.xquare.data.remote.api.UserApi
@@ -75,4 +76,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): UserApi =
         retrofit.create(UserApi::class.java)
+
+    @Provides
+    fun provideNotificationApi(
+        retrofit: Retrofit
+    ): NotificationApi =
+        retrofit.create(NotificationApi::class.java)
 }
