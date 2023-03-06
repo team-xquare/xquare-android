@@ -40,7 +40,10 @@ fun Timetable() {
                     Log.d("TAG", "CreateSuccess")
                 }
                 is ScheduleViewModel.Event.FixSuccess -> {
-                    Log.d("TAG", "FixSuccess: ")
+                    Log.d("TAG", "FixSuccess")
+                }
+                is ScheduleViewModel.Event.DeleteSuccess -> {
+                    Log.d("TAG", "DeleteSuccess")
                 }
                 is ScheduleViewModel.Event.Failure -> {
                     makeToast(context, it.message)
@@ -72,4 +75,9 @@ fun Timetable() {
             )
         }
     }*/
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            scheduleViewModel.deleteSchedules("04fe75ce-fc62-4327-86a0-b6d1744966b7")
+        }
+    }
 }

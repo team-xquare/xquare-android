@@ -18,4 +18,7 @@ class SchedulesRepositoryImpl @Inject constructor(
 
     override suspend fun fixSchedules(data: FixSchedulesEntity) =
         schedulesRemoteDataSource.fixSchedules(data)
+
+    override suspend fun deleteSchedules(id: String) =
+        schedulesRemoteDataSource.deleteSchedules(id)
 }

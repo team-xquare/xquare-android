@@ -4,6 +4,7 @@ import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.schedules.CreateSchedulesEntity
 import com.xquare.domain.entity.schedules.FixSchedulesEntity
 import com.xquare.domain.usecase.schedules.CreateSchedulesUseCase
+import com.xquare.domain.usecase.schedules.DeleteSchedulesUseCase
 import com.xquare.domain.usecase.schedules.FetchSchedulesUseCase
 import com.xquare.domain.usecase.schedules.FixSchedulesUseCase
 import com.xquare.xquare_android.base.BaseViewModel
@@ -17,6 +18,7 @@ class ScheduleViewModel @Inject constructor(
     private val fetchSchedulesUseCase: FetchSchedulesUseCase,
     private val createSchedulesUseCase: CreateSchedulesUseCase,
     private val fixSchedulesUseCase: FixSchedulesUseCase,
+    private val deleteSchedulesUseCase: DeleteSchedulesUseCase,
 ): BaseViewModel<ScheduleViewModel.Event>() {
 
     private val _schedulesList = MutableStateFlow(SchedulesEntity(listOf()))
@@ -45,9 +47,18 @@ class ScheduleViewModel @Inject constructor(
             onFailure = { emitEvent(Event.Failure("일정을 수정하는데 실패했습니다")) }
         )
     }
+
+    fun deleteSchedules(id: String) {
+        execute(
+            job = { deleteSchedulesUseCase.execute(id) },
+            onSuccess = { emitEvent(Event.DeleteSuccess) },
+            onFailure = { emitEvent(Event.Failure("일정을 삭제하지 못했습니다")) }
+        )
+    }
     sealed class Event {
         object CreateSuccess : Event()
         object FixSuccess : Event()
+        object DeleteSuccess : Event()
         data class Failure(val message: String) : Event()
     }
 }

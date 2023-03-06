@@ -3,6 +3,7 @@ package com.xquare.data.remote.api
 import com.xquare.data.remote.request.schedules.WriteSchedulesRequest
 import com.xquare.data.remote.response.schedules.SchedulesResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -24,5 +25,10 @@ interface SchedulesApi {
     suspend fun fixSchedules(
         @Path("schedule-uuid") id: String,
         @Body writeSchedulesRequest: WriteSchedulesRequest
+    )
+
+    @DELETE("schedules/mine/{schedule-uuid}")
+    suspend fun deleteSchedules(
+        @Path("schedule-uuid") id: String
     )
 }

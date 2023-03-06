@@ -27,4 +27,9 @@ class SchedulesRemoteDataSourceImpl @Inject constructor(
             httpRequest = { schedulesApi.fixSchedules(id = data.id, data.toRequest()) }
         )
 
+    override suspend fun deleteSchedules(id: String) =
+        sendHttpRequest(
+            httpRequest = { schedulesApi.deleteSchedules(id) }
+        )
+
 }

@@ -10,4 +10,6 @@ interface SchedulesRepository {
     suspend fun createSchedules(data: CreateSchedulesEntity)
 
     suspend fun fixSchedules(data: FixSchedulesEntity)
+
+    suspend fun deleteSchedules(id: String)
 }
