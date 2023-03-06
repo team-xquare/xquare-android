@@ -7,11 +7,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.xquare.domain.entity.schedules.WriteSchedulesEntity
+import com.xquare.domain.entity.schedules.CreateSchedulesEntity
+import com.xquare.domain.entity.schedules.FixSchedulesEntity
 import com.xquare.xquare_android.util.makeToast
-import kotlinx.coroutines.flow.collect
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Composable
 fun Timetable() {
@@ -40,6 +39,9 @@ fun Timetable() {
                 is ScheduleViewModel.Event.CreateSuccess -> {
                     Log.d("TAG", "CreateSuccess")
                 }
+                is ScheduleViewModel.Event.FixSuccess -> {
+                    Log.d("TAG", "FixSuccess: ")
+                }
                 is ScheduleViewModel.Event.Failure -> {
                     makeToast(context, it.message)
                 }
@@ -50,16 +52,24 @@ fun Timetable() {
     //일정 불러오기
     /*val scheduleList = scheduleViewModel.schedulesList.collectAsState().value
     LaunchedEffect(Unit) {
-        scheduleViewModel.fetchSchedules(1)
+        scheduleViewModel.fetchSchedules(3)
     }
-    Log.d("TAG", "scheduleList: $scheduleList") */
+    Log.d("TAG", "scheduleList: $scheduleList")*/
 
     //일정 생성
    /*LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             scheduleViewModel.createSchedules(
-                WriteSchedulesEntity("일정 생성", LocalDate.now()))
+                CreateSchedulesEntity("일정 생성", LocalDate.now())
+            )
        }
    }*/
-    
+
+    /*LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            scheduleViewModel.fixSchedules(
+                FixSchedulesEntity("54f51e98-6d78-4487-bb4b-cc233d765321","씨발 세상", LocalDate.now())
+            )
+        }
+    }*/
 }
