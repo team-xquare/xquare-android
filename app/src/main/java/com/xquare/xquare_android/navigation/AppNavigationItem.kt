@@ -26,6 +26,8 @@ sealed class AppNavigationItem(val route: String) {
 
     object Profile : AppNavigationItem("Profile")
 
+    object Bug : AppNavigationItem("Bug")
+
     object CommonWebView : AppNavigationItem("commonWebView/{encodedUrl}/{title}") {
         fun createRoute(url: String, title: String): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())

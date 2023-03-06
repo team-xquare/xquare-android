@@ -8,6 +8,20 @@ fun WebView.sendResultOfConfirmModal(
     "javascript:window.dispatchEvent(new CustomEvent('confirmXBridge', { detail: { success: $isConfirmed }}))"
 )
 
+fun WebView.sendResultOfTimePicker(
+    id: String,
+    time: String
+) = this.loadUrl(
+    "javascript:window.dispatchEvent(new CustomEvent('timePickerXBridge', { detail: { id: '$id', time: '$time' }}))"
+)
+
+fun WebView.sendResultOfPeriodPicker(
+    id: String,
+    period: String
+) = this.loadUrl(
+    "javascript:window.dispatchEvent(new CustomEvent('periodPickerXBridge', { detail: { id: '$id', period: '$period' }}))"
+)
+
 fun WebView.sendImagesOfPhotoPicker(
     id: String,
     photos: List<String>,
