@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.webview
 
+import android.os.Build
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.webkit.CookieManager
@@ -23,9 +24,11 @@ import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.ActionSheet
 import com.xquare.xquare_android.component.AppBar
-import com.xquare.xquare_android.component.ConfirmModal
+import com.xquare.xquare_android.component.modal.ConfirmModal
+import com.xquare.xquare_android.component.modal.TimePickerDialog
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.component.WebView
+import com.xquare.xquare_android.component.modal.PeriodPickerModal
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -34,9 +37,13 @@ import com.xquare.xquare_android.util.toBase64
 import com.xquare.xquare_android.util.updateUi
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.WebToAppBridge
+import com.xquare.xquare_android.webview.data.PeriodPickerInfo
+import com.xquare.xquare_android.webview.data.TimePickerInfo
+import com.xquare.xquare_android.webview.sendResultOfConfirmModal
+import com.xquare.xquare_android.webview.sendResultOfPeriodPicker
+import com.xquare.xquare_android.webview.sendResultOfTimePicker
 import com.xquare.xquare_android.webview.data.PhotoPickerInfo
 import com.xquare.xquare_android.webview.sendImagesOfPhotoPicker
-import com.xquare.xquare_android.webview.sendResultOfConfirmModal
 import com.xquare.xquare_android.webview.data.ActionSheetInfo
 import com.xquare.xquare_android.webview.sendIndexOfActionSheet
 import kotlinx.coroutines.launch
@@ -55,6 +62,10 @@ fun CommonWebViewScreen(
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
+    var timePickerState: TimePickerInfo? by remember { mutableStateOf(null) }
+    var periodPickerState: PeriodPickerInfo? by remember { mutableStateOf(null) }
+    var headers: Map<String, String> by remember { mutableStateOf(mapOf()) }
+    val viewModel: WebViewViewModel = hiltViewModel()
     val actionSheetScope = rememberCoroutineScope()
     val actionSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -80,6 +91,8 @@ fun CommonWebViewScreen(
         onConfirmModal = { modalState = it },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onTimePicker = { timePickerState = it },
+        onPeriodPicker = { periodPickerState = it },
         onPhotoPicker = { galleryState = it },
         onActionSheet = {
             actionSheetInfo = it
@@ -90,6 +103,23 @@ fun CommonWebViewScreen(
         },
         onIsRightButtonEnabled = { isRightButtonEnabled = it },
     )
+    LaunchedEffect(Unit) {
+        viewModel.fetchAuthorizationHeader()
+        viewModel.eventFlow.collect {
+            when (it) {
+                is WebViewViewModel.Event.FetchSuccess -> {
+                    println(it.data)
+                    headers = it.data
+                }
+                is WebViewViewModel.Event.RefreshSuccess -> {
+                    headers = it.data
+                }
+                is WebViewViewModel.Event.NeedToLogin -> {
+                    navController.navigate(AppNavigationItem.Onboard.route) { popUpTo(0) }
+                }
+            }
+        }
+    }
     LaunchedEffect(actionSheetState.isVisible) {
         if (!actionSheetState.isVisible) {
             changeActionSheetState(false)
@@ -108,6 +138,30 @@ fun CommonWebViewScreen(
             onCancel = {
                 webView?.sendResultOfConfirmModal(false)
                 modalState = null
+            }
+        )
+    }
+    timePickerState?.let {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            TimePickerDialog(
+                defaultTime = it.time,
+                onCancel = { timePickerState = null },
+                onConfirm = { time ->
+                    webView?.sendResultOfTimePicker(it.id, time)
+                    timePickerState = null
+                }
+            )
+        } else {
+            makeToast(context, "안드로이드 버전이 낮아 사용할 수 없습니다.")
+        }
+    }
+    periodPickerState?.let {
+        PeriodPickerModal(
+            defaultPeriod = it.period,
+            onCancel = { periodPickerState = null },
+            onConfirm = { period ->
+                webView?.sendResultOfPeriodPicker(it.id, period)
+                periodPickerState = null
             }
         )
     }

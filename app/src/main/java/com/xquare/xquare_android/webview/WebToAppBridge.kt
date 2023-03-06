@@ -2,9 +2,11 @@ package com.xquare.xquare_android.webview
 
 import android.webkit.JavascriptInterface
 import com.google.gson.Gson
-import com.xquare.xquare_android.webview.data.ActionSheetInfo
 import com.xquare.xquare_android.webview.data.ModalInfo
 import com.xquare.xquare_android.webview.data.NavigateInfo
+import com.xquare.xquare_android.webview.data.PeriodPickerInfo
+import com.xquare.xquare_android.webview.data.TimePickerInfo
+import com.xquare.xquare_android.webview.data.ActionSheetInfo
 import com.xquare.xquare_android.webview.data.PhotoPickerInfo
 import com.xquare.xquare_android.webview.data.RightButtonEnabled
 import com.xquare.xquare_android.webview.data.WebViewError
@@ -15,6 +17,8 @@ class WebToAppBridge(
     val onConfirmModal: (ModalInfo) -> Unit = {},
     val onBack: () -> Unit = {},
     val onError: (WebViewError) -> Unit = {},
+    val onTimePicker: (TimePickerInfo) -> Unit = {},
+    val onPeriodPicker: (PeriodPickerInfo) -> Unit = {},
     val onPhotoPicker: (PhotoPickerInfo) -> Unit = {},
     val onActionSheet: (ActionSheetInfo) -> Unit = {},
     val onIsRightButtonEnabled: (RightButtonEnabled) -> Unit = {},
@@ -42,6 +46,12 @@ class WebToAppBridge(
         onError(gson.fromJson(error, WebViewError::class.java))
 
     @JavascriptInterface
+    fun timePicker(data: String) =
+        onTimePicker(gson.fromJson(data, TimePickerInfo::class.java))
+
+    @JavascriptInterface
+    fun periodPicker(data: String) =
+        onPeriodPicker(gson.fromJson(data, PeriodPickerInfo::class.java))
     fun photoPicker(data: String) =
         onPhotoPicker(gson.fromJson(data, PhotoPickerInfo::class.java))
 
