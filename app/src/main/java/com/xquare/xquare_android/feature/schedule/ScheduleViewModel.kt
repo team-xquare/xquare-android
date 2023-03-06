@@ -1,8 +1,8 @@
 package com.xquare.xquare_android.feature.schedule
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import com.xquare.domain.entity.schedules.SchedulesEntity
+import com.xquare.domain.entity.schedules.WriteSchedulesEntity
+import com.xquare.domain.usecase.schedules.CreateSchedulesUseCase
 import com.xquare.domain.usecase.schedules.FetchSchedulesUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(
     private val fetchSchedulesUseCase: FetchSchedulesUseCase,
+    private val createSchedulesUseCase: CreateSchedulesUseCase,
 ): BaseViewModel<ScheduleViewModel.Event>() {
 
     private val _schedulesList = MutableStateFlow(SchedulesEntity(listOf()))
@@ -22,13 +23,19 @@ class ScheduleViewModel @Inject constructor(
         execute(
             job = { fetchSchedulesUseCase.execute(month) },
             onSuccess = { _schedulesList.tryEmit(it) },
-            onFailure = {
-                Log.d("TAG", "fetchSchedules: $it")
-                emitEvent(Event.Failure("일정을 불러오는데 실패하였습니다."))
-            }
+            onFailure = { emitEvent(Event.Failure("일정을 불러오는데 실패하였습니다.")) }
+        )
+    }
+
+    fun createSchedules(data: WriteSchedulesEntity) {
+        execute(
+            job = { createSchedulesUseCase.execute(data) },
+            onSuccess = { emitEvent(Event.CreateSuccess) },
+            onFailure = { emitEvent(Event.Failure("일정을 생성하는데 실패하였습니다")) }
         )
     }
     sealed class Event {
+        object CreateSuccess : Event()
         data class Failure(val message: String) : Event()
     }
 }
