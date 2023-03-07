@@ -3,6 +3,7 @@ package com.xquare.xquare_android
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background

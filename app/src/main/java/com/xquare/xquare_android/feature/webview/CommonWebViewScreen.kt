@@ -9,7 +9,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
@@ -83,7 +82,7 @@ fun CommonWebViewScreen(
             val targetUrl = url + it.url
             updateUi { _ ->
                 navController.navigate(
-                    AppNavigationItem.CommonWebView.createRoute(targetUrl, it.title)
+                    AppNavigationItem.CommonWebView.createRoute(targetUrl, it.title, it.rightButtonText)
                 )
             }
         },

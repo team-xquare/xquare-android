@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.navigation
 
+import android.util.Log
 import com.xquare.xquare_android.webview.data.ImageInfo
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -28,10 +29,10 @@ sealed class AppNavigationItem(val route: String) {
 
     object Bug : AppNavigationItem("Bug")
 
-    object CommonWebView : AppNavigationItem("commonWebView/{encodedUrl}/{title}") {
-        fun createRoute(url: String, title: String): String {
+    object CommonWebView : AppNavigationItem("commonWebView/{encodedUrl}/{title}/{rightButtonText}") {
+        fun createRoute(url: String, title: String, rightButtonText: String?): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            return "commonWebView/$encodedUrl/$title"
+            return "commonWebView/$encodedUrl/$title/$rightButtonText"
         }
     }
 
