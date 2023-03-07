@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
@@ -20,13 +21,18 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.semicolon.design.Body1
+import com.semicolon.design.Body2
 import com.semicolon.design.Body3
+import com.semicolon.design.Subtitle4
 import com.semicolon.design.button.ToggleButton
 import com.semicolon.design.color.primary.dark.dark300
 import com.semicolon.design.color.primary.gray.gray100
 import com.semicolon.design.color.primary.gray.gray600
+import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
+import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
+import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.timetables.TimetableEntity
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -36,9 +42,15 @@ import org.threeten.bp.LocalDate
 fun ScheduleScreen(navController: NavController) {
     val context = LocalContext.current
     val timetableViewModel: TimetableViewModel = hiltViewModel()
+    val scheduleViewModel: ScheduleViewModel = hiltViewModel()
 
     var pageNum by remember { mutableStateOf(0) }
     var timetableEntity: TimetableEntity? by remember { mutableStateOf(null) }
+
+    var selectedMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
+    var schedulesEntity: SchedulesEntity? by remember { mutableStateOf(null) }
+    var isLoadingSchedule = remember { false }
+    var loadingMonth = LocalDate.now().monthValue
 
     LaunchedEffect(Unit) {
         timetableViewModel.fetchWeekTimetables()
@@ -51,6 +63,14 @@ fun ScheduleScreen(navController: NavController) {
                     makeToast(context, "시간표를 불러오지 못했습니다")
                 }
             }
+        }
+    }
+    LaunchedEffect(Unit) {
+        scheduleViewModel.fetchSchedules(loadingMonth)
+        scheduleViewModel.schedulesList.collect {
+            isLoadingSchedule = false
+            selectedMonth = loadingMonth
+            schedulesEntity = it
         }
     }
     Scaffold(
@@ -68,7 +88,25 @@ fun ScheduleScreen(navController: NavController) {
             }
         }
     ) {
-        if (pageNum == 0) Timetable(timetableEntity) else Schedule()
+        if (pageNum == 0) Timetable(timetableEntity)
+        else Schedule(
+            month = selectedMonth,
+            schedules = schedulesEntity,
+            onNextMonthClick = {
+                if (!isLoadingSchedule) {
+                    loadingMonth = it
+                    scheduleViewModel.fetchSchedules(loadingMonth)
+                    isLoadingSchedule = true
+                }
+            },
+            onPrevMonthClick = {
+                if (!isLoadingSchedule) {
+                    loadingMonth = it
+                    scheduleViewModel.fetchSchedules(loadingMonth)
+                    isLoadingSchedule = true
+                }
+            }
+        )
     }
 }
 
@@ -192,8 +230,88 @@ private fun TimetableItem(
 }
 
 @Composable
-private fun Schedule() {
+private fun Schedule(
+    month: Int,
+    schedules: SchedulesEntity?,
+    onPrevMonthClick: (curMonth: Int) -> Unit,
+    onNextMonthClick: (curMonth: Int) -> Unit,
+) {
+    if (schedules == null) return
+    val lazyState = rememberLazyListState()
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Scaffold(
+            topBar = {
+                Box(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 20.dp)
+                ) {
+                    ScheduleCalendar(month = month,
+                        schedules = schedules,
+                        listState = lazyState,
+                        onPrevMonthClick = { onPrevMonthClick(it) },
+                        onNextMonthClick = { onNextMonthClick(it) }
+                    )
+                }
+            }
+        ) {
+            LazyColumn(
+                state = lazyState,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                items(schedules.schedules.size) {
+                    ScheduleItem(schedules.schedules[it])
+                }
+            }
+        }
+    }
+}
 
+@Composable
+fun ScheduleItem(
+    schedulesDataEntity: SchedulesEntity.SchedulesDataEntity,
+) {
+    val date = LocalDate.parse(schedulesDataEntity.date)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Spacer(
+                modifier = Modifier
+                    .width(4.dp)
+                    .height(64.dp)
+                    .background(purple400)
+            )
+            Spacer(Modifier.size(21.dp))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Subtitle4(
+                    text = date.dayOfMonth.toString(),
+                    color = gray900,
+                    fontWeight = FontWeight.Medium
+                )
+                Body2(
+                    text = getWeekdayStringByInt(date.dayOfWeek.value),
+                    color = gray700,
+                )
+            }
+            Spacer(Modifier.size(21.dp))
+            Column {
+                Body1(
+                    text = schedulesDataEntity.name,
+                    color = gray900,
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(Modifier.size(4.dp))
+                Body2(
+                    text = "하루종일",
+                    color = gray700,
+                )
+
+            }
+        }
+    }
 }
 
 private fun getWeekdayStringByInt(int: Int) =
