@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
@@ -241,19 +242,28 @@ private fun CommonWebView(
     onTextBtnClick: () -> Unit,
     onWebviewCreate: (WebView) -> Unit,
 ) {
+    val appBarUrlList = listOf(
+        "https://service.xquare.app/xbridge-test",
+        "https://service.xquare.app/feed",
+        "https://service.xquare.app/apply",
+    )
+    val bottomPaddingFalseUrlList = listOf(
+        "https://service.xquare.app/feed",
+        "https://service.xquare.app/apply",
+    )
+
+    val bottomPadding =
+        if (bottomPaddingFalseUrlList.contains(url)) 0.dp
+        else DevicePaddings.navigationBarHeightDp.dp
+
     Column(
         modifier = Modifier
             .background(color = white)
             .padding(
                 top = DevicePaddings.statusBarHeightDp.dp,
-                bottom = DevicePaddings.navigationBarHeightDp.dp
+                bottom = bottomPadding
             )
     ) {
-        val appBarUrlList = listOf(
-            "https://service.xquare.app/xbridge-test",
-            "https://service.xquare.app/feed",
-            "https://service.xquare.app/apply",
-        )
         if (appBarUrlList.contains(url)) {
             AppBar(
                 painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
