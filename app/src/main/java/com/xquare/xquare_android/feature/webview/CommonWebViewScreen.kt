@@ -246,21 +246,12 @@ private fun CommonWebView(
         "https://service.xquare.app/feed",
         "https://service.xquare.app/apply",
     )
-    val bottomPaddingFalseUrlList = listOf(
-        "https://service.xquare.app/feed",
-        "https://service.xquare.app/apply",
-    )
-
-    val bottomPadding =
-        if (bottomPaddingFalseUrlList.contains(url)) 0.dp
-        else DevicePaddings.navigationBarHeightDp.dp
 
     Column(
         modifier = Modifier
             .background(color = white)
             .padding(
                 top = DevicePaddings.statusBarHeightDp.dp,
-                bottom = bottomPadding
             )
     ) {
         if (appBarUrlList.contains(url)) {
