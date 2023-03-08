@@ -1,6 +1,8 @@
 package com.xquare.di
 
 import com.xquare.data.interceptor.AuthorizationInterceptor
+import com.xquare.data.interceptor.EmptyBodyInterceptor
+import com.xquare.data.remote.api.AttachmentApi
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
 import com.xquare.data.remote.api.PointApi
@@ -30,10 +32,12 @@ object NetworkModule {
     @Provides
     fun provideOkHttpclient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        authorizationInterceptor: AuthorizationInterceptor
+        authorizationInterceptor: AuthorizationInterceptor,
+        emptyBodyInterceptor: EmptyBodyInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(authorizationInterceptor)
+        .addInterceptor(emptyBodyInterceptor)
         .build()
 
     @Provides
@@ -75,4 +79,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): UserApi =
         retrofit.create(UserApi::class.java)
+
+    @Provides
+    fun provideAttachmentApi(
+        retrofit: Retrofit
+    ): AttachmentApi =
+        retrofit.create(AttachmentApi::class.java)
 }
