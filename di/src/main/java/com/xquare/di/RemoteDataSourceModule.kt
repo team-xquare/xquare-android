@@ -44,4 +44,9 @@ abstract class RemoteDataSourceModule {
     abstract fun bindSchedulesRemoteDataSource(
         schedulesRemoteDataSourceImpl: SchedulesRemoteDataSourceImpl
     ): SchedulesRemoteDataSource
+
+    @Binds
+    abstract fun bindAttachmentRemoteDataSource(
+        attachmentRemoteDataSourceImpl: AttachmentRemoteDataSourceImpl
+    ): AttachmentRemoteDataSource
 }

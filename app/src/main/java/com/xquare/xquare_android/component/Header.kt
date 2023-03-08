@@ -75,11 +75,9 @@ fun Header(
                         .clickable(
                             interactionSource = MutableInteractionSource(),
                             indication = null,
-                            enabled = true,
+                            enabled = btnEnabled,
                         ) {
-                            if (btnEnabled) {
-                                onBtnClick()
-                            }
+                            onBtnClick()
                         },
                 )
             }

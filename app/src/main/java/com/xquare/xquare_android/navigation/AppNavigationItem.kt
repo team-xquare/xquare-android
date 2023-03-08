@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.navigation
 
+import com.xquare.xquare_android.webview.data.ImageInfo
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -25,6 +26,8 @@ sealed class AppNavigationItem(val route: String) {
 
     object Profile : AppNavigationItem("Profile")
 
+    object Bug : AppNavigationItem("Bug")
+
     object CommonWebView : AppNavigationItem("commonWebView/{encodedUrl}/{title}") {
         fun createRoute(url: String, title: String): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
@@ -33,8 +36,8 @@ sealed class AppNavigationItem(val route: String) {
     }
 
     object ImageDetail : AppNavigationItem("imageDetail/{joinedEncodedImage}") {
-        fun createRoute(images: Array<String>): String {
-            val joinedEncodedImage = images.joinToString(",") {
+        fun createRoute(imageInfo: ImageInfo): String {
+            val joinedEncodedImage = imageInfo.images.joinToString(",") {
                 URLEncoder.encode(it, StandardCharsets.UTF_8.toString())
             }
             return "imageDetail/$joinedEncodedImage"
