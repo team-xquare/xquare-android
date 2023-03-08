@@ -33,6 +33,7 @@ import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
 import com.xquare.xquare_android.feature.profile.ProfileScreen
+import com.xquare.xquare_android.feature.schedule.ScheduleScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
@@ -91,7 +92,6 @@ fun BaseApp() {
             SignInScreen(navController)
         }
         composable(AppNavigationItem.Main.route) {
-
             Main(navController)
         }
         composable(AppNavigationItem.AllMeal.route) {
@@ -174,13 +174,7 @@ fun Main(mainNavController: NavController) {
                 HomeScreen(mainNavController)
             }
             composable(BottomNavigationItem.Schedule.route) {
-                CommonWebViewScreen(
-                    navController = mainNavController,
-                    url = "https://service.xquare.app/xbridge-test",
-                    title = "테스트",
-                    haveBackButton = false,
-                    changeActionSheetState = { actionSheetState = it }
-                )
+                ScheduleScreen(mainNavController)
             }
             composable(BottomNavigationItem.Feed.route) {
                 CommonWebViewScreen(
