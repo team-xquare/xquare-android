@@ -4,13 +4,16 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,8 +50,7 @@ fun ScheduleScreen(navController: NavController) {
     var pageNum by remember { mutableStateOf(0) }
     var timetableEntity: TimetableEntity? by remember { mutableStateOf(null) }
 
-    var selectedMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
-    var schedulesEntity: SchedulesEntity? by remember { mutableStateOf(null) }
+    var scheduleData: Pair<Int, SchedulesEntity>? by remember { mutableStateOf(null) }
     var isLoadingSchedule = remember { false }
     var loadingMonth = LocalDate.now().monthValue
 
@@ -67,10 +69,14 @@ fun ScheduleScreen(navController: NavController) {
     }
     LaunchedEffect(Unit) {
         scheduleViewModel.fetchSchedules(loadingMonth)
-        scheduleViewModel.schedulesList.collect {
-            isLoadingSchedule = false
-            selectedMonth = loadingMonth
-            schedulesEntity = it
+        scheduleViewModel.eventFlow.collect {
+            when (it) {
+                is ScheduleViewModel.Event.Success -> {
+                    isLoadingSchedule = false
+                    scheduleData = Pair(loadingMonth, it.data)
+                }
+                else -> {}
+            }
         }
     }
     Scaffold(
@@ -90,20 +96,19 @@ fun ScheduleScreen(navController: NavController) {
     ) {
         if (pageNum == 0) Timetable(timetableEntity)
         else Schedule(
-            month = selectedMonth,
-            schedules = schedulesEntity,
+            data = scheduleData,
             onNextMonthClick = {
                 if (!isLoadingSchedule) {
                     loadingMonth = it
-                    scheduleViewModel.fetchSchedules(loadingMonth)
                     isLoadingSchedule = true
+                    scheduleViewModel.fetchSchedules(loadingMonth)
                 }
             },
             onPrevMonthClick = {
                 if (!isLoadingSchedule) {
                     loadingMonth = it
-                    scheduleViewModel.fetchSchedules(loadingMonth)
                     isLoadingSchedule = true
+                    scheduleViewModel.fetchSchedules(loadingMonth)
                 }
             }
         )
@@ -231,37 +236,68 @@ private fun TimetableItem(
 
 @Composable
 private fun Schedule(
-    month: Int,
-    schedules: SchedulesEntity?,
+    data: Pair<Int, SchedulesEntity>?,
     onPrevMonthClick: (curMonth: Int) -> Unit,
     onNextMonthClick: (curMonth: Int) -> Unit,
 ) {
-    if (schedules == null) return
-    val lazyState = rememberLazyListState()
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        if (data == null) return
+        val monthValue = data.first
+        val schedulesValue = data.second
+        var calendarPlusHeightPx by remember { mutableStateOf(0) }
+        var isCollapsedAll = remember { false }
+        var isExpandedAll = remember { true }
+        val nestedScrollConnection =
+            object : NestedScrollConnection {
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    return if (available.y < 0) {
+                        isExpandedAll = false
+                        calendarPlusHeightPx = available.y.toInt()
+                        println("asdf up")
+                        if (isCollapsedAll) Offset.Zero else available
+                    } else {
+                        isCollapsedAll = false
+                        calendarPlusHeightPx = available.y.toInt()
+                        println("asdf down")
+                        if (isExpandedAll) Offset.Zero else available
+                    }
+                }
+            }
         Scaffold(
+            modifier = Modifier,
             topBar = {
                 Box(
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 20.dp)
                 ) {
-                    ScheduleCalendar(month = month,
-                        schedules = schedules,
-                        listState = lazyState,
+                    ScheduleCalendar(month = monthValue,
+                        schedules = schedulesValue,
+                        plusHeight = { calendarPlusHeightPx },
                         onPrevMonthClick = { onPrevMonthClick(it) },
-                        onNextMonthClick = { onNextMonthClick(it) }
+                        onNextMonthClick = { onNextMonthClick(it) },
+                        onCollapsedAll = {
+                            println("asdf on collapsed")
+                            isCollapsedAll = true
+                        },
+                        onExpandedAll = {
+                            println("asdf on expanded")
+                            isExpandedAll = true
+                        }
                     )
                 }
             }
         ) {
             LazyColumn(
-                state = lazyState,
+                modifier = Modifier.nestedScroll(nestedScrollConnection),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                items(schedules.schedules.size) {
-                    ScheduleItem(schedules.schedules[it])
+                items(schedulesValue.schedules.size) {
+                    ScheduleItem(schedulesValue.schedules[it])
+                }
+                item {
+                    Spacer(Modifier.size(88.dp))
                 }
             }
         }
@@ -308,7 +344,6 @@ fun ScheduleItem(
                     text = "하루종일",
                     color = gray700,
                 )
-
             }
         }
     }

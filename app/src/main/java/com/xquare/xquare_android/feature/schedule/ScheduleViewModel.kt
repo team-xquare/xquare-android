@@ -27,7 +27,7 @@ class ScheduleViewModel @Inject constructor(
     fun fetchSchedules(month: Int) {
         execute(
             job = { fetchSchedulesUseCase.execute(month) },
-            onSuccess = { _schedulesList.tryEmit(it) },
+            onSuccess = { emitEvent(Event.Success(it)) },
             onFailure = { emitEvent(Event.Failure("일정을 불러오는데 실패하였습니다.")) }
         )
     }
@@ -56,6 +56,7 @@ class ScheduleViewModel @Inject constructor(
         )
     }
     sealed class Event {
+        data class Success(val data: SchedulesEntity): Event()
         object CreateSuccess : Event()
         object FixSuccess : Event()
         object DeleteSuccess : Event()

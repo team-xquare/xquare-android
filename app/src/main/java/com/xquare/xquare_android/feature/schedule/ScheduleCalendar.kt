@@ -1,17 +1,18 @@
 package com.xquare.xquare_android.feature.schedule
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,29 +28,57 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.Month
 import org.threeten.bp.chrono.IsoChronology
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ScheduleCalendar(
     month: Int,
     schedules: SchedulesEntity,
-    listState: LazyListState,
+    plusHeight: () -> Int,
     onPrevMonthClick: (prevMonth: Int) -> Unit,
     onNextMonthClick: (nextMonth: Int) -> Unit,
+    onCollapsedAll: () -> Unit,
+    onExpandedAll: () -> Unit,
 ) {
-    val now = LocalDate.now()
 
+    val localDensity = LocalDensity.current
+    val now = LocalDate.now()
     val year = if (now.monthValue in 3..12) {
         if (month in 3..12) now.year else now.year + 1
     } else {
         if (month in 1..2) now.year else now.year - 1
     }
+    var prev by remember { mutableStateOf(month) }
 
-    val calendarDateList = getCalendarDateList(year, month)
+    val calendarDateList by mutableStateOf(getCalendarDateList(year, month))
     val slicedCalendarDateList = mutableListOf<List<LocalDate>>()
-    val isCompact = false
     for (i in 0 until calendarDateList.size / 7) {
         slicedCalendarDateList.add(calendarDateList.subList(i * 7, i * 7 + 7))
     }
+
+    val minHeight = with(localDensity) { 36.dp.toPx() }
+    val maxHeight = with(localDensity) {
+        (36.dp.toPx() * slicedCalendarDateList.size) + (8.dp.toPx() * (slicedCalendarDateList.size - 1))
+    }
+    var calendarHeight by remember { mutableStateOf(maxHeight) }
+    var isCompact by remember { mutableStateOf(false) }
     var compactListIndex by remember { mutableStateOf(-1) }
+    if (!isCompact) {
+        calendarHeight = maxHeight
+        compactListIndex = -1
+        prev = month
+    } else {
+        if (prev < month) compactListIndex = 0
+        else if (prev > month) compactListIndex = slicedCalendarDateList.lastIndex
+        prev = month
+    }
+
+    calendarHeight = (calendarHeight + plusHeight.invoke()).coerceIn(minHeight, maxHeight)
+    when (calendarHeight) {
+        minHeight -> onCollapsedAll()
+        maxHeight -> onExpandedAll()
+    }
+    isCompact = calendarHeight != maxHeight
+
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -129,18 +158,25 @@ fun ScheduleCalendar(
             } else if (compactListIndex == -1) {
                 compactListIndex = 0
             } else {
-                slicedCalendarDateList.getOrNull(compactListIndex)?.let { list ->
-                    Row {
-                        list.forEach {
-                            val dateSchedules = schedules.schedules.firstOrNull { data ->
-                                data.date == it.toString()
+                val height = with(localDensity) { calendarHeight.toDp() }
+                Column(
+                    modifier = Modifier
+                        .height(height),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    slicedCalendarDateList.getOrNull(compactListIndex)?.let { list ->
+                        Row {
+                            list.forEach {
+                                val dateSchedules = schedules.schedules.firstOrNull { data ->
+                                    data.date == it.toString()
+                                }
+                                ScheduleCalendarItem(
+                                    day = it.dayOfMonth,
+                                    isToday = it == now,
+                                    haveSchedule = dateSchedules != null,
+                                    isThisMonth = it.monthValue == month
+                                )
                             }
-                            ScheduleCalendarItem(
-                                day = it.dayOfMonth,
-                                isToday = it == now,
-                                haveSchedule = dateSchedules != null,
-                                isThisMonth = it.monthValue == month
-                            )
                         }
                     }
                 }
