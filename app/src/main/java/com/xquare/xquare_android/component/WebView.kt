@@ -52,33 +52,21 @@ fun WebView(
     var bottomPadding by remember { mutableStateOf(bottomState) }
 
     val view = LocalView.current
-//    val currentFocus = LocalView.current
-//
-//    val keyboardVisibilityObserver = remember {
-//        ViewTreeObserver.OnGlobalLayoutListener {
-//            val rootView = currentFocus.rootView
-//            val heightDiff = rootView?.height?.minus(rootView.height - rootView.rootView.height)
-//            bottomPadding =
-//                if (heightDiff != null && heightDiff > 300) {
-//                    0.dp
-//                } else {
-//                    DevicePaddings.navigationBarHeightDp.dp
-//                }
-//        }
-//    }
 
     AndroidView(
         factory = { context ->
             WebView(context).apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    view.rootView.setOnApplyWindowInsetsListener { _, insets ->
-                        bottomPadding =
-                            if (insets.isVisible(WindowInsets.Type.ime())) { 0.dp }
-                            else { DevicePaddings.navigationBarHeightDp.dp }
-                        insets.consumeSystemWindowInsets()
+                if (!bottomPaddingFalseUrlList.contains(url)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        view.rootView.setOnApplyWindowInsetsListener { _, insets ->
+                            bottomPadding =
+                                if (insets.isVisible(WindowInsets.Type.ime())) { 0.dp }
+                                else { DevicePaddings.navigationBarHeightDp.dp }
+                            insets.consumeSystemWindowInsets()
+                        }
                     }
                 }
-              //  viewTreeObserver.addOnGlobalLayoutListener(keyboardVisibilityObserver)
+                
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
