@@ -224,7 +224,7 @@ fun HomeMealCard(
 fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
     Column(
         modifier = Modifier
-            .size(148.dp, 198.dp)
+            .size(150.dp, 210.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(gray50)
             .padding(horizontal = 16.dp, vertical = 12.dp)
