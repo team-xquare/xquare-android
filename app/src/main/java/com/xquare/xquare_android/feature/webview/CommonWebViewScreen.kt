@@ -70,6 +70,7 @@ fun CommonWebViewScreen(
     val actionSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var actionSheetInfo: ActionSheetInfo? by remember { mutableStateOf(null) }
+    var actionSheetIndex: Int? by remember { mutableStateOf(null) }
     var galleryState: PhotoPickerInfo? by remember { mutableStateOf(null) }
     val photos: ArrayList<String> = ArrayList()
     var isRightButtonEnabled: RightButtonEnabled by remember {
@@ -126,6 +127,10 @@ fun CommonWebViewScreen(
     }
     LaunchedEffect(actionSheetState.isVisible) {
         if (!actionSheetState.isVisible) {
+            actionSheetIndex?.run {
+                webView?.sendIndexOfActionSheet(actionSheetInfo!!.id, this)
+            }
+            actionSheetInfo = null
             changeActionSheetState(false)
         }
     }
@@ -200,12 +205,10 @@ fun CommonWebViewScreen(
         state = actionSheetState,
         list = actionSheetInfo?.menu ?: listOf(),
         onClick = {
+            actionSheetIndex = it
             actionSheetScope.launch {
                 actionSheetState.hide()
             }
-            changeActionSheetState(false)
-            webView?.sendIndexOfActionSheet(actionSheetInfo!!.id, it)
-            actionSheetInfo = null
         }
     ) {
         CommonWebView(

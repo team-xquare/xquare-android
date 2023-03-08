@@ -1,37 +1,23 @@
 package com.xquare.xquare_android.component
 
 import android.annotation.SuppressLint
-import android.app.Service
-import android.content.res.Configuration
 import android.os.Build
-import android.util.Log
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.WindowInsets
-import android.view.WindowInsetsAnimation
-import android.view.inputmethod.InputMethodManager
 import android.webkit.*
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.view.WindowInsetsAnimationCompat
 import com.xquare.xquare_android.util.DevicePaddings
 
-@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
 @Composable
 fun WebView(
@@ -66,7 +52,7 @@ fun WebView(
                         }
                     }
                 }
-                
+
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
