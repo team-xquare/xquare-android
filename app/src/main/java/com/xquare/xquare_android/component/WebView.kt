@@ -1,11 +1,9 @@
 package com.xquare.xquare_android.component
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Build
 import android.view.ViewGroup
 import android.view.WindowInsets
-import android.view.inputmethod.InputMethodManager
 import android.webkit.*
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -27,6 +25,7 @@ fun WebView(
     url: String,
     headers: Map<String, String> = mapOf(),
     bridges: Map<String, Any> = mapOf(),
+    keyboardCheck: (Boolean) -> Unit = {},
     onCreate: (WebView) -> Unit = {}
 ) {
     val bottomPaddingFalseUrlList = listOf(
@@ -47,9 +46,14 @@ fun WebView(
                 if (!bottomPaddingFalseUrlList.contains(url)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         view.rootView.setOnApplyWindowInsetsListener { _, insets ->
-                            bottomPadding =
-                                if (insets.isVisible(WindowInsets.Type.ime())) { 0.dp }
-                                else { DevicePaddings.navigationBarHeightDp.dp }
+                            if (insets.isVisible(WindowInsets.Type.ime())) {
+                                bottomPadding = 0.dp
+                                keyboardCheck(true)
+                            }
+                            else {
+                                bottomPadding = DevicePaddings.navigationBarHeightDp.dp
+                                keyboardCheck(false)
+                            }
                             insets.consumeSystemWindowInsets()
                         }
                     }
@@ -61,9 +65,6 @@ fun WebView(
                 )
                 webViewClient = object :WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
-                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-
                         CookieManager.getInstance().flush()
                     }
                 }

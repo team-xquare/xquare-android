@@ -76,14 +76,21 @@ fun CommonWebViewScreen(
     var isRightButtonEnabled: RightButtonEnabled by remember {
         mutableStateOf(RightButtonEnabled(false))
     }
+    var keyboardState by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    //val view = LocalView.current
+   // manageKeyboardState(view) { keyboardState = it }
 
     val bridge = WebToAppBridge(
         onNavigate = {
             val targetUrl = url + it.url
             updateUi { _ ->
                 navController.navigate(
-                    AppNavigationItem.CommonWebView.createRoute(targetUrl, it.title, it.rightButtonText)
+                    AppNavigationItem.CommonWebView.createRoute(
+                        targetUrl,
+                        it.title,
+                        it.rightButtonText
+                    )
                 )
             }
         },
@@ -97,7 +104,11 @@ fun CommonWebViewScreen(
             makeToast(context, "사진은 10장까지 선택할 수 있습니다.")
             galleryState = it
         },
-        onTimePicker = { timePickerState = it },
+        onTimePicker = {
+            if (!keyboardState) {
+                timePickerState = it
+            }
+        },
         onPeriodPicker = { periodPickerState = it },
         onActionSheet = {
             actionSheetInfo = it
@@ -219,6 +230,7 @@ fun CommonWebViewScreen(
             bridges = mapOf(Pair("webview", bridge)),
             onBackClick = { navController.popBackStack() },
             onTextBtnClick = { webView?.sendResultOfRightButton() },
+            keyboardCheck = { keyboardState = it },
             onWebviewCreate = {
                 webView = it
                 CookieManager.getInstance().apply {
@@ -241,6 +253,7 @@ private fun CommonWebView(
     bridges: Map<String, Any>,
     onBackClick: () -> Unit,
     onTextBtnClick: () -> Unit,
+    keyboardCheck: (Boolean) -> Unit,
     onWebviewCreate: (WebView) -> Unit,
 ) {
     val appBarUrlList = listOf(
@@ -275,6 +288,7 @@ private fun CommonWebView(
         WebView(
             url = url,
             bridges = bridges,
+            keyboardCheck = keyboardCheck,
             onCreate = onWebviewCreate
         )
     }
