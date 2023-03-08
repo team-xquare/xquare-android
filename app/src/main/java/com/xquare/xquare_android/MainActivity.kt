@@ -21,10 +21,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.white.white
-import com.xquare.xquare_android.component.ActionSheet
 import com.xquare.xquare_android.component.BottomNavigation
+import com.xquare.xquare_android.feature.alarm.AlarmScreen
 import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.bug.BugReportScreen
@@ -96,6 +95,9 @@ fun BaseApp() {
         }
         composable(AppNavigationItem.AllMeal.route) {
             AllMealScreen(navController)
+        }
+        composable(AppNavigationItem.Alarm.route) {
+            AlarmScreen(navController)
         }
         composable(AppNavigationItem.PointHistory.route) {
             PointHistoryScreen(navController)

@@ -49,6 +49,7 @@ fun HomeScreen(navController: NavController) {
         userData = userData,
         meal = meal,
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
+        onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
         onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
     )
 }
@@ -59,6 +60,7 @@ fun HomeContent(
     meal: MealEntity,
     onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
+    onAlarmClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -67,7 +69,7 @@ fun HomeContent(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        HomeAppBar()
+        HomeAppBar(onAlarmClick = onAlarmClick)
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
@@ -75,7 +77,7 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeAppBar() {
+fun HomeAppBar(onAlarmClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,17 +85,17 @@ fun HomeAppBar() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
+        Spacer(Modifier.size(16.dp))
         Icon(
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = "alarm",
-            tint = Color.Unspecified,
             modifier = Modifier
                 .size(24.dp)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
                 ) {
-                    // TODO 알림 페이지 이동
+                    onAlarmClick()
                 }
         )
     }

@@ -5,8 +5,10 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.google.gson.Gson
+import com.xquare.data.dao.AlarmDao
 import com.xquare.data.dao.MealDao
 import com.xquare.data.local.XquareDatabase
+import com.xquare.data.local.entity.alarm.AlarmEntityTypeConverter
 import com.xquare.data.local.entity.meals.AllMealEntityTypeConverter
 import com.xquare.data.local.entity.meals.MealEntityTypeConverter
 import dagger.Module
@@ -28,15 +30,22 @@ object LocalModule {
     fun provideXquareDatabase(
         @ApplicationContext context: Context,
         mealEntityTypeConverter: MealEntityTypeConverter,
-        allMealEntityTypeConverter: AllMealEntityTypeConverter
+        allMealEntityTypeConverter: AllMealEntityTypeConverter,
+        alarmEntityTypeConverter: AlarmEntityTypeConverter
     ): XquareDatabase =
         Room.databaseBuilder(context, XquareDatabase::class.java, "XquareDatabase")
             .addTypeConverter(mealEntityTypeConverter)
             .addTypeConverter(allMealEntityTypeConverter)
+            .addTypeConverter(alarmEntityTypeConverter)
             .build()
 
     @Provides
     fun provideMealDao(
         xquareDatabase: XquareDatabase
     ): MealDao = xquareDatabase.mealDao()
+
+    @Provides
+    fun provideAlarmDao(
+        xquareDatabase: XquareDatabase
+    ): AlarmDao = xquareDatabase.alarmDao()
 }

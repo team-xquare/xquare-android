@@ -23,6 +23,8 @@ sealed class AppNavigationItem(val route: String) {
 
     object AllMeal : AppNavigationItem("allMeal")
 
+    object Alarm : AppNavigationItem("alarm")
+
     object PointHistory : AppNavigationItem("pointHistory")
 
     object Profile : AppNavigationItem("Profile")
