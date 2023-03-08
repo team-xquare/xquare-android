@@ -58,6 +58,7 @@ fun ScheduleScreen(navController: NavController) {
             when (it) {
                 is TimetableViewModel.Event.Success -> {
                     timetableEntity = it.data
+                    scheduleViewModel.fetchSchedules(loadingMonth)
                 }
                 is TimetableViewModel.Event.Failure -> {
                     makeToast(context, "시간표를 불러오지 못했습니다")
@@ -66,7 +67,6 @@ fun ScheduleScreen(navController: NavController) {
         }
     }
     LaunchedEffect(Unit) {
-        scheduleViewModel.fetchSchedules(loadingMonth)
         scheduleViewModel.schedulesList.collect {
             isLoadingSchedule = false
             selectedMonth = loadingMonth
