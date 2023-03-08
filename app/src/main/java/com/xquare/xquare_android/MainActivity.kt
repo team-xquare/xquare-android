@@ -106,6 +106,14 @@ fun BaseApp() {
         composable(AppNavigationItem.Bug.route) {
             BugReportScreen(navController)
         }
+        composable(AppNavigationItem.Director.route) {
+            CommonWebViewScreen(
+                navController = navController,
+                url = "https://service.xquare.app/today-director",
+                title = "오늘의 자습감독 선생님",
+                haveBackButton = true,
+            )
+        }
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
             val title = it.arguments!!["title"].toString()
