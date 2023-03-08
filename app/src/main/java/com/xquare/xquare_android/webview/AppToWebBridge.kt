@@ -38,5 +38,5 @@ fun WebView.sendIndexOfActionSheet(
 )
 
 fun WebView.sendResultOfRightButton() = this.loadUrl(
-    "javascript:window.dispatchEvent(new CustomEvent('rightButtonTapedXBridge', { detail: {}))"
+    "javascript:window.dispatchEvent(new CustomEvent('rightButtonTapedXBridge', { detail: {}}))"
 )
