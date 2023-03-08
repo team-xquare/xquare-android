@@ -2,7 +2,7 @@ package com.xquare.xquare_android.feature.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,12 +35,10 @@ import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
-import com.xquare.xquare_android.util.parseBitmap
-import com.xquare.xquare_android.util.toBase64
-import com.xquare.xquare_android.webview.sendImagesOfPhotoPicker
-import kotlinx.coroutines.flow.collect
+import com.xquare.xquare_android.util.toFile
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
+import java.io.File
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -56,8 +55,14 @@ fun ProfileScreen(navController: NavController) {
                 is ProfileViewModel.Event.Failure -> {
                     makeToast(context, "프로필을 불러오지 못했습니다")
                 }
+                is ProfileViewModel.Event.UploadFileSuccess -> {
+                    viewModel.fixProfileImage(it.data[0])
+                }
+                is ProfileViewModel.Event.UploadFileFailure -> {
+                    makeToast(context, "이미지를 불러오지 못했습니다")
+                }
                 is ProfileViewModel.Event.ImageChangeSuccess -> {
-                    
+                    viewModel.fetchProfile()
                 }
                 is ProfileViewModel.Event.ImageChangeFailure -> {
                     makeToast(context, "이미지를 변경하지 못했습니다")
@@ -68,7 +73,9 @@ fun ProfileScreen(navController: NavController) {
     Profile(
         profile = profile,
         onBackPress = { navController.popBackStack() },
-        sendImage = { viewModel.fixProfileImage(it) }
+        sendImage = {
+            viewModel.uploadFile(it)
+        }
     )
 }
 
@@ -76,7 +83,7 @@ fun ProfileScreen(navController: NavController) {
 private fun Profile(
     profile: ProfileEntity?,
     onBackPress: () -> Unit,
-    sendImage: (String?) -> Unit,
+    sendImage: (File) -> Unit,
 ) {
     val context = LocalContext.current
     var galleryState by remember { mutableStateOf(false) }
@@ -85,12 +92,10 @@ private fun Profile(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            var bitmap: Bitmap? = null
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data!!.data?.run {
-                    bitmap = this.parseBitmap(context)
+                    sendImage(toFile(context,this))
                 }
-               // sendImage(bitmap.)ã
             }
             galleryState = false
         }
@@ -135,6 +140,7 @@ private fun Profile(
                     placeholder = ColorPainter(gray200),
                     error = painterResource(id = R.drawable.ic_profile_default),
                 ),
+                contentScale = ContentScale.Crop,
                 contentDescription = null
             )
             Spacer(Modifier.size(6.dp))

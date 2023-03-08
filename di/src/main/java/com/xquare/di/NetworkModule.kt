@@ -1,6 +1,7 @@
 package com.xquare.di
 
 import com.xquare.data.interceptor.AuthorizationInterceptor
+import com.xquare.data.remote.api.AttachmentApi
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
 import com.xquare.data.remote.api.PointApi
@@ -75,4 +76,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): UserApi =
         retrofit.create(UserApi::class.java)
+
+    @Provides
+    fun provideAttachmentApi(
+        retrofit: Retrofit
+    ): AttachmentApi =
+        retrofit.create(AttachmentApi::class.java)
 }
