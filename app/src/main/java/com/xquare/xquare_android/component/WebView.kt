@@ -1,9 +1,11 @@
 package com.xquare.xquare_android.component
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.view.ViewGroup
 import android.view.WindowInsets
+import android.view.inputmethod.InputMethodManager
 import android.webkit.*
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -59,6 +61,9 @@ fun WebView(
                 )
                 webViewClient = object :WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
+                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+
                         CookieManager.getInstance().flush()
                     }
                 }
