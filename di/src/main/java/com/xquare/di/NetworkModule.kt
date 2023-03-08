@@ -82,12 +82,12 @@ object NetworkModule {
         retrofit.create(UserApi::class.java)
 
     @Provides
-<<<<<<< HEAD
     fun provideAttachmentApi(
         retrofit: Retrofit
     ): AttachmentApi =
         retrofit.create(AttachmentApi::class.java)
-=======
+
+    @Provides
     fun provideTimetablesApi(
         retrofit: Retrofit
     ): TimetablesApi =
@@ -98,5 +98,4 @@ object NetworkModule {
         retrofit: Retrofit
     ): SchedulesApi =
         retrofit.create(SchedulesApi::class.java)
->>>>>>> 82_schedule_api
 }
