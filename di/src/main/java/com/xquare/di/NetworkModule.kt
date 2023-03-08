@@ -1,6 +1,7 @@
 package com.xquare.di
 
 import com.xquare.data.interceptor.AuthorizationInterceptor
+import com.xquare.data.interceptor.EmptyBodyInterceptor
 import com.xquare.data.remote.api.AttachmentApi
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
@@ -31,10 +32,12 @@ object NetworkModule {
     @Provides
     fun provideOkHttpclient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        authorizationInterceptor: AuthorizationInterceptor
+        authorizationInterceptor: AuthorizationInterceptor,
+        emptyBodyInterceptor: EmptyBodyInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(httpLoggingInterceptor)
         .addInterceptor(authorizationInterceptor)
+        .addInterceptor(emptyBodyInterceptor)
         .build()
 
     @Provides
