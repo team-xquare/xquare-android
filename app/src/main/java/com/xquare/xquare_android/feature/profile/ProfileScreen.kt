@@ -1,8 +1,15 @@
 package com.xquare.xquare_android.feature.profile
 
+import android.app.Activity
+import android.content.Intent
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -11,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,9 +35,10 @@ import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
-import kotlinx.coroutines.flow.collect
+import com.xquare.xquare_android.util.toFile
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
+import java.io.File
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -46,12 +55,27 @@ fun ProfileScreen(navController: NavController) {
                 is ProfileViewModel.Event.Failure -> {
                     makeToast(context, "프로필을 불러오지 못했습니다")
                 }
+                is ProfileViewModel.Event.UploadFileSuccess -> {
+                    viewModel.fixProfileImage(it.data[0])
+                }
+                is ProfileViewModel.Event.UploadFileFailure -> {
+                    makeToast(context, "이미지를 불러오지 못했습니다")
+                }
+                is ProfileViewModel.Event.ImageChangeSuccess -> {
+                    viewModel.fetchProfile()
+                }
+                is ProfileViewModel.Event.ImageChangeFailure -> {
+                    makeToast(context, "이미지를 변경하지 못했습니다")
+                }
             }
         }
     }
     Profile(
         profile = profile,
-        onBackPress = { navController.popBackStack() }
+        onBackPress = { navController.popBackStack() },
+        sendImage = {
+            viewModel.uploadFile(it)
+        }
     )
 }
 
@@ -59,7 +83,32 @@ fun ProfileScreen(navController: NavController) {
 private fun Profile(
     profile: ProfileEntity?,
     onBackPress: () -> Unit,
+    sendImage: (File) -> Unit,
 ) {
+    val context = LocalContext.current
+    var galleryState by remember { mutableStateOf(false) }
+
+    val openWebViewGallery =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data!!.data?.run {
+                    sendImage(toFile(context,this))
+                }
+            }
+            galleryState = false
+        }
+    val openGalleryLauncher =
+        Intent(Intent.ACTION_PICK).apply {
+            this.type = "image/*"
+            this.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        }
+
+    if (galleryState) {
+        openWebViewGallery.launch(openGalleryLauncher)
+    }
+
     Scaffold(
         modifier = Modifier
             .background(white)
@@ -91,10 +140,21 @@ private fun Profile(
                     placeholder = ColorPainter(gray200),
                     error = painterResource(id = R.drawable.ic_profile_default),
                 ),
+                contentScale = ContentScale.Crop,
                 contentDescription = null
             )
             Spacer(Modifier.size(6.dp))
-            Body2(text = "변경하기", color = gray900)
+            Body2(
+                text = "변경하기",
+                color = gray900,
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                    ) {
+                        galleryState = true
+                    }
+            )
             Spacer(Modifier.size(6.dp))
             Column {
                 Body2(text = "이름", color = gray900)
@@ -147,7 +207,9 @@ private fun ProfilePreview() {
         3,
         2,
         9,
-        null)) {
+        null),
+        onBackPress = {}
+    ) {
 
     }
 }

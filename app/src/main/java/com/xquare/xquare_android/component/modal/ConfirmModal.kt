@@ -1,4 +1,4 @@
-package com.xquare.xquare_android.component
+package com.xquare.xquare_android.component.modal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,9 +10,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.semicolon.design.Subtitle4
-import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.white.white
+import com.xquare.xquare_android.component.DefaultModalButton
+import com.xquare.xquare_android.component.PrimaryModalButton
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

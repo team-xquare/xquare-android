@@ -1,7 +1,6 @@
 package com.xquare.xquare_android.component
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.compose.runtime.Composable
