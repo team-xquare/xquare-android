@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +35,8 @@ import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.timetables.TimetableEntity
+import com.xquare.xquare_android.R
+import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import org.threeten.bp.LocalDate
@@ -81,7 +84,10 @@ fun ScheduleScreen(navController: NavController) {
             ),
         topBar = {
             Column {
-                Spacer(Modifier.size(12.dp))
+                AppBar(
+                    painter = null,
+                    text = "일정"
+                )
                 ToggleButton(items = arrayOf("시간표", "학사일정")) {
                     pageNum = it
                 }

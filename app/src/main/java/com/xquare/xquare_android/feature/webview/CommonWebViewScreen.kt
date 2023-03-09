@@ -287,7 +287,7 @@ private fun CommonWebView(
     ) {
         if (appBarUrlList.contains(url)) {
             AppBar(
-                painter = if (haveBackButton) painterResource(R.drawable.ic_placeholder) else null,
+                painter = if (haveBackButton) painterResource(R.drawable.ic_back) else null,
                 text = title,
                 onIconClick = onBackClick
             )

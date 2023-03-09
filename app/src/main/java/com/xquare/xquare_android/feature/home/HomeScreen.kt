@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
+import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.notoSansFamily
 import com.xquare.domain.entity.meal.MealEntity
@@ -83,13 +84,15 @@ fun HomeAppBar(onAlarmClick: () -> Unit) {
             .fillMaxWidth()
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
     ) {
-        Spacer(Modifier.size(16.dp))
+        Subtitle4(text = "홈")
         Icon(
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = "alarm",
+            tint = gray500,
             modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(align = Alignment.End)
                 .size(24.dp)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
