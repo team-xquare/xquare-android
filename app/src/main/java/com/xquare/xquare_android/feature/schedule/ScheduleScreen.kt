@@ -2,10 +2,14 @@ package com.xquare.xquare_android.feature.schedule
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +19,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +42,8 @@ import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.timetables.TimetableEntity
+import com.xquare.xquare_android.R
+import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import org.threeten.bp.LocalDate
@@ -51,8 +58,8 @@ fun ScheduleScreen(navController: NavController) {
     var timetableEntity: TimetableEntity? by remember { mutableStateOf(null) }
 
     var scheduleData: Pair<Int, SchedulesEntity>? by remember { mutableStateOf(null) }
-    var isLoadingSchedule = remember { false }
-    var loadingMonth = LocalDate.now().monthValue
+    var isLoadingSchedule by remember { mutableStateOf(false) }
+    var loadingMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
 
     LaunchedEffect(Unit) {
         timetableViewModel.fetchWeekTimetables()
@@ -110,6 +117,9 @@ fun ScheduleScreen(navController: NavController) {
                     isLoadingSchedule = true
                     scheduleViewModel.fetchSchedules(loadingMonth)
                 }
+            },
+            onWriteScheduleClick = {
+                navController.navigate(AppNavigationItem.WriteSchedule.route)
             }
         )
     }
@@ -162,8 +172,8 @@ private fun Timetable(
             modifier = Modifier.padding(bottom = it.calculateBottomPadding()),
             count = timetableEntity.week_timetable.size,
             state = pagerState
-        ) {
-            TimetablePage(timetableEntity.week_timetable[it])
+        ) { idx ->
+            TimetablePage(timetableEntity.week_timetable[idx])
         }
     }
 }
@@ -239,9 +249,11 @@ private fun Schedule(
     data: Pair<Int, SchedulesEntity>?,
     onPrevMonthClick: (curMonth: Int) -> Unit,
     onNextMonthClick: (curMonth: Int) -> Unit,
+    onWriteScheduleClick: () -> Unit,
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
     ) {
         if (data == null) return
         val monthValue = data.first
@@ -255,12 +267,10 @@ private fun Schedule(
                     return if (available.y < 0) {
                         isExpandedAll = false
                         calendarPlusHeightPx = available.y.toInt()
-                        println("asdf up")
                         if (isCollapsedAll) Offset.Zero else available
                     } else {
                         isCollapsedAll = false
                         calendarPlusHeightPx = available.y.toInt()
-                        println("asdf down")
                         if (isExpandedAll) Offset.Zero else available
                     }
                 }
@@ -278,11 +288,9 @@ private fun Schedule(
                         onPrevMonthClick = { onPrevMonthClick(it) },
                         onNextMonthClick = { onNextMonthClick(it) },
                         onCollapsedAll = {
-                            println("asdf on collapsed")
                             isCollapsedAll = true
                         },
                         onExpandedAll = {
-                            println("asdf on expanded")
                             isExpandedAll = true
                         }
                     )
@@ -299,6 +307,29 @@ private fun Schedule(
                 item {
                     Spacer(Modifier.size(88.dp))
                 }
+            }
+        }
+        Box(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Surface(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                        enabled = true
+                    ) { onWriteScheduleClick() },
+                shape = RoundedCornerShape(28.dp),
+                color = purple400,
+                elevation = 4.dp
+            ) {
+                Icon(
+                    modifier = Modifier.padding(16.dp),
+                    painter = painterResource(R.drawable.ic_write),
+                    tint = white,
+                    contentDescription = null
+                )
             }
         }
     }

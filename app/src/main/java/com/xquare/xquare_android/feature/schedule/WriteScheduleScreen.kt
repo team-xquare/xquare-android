@@ -21,12 +21,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.xquare.domain.entity.schedules.CreateSchedulesEntity
 import com.xquare.domain.entity.schedules.FixSchedulesEntity
+import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.component.HighlightedText
 import com.xquare.xquare_android.component.TextField
 import com.xquare.xquare_android.component.TextFieldBtn
-import com.xquare.xquare_android.component.modal.CalendarPickerItem
 import com.xquare.xquare_android.component.modal.DatePickerModal
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -36,9 +36,7 @@ import java.time.LocalDate
 @Composable
 fun WriteScheduleScreen(
     navController: NavController,
-    name: String,
-    date: String,
-    id: String
+    schedulesData: SchedulesEntity.SchedulesDataEntity?
 ) {
     val context = LocalContext.current
     val scheduleViewModel: ScheduleViewModel = hiltViewModel()
@@ -54,53 +52,42 @@ fun WriteScheduleScreen(
                     navController.popBackStack()
                 }
                 is ScheduleViewModel.Event.Failure -> makeToast(context, it.message)
+                else -> {}
             }
         }
     }
-    val name = if (name == "null") "" else name
-    val date = if (date == "null") "" else date
     WriteScheduleContent(
-       name = name,
-       date = date,
-       onIconClick = { navController.popBackStack() },
-       onBtnClick = { name, date ->
-           if (id == "null") {
-               scheduleViewModel.createSchedules(
-                   CreateSchedulesEntity(
-                       name = name,
-                       date = LocalDate.of(
-                           date.substring(0..3).toInt(),
-                           date.substring(5..6).toInt(),
-                           date.substring(8..9).toInt()
-                       )
-                   )
-               )
-           } else {
-                scheduleViewModel.fixSchedules(
-                    FixSchedulesEntity(
-                        id = id,
+        schedulesData = schedulesData,
+        onIconClick = { navController.popBackStack() },
+        onBtnClick = { name, date ->
+            if (schedulesData == null) {
+                scheduleViewModel.createSchedules(
+                    CreateSchedulesEntity(
                         name = name,
-                        date = LocalDate.of(
-                            date.substring(0..3).toInt(),
-                            date.substring(5..6).toInt(),
-                            date.substring(8..9).toInt()
-                        )
+                        date = LocalDate.parse(date)
                     )
                 )
-           }
-       }
-   )
+            } else {
+                scheduleViewModel.fixSchedules(
+                    FixSchedulesEntity(
+                        id = schedulesData.id,
+                        name = name,
+                        date = LocalDate.parse(date)
+                    )
+                )
+            }
+        }
+    )
 }
 
 @Composable
 fun WriteScheduleContent(
-    name: String,
-    date: String,
+    schedulesData: SchedulesEntity.SchedulesDataEntity?,
     onIconClick: () -> Unit,
     onBtnClick: (String, String) -> Unit,
 ) {
-    var name by remember { mutableStateOf(name) }
-    var date by remember { mutableStateOf(date) }
+    var name by remember { mutableStateOf(schedulesData?.name ?: "") }
+    var date by remember { mutableStateOf(schedulesData?.date?:"") }
     var timerModalState by remember { mutableStateOf(false) }
     val btnEnabled = name.length > 1 && date.isNotEmpty()
 
@@ -136,7 +123,7 @@ fun WriteScheduleContent(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 DatePickerModal(
                     defaultDate = date,
-                    onCancel = { timerModalState = false},
+                    onCancel = { timerModalState = false },
                     onConfirm = {
                         date = it
                         timerModalState = false

@@ -21,9 +21,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.semicolon.design.color.primary.gray.gray50
+import com.google.gson.Gson
 import com.semicolon.design.color.primary.white.white
-import com.xquare.xquare_android.component.ActionSheet
+import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
@@ -108,15 +108,16 @@ fun BaseApp() {
             BugReportScreen(navController)
         }
         composable(AppNavigationItem.WriteSchedule.route) {
-            val id = it.arguments!!.get("id").toString()
-            val name = it.arguments!!.get("name").toString()
-            val date = it.arguments!!.get("date").toString()
+            val schedulesData = it.arguments?.get("schedulesData")?.let { json ->
+                Gson().fromJson(
+                    json.toString(),
+                    SchedulesEntity.SchedulesDataEntity::class.java
+                )
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 WriteScheduleScreen(
                     navController = navController,
-                    id = id,
-                    name = name,
-                    date = date,
+                    schedulesData = schedulesData
                 )
             }
         }
