@@ -108,16 +108,15 @@ fun BaseApp() {
             BugReportScreen(navController)
         }
         composable(AppNavigationItem.WriteSchedule.route) {
-            val schedulesData = it.arguments?.get("schedulesData")?.let { json ->
-                Gson().fromJson(
-                    json.toString(),
-                    SchedulesEntity.SchedulesDataEntity::class.java
-                )
-            }
+            val schedulesData = it.arguments?.get("schedulesData").toString()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 WriteScheduleScreen(
                     navController = navController,
-                    schedulesData = schedulesData
+                    schedulesData = if (schedulesData == "null") null
+                    else Gson().fromJson(
+                        schedulesData,
+                        SchedulesEntity.SchedulesDataEntity::class.java
+                    )
                 )
             }
         }
