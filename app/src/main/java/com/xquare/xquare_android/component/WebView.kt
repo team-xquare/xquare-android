@@ -49,8 +49,7 @@ fun WebView(
                             if (insets.isVisible(WindowInsets.Type.ime())) {
                                 bottomPadding = 0.dp
                                 keyboardCheck(true)
-                            }
-                            else {
+                            } else {
                                 bottomPadding = DevicePaddings.navigationBarHeightDp.dp
                                 keyboardCheck(false)
                             }
@@ -63,7 +62,7 @@ fun WebView(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                webViewClient = object :WebViewClient() {
+                webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         CookieManager.getInstance().flush()
                     }
