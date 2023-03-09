@@ -2,6 +2,7 @@ package com.xquare.xquare_android
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,6 +34,7 @@ import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
 import com.xquare.xquare_android.feature.profile.ProfileScreen
 import com.xquare.xquare_android.feature.schedule.ScheduleScreen
+import com.xquare.xquare_android.feature.schedule.WriteScheduleScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
@@ -105,6 +107,19 @@ fun BaseApp() {
         composable(AppNavigationItem.Bug.route) {
             BugReportScreen(navController)
         }
+        composable(AppNavigationItem.WriteSchedule.route) {
+            val id = it.arguments!!.get("id").toString()
+            val name = it.arguments!!.get("name").toString()
+            val date = it.arguments!!.get("date").toString()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WriteScheduleScreen(
+                    navController = navController,
+                    id = id,
+                    name = name,
+                    date = date,
+                )
+            }
+        }
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
             val title = it.arguments!!["title"].toString()
@@ -165,7 +180,9 @@ fun Main(mainNavController: NavController) {
                 HomeScreen(mainNavController)
             }
             composable(BottomNavigationItem.Schedule.route) {
-                ScheduleScreen(mainNavController)
+                ScheduleScreen(
+                    navController = mainNavController,
+                )
             }
             composable(BottomNavigationItem.Feed.route) {
                 CommonWebViewScreen(

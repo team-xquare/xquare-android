@@ -18,7 +18,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -82,6 +81,12 @@ object NetworkModule {
         retrofit.create(UserApi::class.java)
 
     @Provides
+    fun provideAttachmentApi(
+        retrofit: Retrofit
+    ): AttachmentApi =
+        retrofit.create(AttachmentApi::class.java)
+
+    @Provides
     fun provideTimetablesApi(
         retrofit: Retrofit
     ): TimetablesApi =
@@ -93,9 +98,4 @@ object NetworkModule {
     ): SchedulesApi =
         retrofit.create(SchedulesApi::class.java)
 
-    @Provides
-    fun provideAttachmentApi(
-        retrofit: Retrofit
-    ): AttachmentApi =
-        retrofit.create(AttachmentApi::class.java)
 }

@@ -28,6 +28,12 @@ sealed class AppNavigationItem(val route: String) {
 
     object Bug : AppNavigationItem("Bug")
 
+    object WriteSchedule : AppNavigationItem("writeSchedule/{id}/{name}/{date}") {
+        fun createRoute(id: String?, name: String?, date: String?): String {
+            return "writeSchedule/$id/$name/$date"
+        }
+    }
+
     object CommonWebView : AppNavigationItem("commonWebView/{encodedUrl}/{title}") {
         fun createRoute(url: String, title: String): String {
             val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
