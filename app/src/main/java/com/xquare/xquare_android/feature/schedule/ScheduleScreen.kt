@@ -130,7 +130,7 @@ fun ScheduleScreen(navController: NavController) {
                 }
             }
         ) {
-            if (pageNum == 0) Timetable(timetableEntity)
+            if (pageNum == 0) Timetable(LocalDate.now().dayOfWeek.value, timetableEntity)
             else Schedule(
                 data = scheduleData,
                 actionSheetScope = actionSheetScope,
@@ -164,10 +164,16 @@ fun ScheduleScreen(navController: NavController) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun Timetable(
+    dayOfWeek: Int,
     timetableEntity: TimetableEntity?,
 ) {
     if (timetableEntity == null) return
     val pagerState = rememberPagerState()
+    LaunchedEffect(Unit) {
+        val lastIndex = timetableEntity.week_timetable.lastIndex
+        val initPage = dayOfWeek.coerceIn(0, lastIndex)
+        pagerState.scrollToPage(initPage)
+    }
     Scaffold(
         bottomBar = {
             Row(
