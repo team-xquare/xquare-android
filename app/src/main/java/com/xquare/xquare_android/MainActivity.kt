@@ -1,9 +1,11 @@
 package com.xquare.xquare_android
 
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.ContextWrapper
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -16,6 +18,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -60,15 +64,21 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BaseApp() {
+    val context = LocalContext.current
+    val view = LocalView.current
+    val service = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController)
         }
         composable(AppNavigationItem.Onboard.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             OnboardScreen(navController)
         }
         composable(AppNavigationItem.PrivacyPolicy.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             CommonWebViewScreen(
                 navController = navController,
                 url = "https://team-xquare.github.io/terms/PrivacyPolicy.html",
@@ -77,6 +87,7 @@ fun BaseApp() {
             )
         }
         composable(AppNavigationItem.TermsOfService.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             CommonWebViewScreen(
                 navController = navController,
                 url = "https://team-xquare.github.io/terms/TermsOfService.html",
@@ -85,30 +96,39 @@ fun BaseApp() {
             )
         }
         composable(AppNavigationItem.SignUp.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             SignUpScreen(navController)
         }
         composable(AppNavigationItem.SignIn.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             SignInScreen(navController)
         }
         composable(AppNavigationItem.Main.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             Main(navController)
         }
         composable(AppNavigationItem.AllMeal.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             AllMealScreen(navController)
         }
         composable(AppNavigationItem.Alarm.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             AlarmScreen(navController)
         }
         composable(AppNavigationItem.PointHistory.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             PointHistoryScreen(navController)
         }
         composable(AppNavigationItem.Profile.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             ProfileScreen(navController)
         }
         composable(AppNavigationItem.Bug.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             BugReportScreen(navController)
         }
         composable(AppNavigationItem.Director.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             CommonWebViewScreen(
                 navController = navController,
                 url = "https://service.xquare.app/today-director",
@@ -117,6 +137,7 @@ fun BaseApp() {
             )
         }
         composable(AppNavigationItem.CommonWebView.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
             val title = it.arguments!!["title"].toString()
             val rightButtonText = it.arguments!!["rightButtonText"].toString()
@@ -130,6 +151,7 @@ fun BaseApp() {
             )
         }
         composable(AppNavigationItem.ImageDetail.route) {
+            service.hideSoftInputFromWindow(view.windowToken,0)
             val joinedEncodedImage = it.arguments!!["joinedEncodedImage"].toString()
             val images = joinedEncodedImage.split(",")
                 .map { encoded -> URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString()) }
@@ -144,6 +166,10 @@ fun Main(mainNavController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
     var actionSheetState by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val view = LocalView.current
+    val service = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
     Scaffold(
         modifier = Modifier
@@ -173,12 +199,15 @@ fun Main(mainNavController: NavController) {
             Modifier.padding(innerPadding)
         ) {
             composable(BottomNavigationItem.Home.route) {
+                service.hideSoftInputFromWindow(view.windowToken,0)
                 HomeScreen(mainNavController)
             }
             composable(BottomNavigationItem.Schedule.route) {
+                service.hideSoftInputFromWindow(view.windowToken,0)
                 ScheduleScreen(mainNavController)
             }
             composable(BottomNavigationItem.Feed.route) {
+                service.hideSoftInputFromWindow(view.windowToken,0)
                 CommonWebViewScreen(
                     navController = mainNavController,
                     url = "https://service.xquare.app/feed",
@@ -188,6 +217,7 @@ fun Main(mainNavController: NavController) {
                 )
             }
             composable(BottomNavigationItem.Application.route) {
+                service.hideSoftInputFromWindow(view.windowToken,0)
 //                CommonWebViewScreen(
 //                    navController = mainNavController,
 //                    url = "https://service.xquare.app/xbridge-test",
@@ -202,6 +232,7 @@ fun Main(mainNavController: NavController) {
                 )
             }
             composable(BottomNavigationItem.All.route) {
+                service.hideSoftInputFromWindow(view.windowToken,0)
                 AllScreen(mainNavController)
             }
         }

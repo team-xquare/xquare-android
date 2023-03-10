@@ -90,8 +90,6 @@ fun CommonWebViewScreen(
     }
     var keyboardState by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    //val view = LocalView.current
-   // manageKeyboardState(view) { keyboardState = it }
 
     val bridge = WebToAppBridge(
         onNavigate = {
