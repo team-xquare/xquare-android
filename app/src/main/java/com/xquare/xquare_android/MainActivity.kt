@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -57,18 +58,26 @@ class MainActivity : ComponentActivity() {
         DevicePaddings.navigationBarHeightDp = getNavigationBarHeightDp()
         super.onCreate(savedInstanceState)
         setContent {
-            BaseApp()
+
+            val navController = rememberNavController()
+            Thread.setDefaultUncaughtExceptionHandler(
+                XquareExceptionHandler(
+                    context = this,
+                    navController = navController
+                )
+            )
+            BaseApp(navController)
+
         }
     }
 }
 
 @Composable
-fun BaseApp() {
+fun BaseApp(navController: NavHostController) {
     val context = LocalContext.current
     val view = LocalView.current
     val service = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
-    val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController)
