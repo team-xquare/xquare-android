@@ -107,7 +107,11 @@ fun CommonWebViewScreen(
         onImageDetail = { images ->
             updateUi { navController.navigate(AppNavigationItem.ImageDetail.createRoute(images)) }
         },
-        onConfirmModal = { modalState = it },
+        onConfirmModal = {
+            if (!keyboardState) {
+                modalState = it
+            }
+        },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
         onPhotoPicker = {
@@ -273,7 +277,7 @@ private fun CommonWebView(
     )
 
     val context = LocalContext.current
-    val manager =  context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkInfo = manager.activeNetwork
 
     Column(
