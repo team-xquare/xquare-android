@@ -1,5 +1,7 @@
 package com.xquare.xquare_android.feature.allmeal
 
+import MealDetail
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
@@ -80,7 +82,10 @@ private fun AllMeal(
                 ) {
                     items(allMeal.meals.count()) {
                         if (it == 0) Spacer(Modifier.size(20.dp))
-                        MealDetail(allMeal.meals[it])
+                        MealDetail(
+                            mealWithDateEntity = allMeal.meals[it],
+                            borderState = it == calculateScrollPosition(allMeal)
+                        )
                         if (it == allMeal.meals.lastIndex)
                             Spacer(Modifier.size(20.dp))
                         else Spacer(Modifier.size(16.dp))

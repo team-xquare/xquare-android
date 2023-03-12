@@ -224,7 +224,7 @@ fun HomeMealCard(
 fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
     Column(
         modifier = Modifier
-            .size(148.dp, 198.dp)
+            .size(150.dp, 210.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(gray50)
             .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -240,8 +240,12 @@ fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
             )
         }
         Spacer(Modifier.size(8.dp))
-        menus.forEach {
-            Body2(text = it, color = gray800)
+        if (menus.isEmpty()) {
+            Body2(text = "등록된 정보가\n없습니다.", color = gray800)
+        } else {
+            menus.forEach {
+                Body2(text = it, color = gray800)
+            }
         }
     }
 }
