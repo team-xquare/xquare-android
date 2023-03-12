@@ -31,7 +31,7 @@ import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun AllScreen(navController: NavController) {
-    val schoolMenuList = listOf("동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
+    val schoolMenuList = listOf("오늘의 자습감독 선생님")//"동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
     val dormitoryMenuList = listOf("봉사 지원하기", "청소판 확인하기")
     Scaffold(
         modifier = Modifier
@@ -66,21 +66,23 @@ fun AllScreen(navController: NavController) {
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))
-            Body1(text = "학교", color = gray900, fontWeight = FontWeight.Medium)
-            schoolMenuList.forEach { title ->
-                Spacer(modifier = Modifier.size(12.dp))
-                ColumnMenuItem(title) {
-                    // TODO
-                }
-            }
+            /* Body1(text = "학교", color = gray900, fontWeight = FontWeight.Medium)
+             schoolMenuList.forEachIndexed { index, title ->
+                 Spacer(modifier = Modifier.size(12.dp))
+                 ColumnMenuItem(title) {
+                     when (index) {
+                         0 -> navController.navigate(AppNavigationItem.Director.route)
+                     }
+                 }
+             }*/
             Spacer(modifier = Modifier.size(27.dp))
-            Body1(text = "기숙사", color = gray900, fontWeight = FontWeight.Medium)
+            /*Body1(text = "기숙사", color = gray900, fontWeight = FontWeight.Medium)
             dormitoryMenuList.forEach { title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {
                     // TODO
                 }
-            }
+            }*/
         }
     }
 }
