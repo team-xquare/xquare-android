@@ -231,9 +231,6 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Schedule.route) {
                 service.hideSoftInputFromWindow(view.windowToken,0)
                 ScheduleScreen(mainNavController)
-                ScheduleScreen(
-                    navController = mainNavController,
-                )
             }
             composable(BottomNavigationItem.Feed.route) {
                 service.hideSoftInputFromWindow(view.windowToken,0)
