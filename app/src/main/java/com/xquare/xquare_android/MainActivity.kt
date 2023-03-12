@@ -56,6 +56,11 @@ class MainActivity : ComponentActivity() {
         DevicePaddings.navigationBarHeightDp = getNavigationBarHeightDp()
         super.onCreate(savedInstanceState)
         setContent {
+            Thread.setDefaultUncaughtExceptionHandler(
+                XquareExceptionHandler(
+                    context = this,
+                )
+            )
             BaseApp()
         }
     }
