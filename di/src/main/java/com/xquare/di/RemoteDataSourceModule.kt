@@ -49,4 +49,9 @@ abstract class RemoteDataSourceModule {
     abstract fun bindAttachmentRemoteDataSource(
         attachmentRemoteDataSourceImpl: AttachmentRemoteDataSourceImpl
     ): AttachmentRemoteDataSource
+
+    @Binds
+    abstract fun bindAlarmRemoteDataSource(
+        alarmRemoteDataSourceImpl: AlarmRemoteDataSourceImpl
+    ): AlarmRemoteDataSource
 }

@@ -5,6 +5,7 @@ import com.xquare.data.interceptor.EmptyBodyInterceptor
 import com.xquare.data.remote.api.AttachmentApi
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
+import com.xquare.data.remote.api.NotificationApi
 import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.api.ProfileApi
 import com.xquare.data.remote.api.SchedulesApi
@@ -98,4 +99,9 @@ object NetworkModule {
     ): SchedulesApi =
         retrofit.create(SchedulesApi::class.java)
 
+    @Provides
+    fun provideNotificationApi(
+        retrofit: Retrofit
+    ): NotificationApi =
+        retrofit.create(NotificationApi::class.java)
 }

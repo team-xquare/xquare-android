@@ -25,6 +25,7 @@ import com.google.gson.Gson
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.component.BottomNavigation
+import com.xquare.xquare_android.feature.alarm.AlarmScreen
 import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.bug.BugReportScreen
@@ -97,6 +98,9 @@ fun BaseApp() {
         }
         composable(AppNavigationItem.AllMeal.route) {
             AllMealScreen(navController)
+        }
+        composable(AppNavigationItem.Alarm.route) {
+            AlarmScreen(navController)
         }
         composable(AppNavigationItem.PointHistory.route) {
             PointHistoryScreen(navController)
@@ -194,12 +198,6 @@ fun Main(mainNavController: NavController) {
                 )
             }
             composable(BottomNavigationItem.Application.route) {
-//                CommonWebViewScreen(
-//                    navController = mainNavController,
-//                    url = "https://service.xquare.app/xbridge-test",
-//                    title = "신청",
-//                    haveBackButton = false
-//                )
                 CommonWebViewScreen(
                     navController = mainNavController,
                     url = "https://service.xquare.app/apply",
