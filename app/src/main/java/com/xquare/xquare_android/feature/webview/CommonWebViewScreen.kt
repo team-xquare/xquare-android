@@ -315,8 +315,6 @@ private fun CommonWebView(
                     .fillMaxSize()
                     .wrapContentSize(align = Alignment.Center)
             )
-
         }
-
     }
 }
