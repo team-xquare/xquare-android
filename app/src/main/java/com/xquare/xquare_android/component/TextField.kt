@@ -2,6 +2,8 @@ package com.xquare.xquare_android.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -53,6 +55,35 @@ fun TextField(
             .border(width = 1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp)
     )
+}
+
+@Composable
+fun TextFieldBtn(
+    text: String,
+    placeholder: String = "",
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(44.dp)
+            .background(gray50)
+            .border(width = 1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
+            .padding(horizontal = 16.dp)
+            .clickable(
+                interactionSource = MutableInteractionSource(),
+                indication = null,
+            ) {
+                onClick()
+            },
+        contentAlignment = Alignment.CenterStart
+    ) {
+        if (text.isEmpty()) {
+            Body1(text = placeholder, color = gray300)
+        } else {
+            Body1(text = text)
+        }
+    }
 }
 
 @Preview(showBackground = true)

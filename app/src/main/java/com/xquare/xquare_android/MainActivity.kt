@@ -3,6 +3,7 @@ package com.xquare.xquare_android
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.ContextWrapper
+import android.os.Build
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.ComponentActivity
@@ -26,6 +27,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.semicolon.design.color.primary.white.white
+import com.google.gson.Gson
+import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.alarm.AlarmScreen
 import com.xquare.xquare_android.feature.all.AllScreen
@@ -37,6 +40,7 @@ import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
 import com.xquare.xquare_android.feature.profile.ProfileScreen
 import com.xquare.xquare_android.feature.schedule.ScheduleScreen
+import com.xquare.xquare_android.feature.schedule.WriteScheduleScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
@@ -136,13 +140,26 @@ fun BaseApp(navController: NavHostController) {
             BugReportScreen(navController)
         }
         composable(AppNavigationItem.Director.route) {
-            service.hideSoftInputFromWindow(view.windowToken,0)
+            service.hideSoftInputFromWindow(view.windowToken, 0)
             CommonWebViewScreen(
                 navController = navController,
                 url = "https://service.xquare.app/today-director",
                 title = "오늘의 자습감독 선생님",
                 haveBackButton = true,
             )
+        }
+        composable(AppNavigationItem.WriteSchedule.route) {
+            val schedulesData = it.arguments?.get("schedulesData").toString()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WriteScheduleScreen(
+                    navController = navController,
+                    schedulesData = if (schedulesData == "null") null
+                    else Gson().fromJson(
+                        schedulesData,
+                        SchedulesEntity.SchedulesDataEntity::class.java
+                    )
+                )
+            }
         }
         composable(AppNavigationItem.CommonWebView.route) {
             service.hideSoftInputFromWindow(view.windowToken,0)
@@ -213,6 +230,9 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Schedule.route) {
                 service.hideSoftInputFromWindow(view.windowToken,0)
                 ScheduleScreen(mainNavController)
+                ScheduleScreen(
+                    navController = mainNavController,
+                )
             }
             composable(BottomNavigationItem.Feed.route) {
                 service.hideSoftInputFromWindow(view.windowToken,0)
