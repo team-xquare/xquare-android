@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
-import com.semicolon.design.Body3
+import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.gray.gray800
 import com.xquare.xquare_android.R
 
@@ -65,9 +65,9 @@ fun Header(
                     contentDescription = null
                 )
             }
-            btnText?.let { text ->
-                Body3(
-                    text = text,
+            if (btnText != null && btnText != "null") {
+                Body2(
+                    text = btnText,
                     color = btnColor,
                     modifier = Modifier
                         .fillMaxWidth()
