@@ -1,5 +1,7 @@
 package com.xquare.xquare_android.navigation
 
+import com.google.gson.Gson
+import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.webview.data.ImageInfo
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -27,6 +29,15 @@ sealed class AppNavigationItem(val route: String) {
     object Profile : AppNavigationItem("Profile")
 
     object Bug : AppNavigationItem("Bug")
+
+    object WriteSchedule : AppNavigationItem("writeSchedule/{schedulesData}") {
+        fun createRoute(schedulesData: SchedulesEntity.SchedulesDataEntity?): String {
+            return if (schedulesData == null) "writeSchedule/null" else "writeSchedule/${
+                Gson().toJson(schedulesData,
+                    SchedulesEntity.SchedulesDataEntity::class.java)
+            }"
+        }
+    }
 
     object CommonWebView : AppNavigationItem("commonWebView/{encodedUrl}/{title}") {
         fun createRoute(url: String, title: String): String {

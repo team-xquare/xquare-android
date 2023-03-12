@@ -173,7 +173,6 @@ fun CommonWebViewScreen(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            // TODO 이미지가 나오지 않는 오류가 가끔 발생
             if (result.resultCode == RESULT_OK) {
                 result.data!!.clipData?.run {
                     for (i in 0 until itemCount) {

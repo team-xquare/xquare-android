@@ -2,6 +2,7 @@ package com.xquare.xquare_android
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,9 +21,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.semicolon.design.color.primary.gray.gray50
+import com.google.gson.Gson
 import com.semicolon.design.color.primary.white.white
-import com.xquare.xquare_android.component.ActionSheet
+import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
@@ -32,6 +33,8 @@ import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
 import com.xquare.xquare_android.feature.profile.ProfileScreen
+import com.xquare.xquare_android.feature.schedule.ScheduleScreen
+import com.xquare.xquare_android.feature.schedule.WriteScheduleScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
@@ -90,7 +93,6 @@ fun BaseApp() {
             SignInScreen(navController)
         }
         composable(AppNavigationItem.Main.route) {
-
             Main(navController)
         }
         composable(AppNavigationItem.AllMeal.route) {
@@ -104,6 +106,19 @@ fun BaseApp() {
         }
         composable(AppNavigationItem.Bug.route) {
             BugReportScreen(navController)
+        }
+        composable(AppNavigationItem.WriteSchedule.route) {
+            val schedulesData = it.arguments?.get("schedulesData").toString()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WriteScheduleScreen(
+                    navController = navController,
+                    schedulesData = if (schedulesData == "null") null
+                    else Gson().fromJson(
+                        schedulesData,
+                        SchedulesEntity.SchedulesDataEntity::class.java
+                    )
+                )
+            }
         }
         composable(AppNavigationItem.CommonWebView.route) {
             val encodedUrl = it.arguments!!["encodedUrl"].toString()
@@ -165,12 +180,8 @@ fun Main(mainNavController: NavController) {
                 HomeScreen(mainNavController)
             }
             composable(BottomNavigationItem.Schedule.route) {
-                CommonWebViewScreen(
+                ScheduleScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/xbridge-test",
-                    title = "테스트",
-                    haveBackButton = false,
-                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.Feed.route) {
