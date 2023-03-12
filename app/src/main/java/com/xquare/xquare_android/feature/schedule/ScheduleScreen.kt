@@ -39,6 +39,7 @@ import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.timetables.TimetableEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.ActionSheet
+import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -123,6 +124,7 @@ fun ScheduleScreen(navController: NavController) {
                 ),
             topBar = {
                 Column {
+                    AppBar(text = "일정")
                     Spacer(Modifier.size(12.dp))
                     ToggleButton(items = arrayOf("시간표", "학사일정")) {
                         pageNum = it
@@ -170,8 +172,7 @@ private fun Timetable(
     if (timetableEntity == null) return
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
-        val lastIndex = timetableEntity.week_timetable.lastIndex
-        val initPage = dayOfWeek.coerceIn(0, lastIndex)
+        val initPage = getTimeTablePage(dayOfWeek)
         pagerState.scrollToPage(initPage)
     }
     Scaffold(
@@ -459,4 +460,11 @@ private fun getWeekdayStringByInt(int: Int) =
         6 -> "토"
         7 -> "일"
         else -> throw IllegalArgumentException()
+    }
+
+private fun getTimeTablePage(int: Int) =
+    when (int) {
+        1,2,3,4,5 -> int - 1
+        6 -> 4
+        else -> 0
     }
