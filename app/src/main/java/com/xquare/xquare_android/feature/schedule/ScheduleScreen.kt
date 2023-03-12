@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.schedule
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,6 +50,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -220,6 +222,7 @@ private fun Timetable(
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun TimetablePage(
     weekTimetableEntity: TimetableEntity.WeekTimetableEntity,
@@ -253,11 +256,12 @@ private fun TimetableItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Body1(
-            text = "${dayTimetableEntity.period}교시",
+            text = "${dayTimetableEntity.period} 교시",
             color = gray900,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.width(54.dp)
         )
-        Spacer(Modifier.size(21.dp))
+        Spacer(Modifier.size(18.dp))
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -286,6 +290,7 @@ private fun TimetableItem(
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

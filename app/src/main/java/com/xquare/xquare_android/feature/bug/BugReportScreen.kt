@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.bug
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -86,6 +87,7 @@ fun BugReportScreen(
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun BugreportContent(
     onIconClick: () -> Unit,
