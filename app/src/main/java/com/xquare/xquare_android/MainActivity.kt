@@ -156,7 +156,6 @@ fun BaseApp() {
 fun Main(mainNavController: NavController) {
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
-    var actionSheetState by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier
@@ -176,7 +175,6 @@ fun Main(mainNavController: NavController) {
                     BottomNavigationItem.Application,
                     BottomNavigationItem.All
                 ),
-                actionSheetState = actionSheetState,
             )
         }
     ) { innerPadding ->
@@ -199,7 +197,6 @@ fun Main(mainNavController: NavController) {
                     url = "https://service.xquare.app/feed",
                     title = "피드",
                     haveBackButton = false,
-                    changeActionSheetState = { actionSheetState = it }
                 )
             }
             composable(BottomNavigationItem.Application.route) {

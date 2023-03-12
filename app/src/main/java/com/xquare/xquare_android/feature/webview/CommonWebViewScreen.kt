@@ -70,7 +70,6 @@ fun CommonWebViewScreen(
     title: String,
     rightButtonText: String? = null,
     haveBackButton: Boolean,
-    changeActionSheetState: (Boolean) -> Unit = {},
 ) {
     var webView: WebView? by remember { mutableStateOf(null) }
     var modalState: ModalInfo? by remember { mutableStateOf(null) }
@@ -129,7 +128,6 @@ fun CommonWebViewScreen(
             actionSheetScope.launch {
                 actionSheetState.show()
             }
-            changeActionSheetState(true)
         },
         onIsRightButtonEnabled = { isRightButtonEnabled = it },
     )
@@ -156,7 +154,6 @@ fun CommonWebViewScreen(
                 webView?.sendIndexOfActionSheet(actionSheetInfo!!.id, this)
             }
             actionSheetInfo = null
-            changeActionSheetState(false)
         }
     }
 
