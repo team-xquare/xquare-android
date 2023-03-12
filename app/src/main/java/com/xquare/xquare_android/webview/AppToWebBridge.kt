@@ -3,9 +3,10 @@ package com.xquare.xquare_android.webview
 import android.webkit.WebView
 
 fun WebView.sendResultOfConfirmModal(
+    id: String,
     isConfirmed: Boolean,
 ) = this.loadUrl(
-    "javascript:window.dispatchEvent(new CustomEvent('confirmXBridge', { detail: { success: $isConfirmed }}))"
+    "javascript:window.dispatchEvent(new CustomEvent('confirmXBridge', { detail: { id: '$id', success: $isConfirmed }}))"
 )
 
 fun WebView.sendResultOfTimePicker(
@@ -37,5 +38,5 @@ fun WebView.sendIndexOfActionSheet(
 )
 
 fun WebView.sendResultOfRightButton() = this.loadUrl(
-    "javascript:window.dispatchEvent(new CustomEvent('rightButtonTapedXBridge', { detail: {}))"
+    "javascript:window.dispatchEvent(new CustomEvent('rightButtonTapedXBridge', { detail: {}}))"
 )

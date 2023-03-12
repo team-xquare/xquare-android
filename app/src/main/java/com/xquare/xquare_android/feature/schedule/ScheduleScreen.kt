@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.schedule
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.timetables.TimetableEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.ActionSheet
+import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -48,6 +50,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -123,6 +126,7 @@ fun ScheduleScreen(navController: NavController) {
                 ),
             topBar = {
                 Column {
+                    AppBar(text = "일정")
                     Spacer(Modifier.size(12.dp))
                     ToggleButton(items = arrayOf("시간표", "학사일정")) {
                         pageNum = it
@@ -170,8 +174,7 @@ private fun Timetable(
     if (timetableEntity == null) return
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
-        val lastIndex = timetableEntity.week_timetable.lastIndex
-        val initPage = dayOfWeek.coerceIn(0, lastIndex)
+        val initPage = getTimeTablePage(dayOfWeek)
         pagerState.scrollToPage(initPage)
     }
     Scaffold(
@@ -219,6 +222,7 @@ private fun Timetable(
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun TimetablePage(
     weekTimetableEntity: TimetableEntity.WeekTimetableEntity,
@@ -252,11 +256,12 @@ private fun TimetableItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Body1(
-            text = "${dayTimetableEntity.period}교시",
+            text = "${dayTimetableEntity.period} 교시",
             color = gray900,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.width(54.dp)
         )
-        Spacer(Modifier.size(21.dp))
+        Spacer(Modifier.size(18.dp))
         Box(
             modifier = Modifier
                 .size(40.dp)
@@ -285,6 +290,7 @@ private fun TimetableItem(
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -297,91 +303,92 @@ private fun Schedule(
     onWriteScheduleClick: () -> Unit,
     onItemSelected: (SchedulesEntity.SchedulesDataEntity) -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
-        if (data == null) return@Box
-        val monthValue = data.first
-        val schedulesValue = data.second
-        var calendarPlusHeightPx by remember { mutableStateOf(0) }
-        var isCollapsedAll = remember { false }
-        var isExpandedAll = remember { true }
-        val nestedScrollConnection =
-            object : NestedScrollConnection {
-                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                    return if (available.y < 0) {
-                        isExpandedAll = false
-                        calendarPlusHeightPx = available.y.toInt()
-                        if (isCollapsedAll) Offset.Zero else available
-                    } else {
-                        isCollapsedAll = false
-                        calendarPlusHeightPx = available.y.toInt()
-                        if (isExpandedAll) Offset.Zero else available
+    if (data != null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            val monthValue = data.first
+            val schedulesValue = data.second
+            var calendarPlusHeightPx by remember { mutableStateOf(0) }
+            var isCollapsedAll = remember { false }
+            var isExpandedAll = remember { true }
+            val nestedScrollConnection =
+                object : NestedScrollConnection {
+                    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                        return if (available.y < 0) {
+                            isExpandedAll = false
+                            calendarPlusHeightPx = available.y.toInt()
+                            if (isCollapsedAll) Offset.Zero else available
+                        } else {
+                            isCollapsedAll = false
+                            calendarPlusHeightPx = available.y.toInt()
+                            if (isExpandedAll) Offset.Zero else available
+                        }
+                    }
+                }
+            Scaffold(
+                modifier = Modifier,
+                topBar = {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 20.dp)
+                    ) {
+                        ScheduleCalendar(month = monthValue,
+                            schedules = schedulesValue,
+                            plusHeight = { calendarPlusHeightPx },
+                            onPrevMonthClick = { onPrevMonthClick(it) },
+                            onNextMonthClick = { onNextMonthClick(it) },
+                            onCollapsedAll = {
+                                isCollapsedAll = true
+                            },
+                            onExpandedAll = {
+                                isExpandedAll = true
+                            }
+                        )
+                    }
+                }
+            ) {
+                LazyColumn(
+                    modifier = Modifier.nestedScroll(nestedScrollConnection),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(schedulesValue.schedules.size) {
+                        val scheduleData = schedulesValue.schedules[it]
+                        ScheduleItem(scheduleData) {
+                            onItemSelected(scheduleData)
+                            actionSheetScope.launch {
+                                actionSheetState.show()
+                            }
+                        }
+                    }
+                    item {
+                        Spacer(Modifier.size(88.dp))
                     }
                 }
             }
-        Scaffold(
-            modifier = Modifier,
-            topBar = {
-                Box(
+            Box(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Surface(
                     modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 20.dp)
+                        .size(56.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            enabled = true
+                        ) { onWriteScheduleClick() },
+                    shape = RoundedCornerShape(28.dp),
+                    color = purple400,
+                    elevation = 4.dp
                 ) {
-                    ScheduleCalendar(month = monthValue,
-                        schedules = schedulesValue,
-                        plusHeight = { calendarPlusHeightPx },
-                        onPrevMonthClick = { onPrevMonthClick(it) },
-                        onNextMonthClick = { onNextMonthClick(it) },
-                        onCollapsedAll = {
-                            isCollapsedAll = true
-                        },
-                        onExpandedAll = {
-                            isExpandedAll = true
-                        }
+                    Icon(
+                        modifier = Modifier.padding(16.dp),
+                        painter = painterResource(R.drawable.ic_write),
+                        tint = white,
+                        contentDescription = null
                     )
                 }
-            }
-        ) {
-            LazyColumn(
-                modifier = Modifier.nestedScroll(nestedScrollConnection),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                items(schedulesValue.schedules.size) {
-                    val scheduleData = schedulesValue.schedules[it]
-                    ScheduleItem(scheduleData) {
-                        onItemSelected(scheduleData)
-                        actionSheetScope.launch {
-                            actionSheetState.show()
-                        }
-                    }
-                }
-                item {
-                    Spacer(Modifier.size(88.dp))
-                }
-            }
-        }
-        Box(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Surface(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clickable(
-                        interactionSource = MutableInteractionSource(),
-                        indication = null,
-                        enabled = true
-                    ) { onWriteScheduleClick() },
-                shape = RoundedCornerShape(28.dp),
-                color = purple400,
-                elevation = 4.dp
-            ) {
-                Icon(
-                    modifier = Modifier.padding(16.dp),
-                    painter = painterResource(R.drawable.ic_write),
-                    tint = white,
-                    contentDescription = null
-                )
             }
         }
     }
@@ -459,4 +466,11 @@ private fun getWeekdayStringByInt(int: Int) =
         6 -> "토"
         7 -> "일"
         else -> throw IllegalArgumentException()
+    }
+
+private fun getTimeTablePage(int: Int) =
+    when (int) {
+        1,2,3,4,5 -> int - 1
+        6 -> 4
+        else -> 0
     }

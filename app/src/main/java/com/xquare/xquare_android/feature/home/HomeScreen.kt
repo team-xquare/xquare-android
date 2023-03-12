@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
+import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.notoSansFamily
 import com.xquare.domain.entity.meal.MealEntity
@@ -49,6 +50,7 @@ fun HomeScreen(navController: NavController) {
         userData = userData,
         meal = meal,
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
+        onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
         onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
     )
 }
@@ -59,6 +61,7 @@ fun HomeContent(
     meal: MealEntity,
     onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
+    onAlarmClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -67,7 +70,7 @@ fun HomeContent(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        HomeAppBar()
+        HomeAppBar(onAlarmClick = onAlarmClick)
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
@@ -75,25 +78,27 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeAppBar() {
+fun HomeAppBar(onAlarmClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
     ) {
+        Subtitle4(text = "홈")
         Icon(
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = "alarm",
-            tint = Color.Unspecified,
+            tint = gray500,
             modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(align = Alignment.End)
                 .size(24.dp)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = null,
                 ) {
-                    // TODO 알림 페이지 이동
+                    onAlarmClick()
                 }
         )
     }
@@ -146,7 +151,6 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
 
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeMealCard(
     meal: MealEntity,
@@ -186,9 +190,7 @@ fun HomeMealCard(
             )
         }
         Spacer(Modifier.size(12.dp))
-        CompositionLocalProvider(
-            LocalOverScrollConfiguration provides null
-        ) {
+        CompositionLocalProvider {
             Row(
                 Modifier.horizontalScroll(
                     scrollState
@@ -222,7 +224,7 @@ fun HomeMealCard(
 fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
     Column(
         modifier = Modifier
-            .size(148.dp, 198.dp)
+            .size(150.dp, 210.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(gray50)
             .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -238,8 +240,12 @@ fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
             )
         }
         Spacer(Modifier.size(8.dp))
-        menus.forEach {
-            Body2(text = it, color = gray800)
+        if (menus.isEmpty()) {
+            Body2(text = "등록된 정보가\n없습니다.", color = gray800)
+        } else {
+            menus.forEach {
+                Body2(text = it, color = gray800)
+            }
         }
     }
 }

@@ -10,4 +10,6 @@ interface AuthRepository {
     suspend fun signUp(signUpEntity: SignUpEntity)
 
     suspend fun autoSignIn()
+
+    suspend fun logout()
 }

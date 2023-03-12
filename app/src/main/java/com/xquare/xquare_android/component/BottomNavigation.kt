@@ -25,42 +25,39 @@ import com.xquare.xquare_android.navigation.BottomNavigationItem
 fun BottomNavigation(
     navController: NavController,
     items: List<BottomNavigationItem>,
-    actionSheetState: Boolean,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    if (!actionSheetState) {
-        Row(Modifier.fillMaxWidth()) {
-            items.forEach { screen ->
-                val selected =
-                    currentDestination?.hierarchy?.any { it.route == screen.route } == true
-                val color = if (selected) gray800 else gray300
-                Column(
-                    Modifier
-                        .height(56.dp)
-                        .weight(1f)
-                        .background(color = gray50)
-                        .clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = rememberRipple(
-                                radius = 28.dp
-                            ),
-                            enabled = !selected
-                        ) {
-                            navController.navigate(screen.route) { popUpTo(0) }
-                        },
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painter = screen.icon(),
-                        contentDescription = null,
-                        tint = color,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Body3(text = screen.label, color = color)
-                }
+    Row(Modifier.fillMaxWidth()) {
+        items.forEach { screen ->
+            val selected =
+                currentDestination?.hierarchy?.any { it.route == screen.route } == true
+            val color = if (selected) gray800 else gray300
+            Column(
+                Modifier
+                    .height(56.dp)
+                    .weight(1f)
+                    .background(color = gray50)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = rememberRipple(
+                            radius = 28.dp
+                        ),
+                        enabled = !selected
+                    ) {
+                        navController.navigate(screen.route) { popUpTo(0) }
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = screen.icon(),
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(24.dp)
+                )
+                Body3(text = screen.label, color = color)
             }
         }
     }

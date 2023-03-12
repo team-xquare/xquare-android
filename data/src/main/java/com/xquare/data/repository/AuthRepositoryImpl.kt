@@ -33,4 +33,11 @@ class AuthRepositoryImpl @Inject constructor(
         authLocalDataSource.saveToken(token)
         appCookieManager.writeToken(token)
     }
+
+    override suspend fun logout() {
+        authPreference.clearAccessToken()
+        authPreference.clearRefreshToken()
+        authPreference.clearExpirationAt()
+        authPreference.clearUserId()
+    }
 }

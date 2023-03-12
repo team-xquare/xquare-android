@@ -8,6 +8,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -15,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.semicolon.design.Body1
@@ -26,13 +32,33 @@ import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
+import com.xquare.xquare_android.component.modal.ConfirmModal
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun AllScreen(navController: NavController) {
-    val schoolMenuList = listOf("동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
+    val schoolMenuList = listOf("오늘의 자습감독 선생님")//"동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
     val dormitoryMenuList = listOf("봉사 지원하기", "청소판 확인하기")
+    val userMenuList = listOf("로그아웃")
+
+    val allViewModel: AllViewModel = hiltViewModel()
+    LaunchedEffect(Unit) {
+        allViewModel.eventFlow.collect {
+            when (it) {
+                AllViewModel.Event.LogoutSuccess -> {
+                    navController.navigate(AppNavigationItem.Onboard.route) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    var logoutDialogState by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier
             .background(white)
@@ -42,6 +68,16 @@ fun AllScreen(navController: NavController) {
             ),
         topBar = { AppBar(text = "전체") }
     ) {
+        if (logoutDialogState) {
+            ConfirmModal(
+                message = "정말 로그아웃하시겠습니까?",
+                confirmText = "네",
+                cancelText = "아니오",
+                onConfirm = { allViewModel.logout() }
+            ) {
+                logoutDialogState = false
+            }
+        }
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -66,21 +102,33 @@ fun AllScreen(navController: NavController) {
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))
-            Body1(text = "학교", color = gray900, fontWeight = FontWeight.Medium)
-            schoolMenuList.forEach { title ->
+            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium)
+            userMenuList.forEachIndexed { index, title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {
-                    // TODO
+                    when (index) {
+                        0 -> logoutDialogState = true
+                    }
                 }
             }
+
+            /* Body1(text = "학교", color = gray900, fontWeight = FontWeight.Medium)
+             schoolMenuList.forEachIndexed { index, title ->
+                 Spacer(modifier = Modifier.size(12.dp))
+                 ColumnMenuItem(title) {
+                     when (index) {
+                         0 -> navController.navigate(AppNavigationItem.Director.route)
+                     }
+                 }
+             }*/
             Spacer(modifier = Modifier.size(27.dp))
-            Body1(text = "기숙사", color = gray900, fontWeight = FontWeight.Medium)
+            /*Body1(text = "기숙사", color = gray900, fontWeight = FontWeight.Medium)
             dormitoryMenuList.forEach { title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {
                     // TODO
                 }
-            }
+            }*/
         }
     }
 }

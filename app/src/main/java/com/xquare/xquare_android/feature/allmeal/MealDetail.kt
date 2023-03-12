@@ -1,9 +1,15 @@
-package com.xquare.xquare_android.feature.allmeal
-
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -14,18 +20,25 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
+import com.semicolon.design.color.primary.purple.purple400
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.util.toKorean
 
+@Stable
+private val MealDetailShape = RoundedCornerShape(16.dp)
+
 @Composable
 fun MealDetail(
-    mealWithDateEntity: AllMealEntity.MealWithDateEntity
+    mealWithDateEntity: AllMealEntity.MealWithDateEntity,
+    borderState: Boolean,
 ) {
+    val borderColor = if (borderState) purple400 else gray50
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(color = gray50, shape = RoundedCornerShape(16.dp))
+            .background(color = gray50, shape = MealDetailShape)
+            .border(width = 1.dp, color = borderColor, shape = MealDetailShape)
             .padding(16.dp)
     ) {
         val date = mealWithDateEntity.date
@@ -72,3 +85,4 @@ fun MealDetail(
         }
     }
 }
+

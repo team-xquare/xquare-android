@@ -1,8 +1,7 @@
 package com.xquare.xquare_android.feature.allmeal
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import MealDetail
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -16,7 +15,6 @@ import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.R
-import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -49,7 +47,6 @@ fun AllMealScreen(
 }
 
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AllMeal(
     allMeal: AllMealEntity?,
@@ -69,22 +66,21 @@ private fun AllMeal(
             title = "전체 급식",
             onIconClick = onBackPress
         )
-        allMeal?.let {
-            CompositionLocalProvider(
-                LocalOverScrollConfiguration provides null
+        allMeal?.run {
+            LaunchedEffect(Unit) { lazyListState.scrollToItem(calculateScrollPosition(allMeal)) }
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                LaunchedEffect(Unit) { lazyListState.scrollToItem(calculateScrollPosition(allMeal)) }
-                LazyColumn(
-                    state = lazyListState,
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    items(allMeal.meals.count()) {
-                        if (it == 0) Spacer(Modifier.size(20.dp))
-                        MealDetail(allMeal.meals[it])
-                        if (it == allMeal.meals.lastIndex)
-                            Spacer(Modifier.size(20.dp))
-                        else Spacer(Modifier.size(16.dp))
-                    }
+                items(allMeal.meals.count()) {
+                    if (it == 0) Spacer(Modifier.size(20.dp))
+                    MealDetail(
+                        mealWithDateEntity = allMeal.meals[it],
+                        borderState = it == calculateScrollPosition(allMeal)
+                    )
+                    if (it == allMeal.meals.lastIndex)
+                        Spacer(Modifier.size(20.dp))
+                    else Spacer(Modifier.size(16.dp))
                 }
             }
         }
