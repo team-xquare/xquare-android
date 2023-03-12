@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.webkit.*
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -84,6 +83,5 @@ fun WebView(
         },
         modifier = modifier
             .padding(bottom = bottomPadding)
-            .imePadding()
     )
 }

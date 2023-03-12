@@ -170,9 +170,9 @@ private fun Timetable(
     if (timetableEntity == null) return
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
-        val lastIndex = timetableEntity.week_timetable.lastIndex
-        val initPage = dayOfWeek.coerceIn(0, lastIndex)
-        pagerState.scrollToPage(initPage)
+        // val lastIndex = timetableEntity.week_timetable.lastIndex
+        //val initPage = dayOfWeek.coerceIn(0, lastIndex)
+        pagerState.scrollToPage(0)
     }
     Scaffold(
         bottomBar = {
@@ -307,20 +307,20 @@ private fun Schedule(
         var calendarPlusHeightPx by remember { mutableStateOf(0) }
         var isCollapsedAll = remember { false }
         var isExpandedAll = remember { true }
-//        val nestedScrollConnection =
-//            object : NestedScrollConnection {
-//                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-//                    return if (available.y < 0) {
-//                        isExpandedAll = false
-//                        calendarPlusHeightPx = available.y.toInt()
-//                        if (isCollapsedAll) Offset.Zero else available
-//                    } else {
-//                        isCollapsedAll = false
-//                        calendarPlusHeightPx = available.y.toInt()
-//                        if (isExpandedAll) Offset.Zero else available
-//                    }
-//                }
-//            }
+        val nestedScrollConnection =
+            object : NestedScrollConnection {
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    return if (available.y < 0) {
+                        isExpandedAll = false
+                        calendarPlusHeightPx = available.y.toInt()
+                        if (isCollapsedAll) Offset.Zero else available
+                    } else {
+                        isCollapsedAll = false
+                        calendarPlusHeightPx = available.y.toInt()
+                        if (isExpandedAll) Offset.Zero else available
+                    }
+                }
+            }
         Scaffold(
             modifier = Modifier,
             topBar = {
@@ -344,7 +344,7 @@ private fun Schedule(
             }
         ) {
             LazyColumn(
-              //  modifier = Modifier.nestedScroll(nestedScrollConnection),
+                modifier = Modifier.nestedScroll(nestedScrollConnection),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(schedulesValue.schedules.size) {

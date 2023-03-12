@@ -66,20 +66,21 @@ class MainActivity : ComponentActivity() {
             Thread.setDefaultUncaughtExceptionHandler(
                 XquareExceptionHandler(
                     context = this,
-                    navController = navController
                 )
             )
-            BaseApp(navController)
+            BaseApp()
 
         }
     }
 }
 
 @Composable
-fun BaseApp(navController: NavHostController) {
+fun BaseApp() {
     val context = LocalContext.current
     val view = LocalView.current
     val service = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
+    val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
         composable(AppNavigationItem.Splash.route) {
