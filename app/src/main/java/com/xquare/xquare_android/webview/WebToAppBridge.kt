@@ -53,6 +53,8 @@ class WebToAppBridge(
     @JavascriptInterface
     fun periodPicker(data: String) =
         onPeriodPicker(gson.fromJson(data, PeriodPickerInfo::class.java))
+
+    @JavascriptInterface
     fun photoPicker(data: String) =
         onPhotoPicker(gson.fromJson(data, PhotoPickerInfo::class.java))
 
