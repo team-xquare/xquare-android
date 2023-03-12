@@ -191,9 +191,7 @@ fun HomeMealCard(
             )
         }
         Spacer(Modifier.size(12.dp))
-        CompositionLocalProvider(
-            LocalOverScrollConfiguration provides null
-        ) {
+        CompositionLocalProvider {
             Row(
                 Modifier.horizontalScroll(
                     scrollState
