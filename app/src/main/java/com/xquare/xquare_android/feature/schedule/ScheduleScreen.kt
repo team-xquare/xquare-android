@@ -298,91 +298,92 @@ private fun Schedule(
     onWriteScheduleClick: () -> Unit,
     onItemSelected: (SchedulesEntity.SchedulesDataEntity) -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
-        if (data == null) return@Box
-        val monthValue = data.first
-        val schedulesValue = data.second
-        var calendarPlusHeightPx by remember { mutableStateOf(0) }
-        var isCollapsedAll = remember { false }
-        var isExpandedAll = remember { true }
-        val nestedScrollConnection =
-            object : NestedScrollConnection {
-                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                    return if (available.y < 0) {
-                        isExpandedAll = false
-                        calendarPlusHeightPx = available.y.toInt()
-                        if (isCollapsedAll) Offset.Zero else available
-                    } else {
-                        isCollapsedAll = false
-                        calendarPlusHeightPx = available.y.toInt()
-                        if (isExpandedAll) Offset.Zero else available
+    if (data != null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            val monthValue = data.first
+            val schedulesValue = data.second
+            var calendarPlusHeightPx by remember { mutableStateOf(0) }
+            var isCollapsedAll = remember { false }
+            var isExpandedAll = remember { true }
+            val nestedScrollConnection =
+                object : NestedScrollConnection {
+                    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                        return if (available.y < 0) {
+                            isExpandedAll = false
+                            calendarPlusHeightPx = available.y.toInt()
+                            if (isCollapsedAll) Offset.Zero else available
+                        } else {
+                            isCollapsedAll = false
+                            calendarPlusHeightPx = available.y.toInt()
+                            if (isExpandedAll) Offset.Zero else available
+                        }
+                    }
+                }
+            Scaffold(
+                modifier = Modifier,
+                topBar = {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 20.dp)
+                    ) {
+                        ScheduleCalendar(month = monthValue,
+                            schedules = schedulesValue,
+                            plusHeight = { calendarPlusHeightPx },
+                            onPrevMonthClick = { onPrevMonthClick(it) },
+                            onNextMonthClick = { onNextMonthClick(it) },
+                            onCollapsedAll = {
+                                isCollapsedAll = true
+                            },
+                            onExpandedAll = {
+                                isExpandedAll = true
+                            }
+                        )
+                    }
+                }
+            ) {
+                LazyColumn(
+                    modifier = Modifier.nestedScroll(nestedScrollConnection),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(schedulesValue.schedules.size) {
+                        val scheduleData = schedulesValue.schedules[it]
+                        ScheduleItem(scheduleData) {
+                            onItemSelected(scheduleData)
+                            actionSheetScope.launch {
+                                actionSheetState.show()
+                            }
+                        }
+                    }
+                    item {
+                        Spacer(Modifier.size(88.dp))
                     }
                 }
             }
-        Scaffold(
-            modifier = Modifier,
-            topBar = {
-                Box(
+            Box(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Surface(
                     modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 20.dp)
+                        .size(56.dp)
+                        .clickable(
+                            interactionSource = MutableInteractionSource(),
+                            indication = null,
+                            enabled = true
+                        ) { onWriteScheduleClick() },
+                    shape = RoundedCornerShape(28.dp),
+                    color = purple400,
+                    elevation = 4.dp
                 ) {
-                    ScheduleCalendar(month = monthValue,
-                        schedules = schedulesValue,
-                        plusHeight = { calendarPlusHeightPx },
-                        onPrevMonthClick = { onPrevMonthClick(it) },
-                        onNextMonthClick = { onNextMonthClick(it) },
-                        onCollapsedAll = {
-                            isCollapsedAll = true
-                        },
-                        onExpandedAll = {
-                            isExpandedAll = true
-                        }
+                    Icon(
+                        modifier = Modifier.padding(16.dp),
+                        painter = painterResource(R.drawable.ic_write),
+                        tint = white,
+                        contentDescription = null
                     )
                 }
-            }
-        ) {
-            LazyColumn(
-                modifier = Modifier.nestedScroll(nestedScrollConnection),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                items(schedulesValue.schedules.size) {
-                    val scheduleData = schedulesValue.schedules[it]
-                    ScheduleItem(scheduleData) {
-                        onItemSelected(scheduleData)
-                        actionSheetScope.launch {
-                            actionSheetState.show()
-                        }
-                    }
-                }
-                item {
-                    Spacer(Modifier.size(88.dp))
-                }
-            }
-        }
-        Box(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Surface(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clickable(
-                        interactionSource = MutableInteractionSource(),
-                        indication = null,
-                        enabled = true
-                    ) { onWriteScheduleClick() },
-                shape = RoundedCornerShape(28.dp),
-                color = purple400,
-                elevation = 4.dp
-            ) {
-                Icon(
-                    modifier = Modifier.padding(16.dp),
-                    painter = painterResource(R.drawable.ic_write),
-                    tint = white,
-                    contentDescription = null
-                )
             }
         }
     }

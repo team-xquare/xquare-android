@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.util
 
 import android.content.Context
+import android.util.Log
 import com.xquare.domain.exception.NeedLoginException
 import com.xquare.domain.exception.NoInternetException
 import kotlin.system.exitProcess
