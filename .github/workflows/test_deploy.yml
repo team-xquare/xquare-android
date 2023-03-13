@@ -52,6 +52,9 @@ jobs:
       - name: Run bundle install
         run: bundle install
 
+      - name: Update plugins
+        run: bundle exec fastlane update_plugins
+
       - name: Validate play store json key
         run: bundle exec fastlane run validate_play_store_json_key
 
