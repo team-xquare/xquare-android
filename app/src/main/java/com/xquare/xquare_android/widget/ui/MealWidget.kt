@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.widget.ui
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
@@ -33,6 +34,8 @@ import javax.inject.Inject
 @RequiresApi(Build.VERSION_CODES.O)
 class MealWidget : AppWidgetProvider() {
 
+    private var meal = "정보를 불러오지 못했습니다."
+
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
 
@@ -42,18 +45,29 @@ class MealWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
+        setMeal(context)
+
         val views = RemoteViews(context?.packageName, R.layout.meal_widget)
+        views.setOnClickPendingIntent(R.id.meal_widget, setMeal(context))
+
         views.setTextViewText(R.id.time, setTime())
         views.setTextViewText(R.id.date, setDate())
+        views.setTextViewText(R.id.meal, meal)
 
         appWidgetIds?.forEach { appWidgetId ->
-            views.setTextViewText(R.id.meal, setMeal())
             appWidgetManager?.updateAppWidget(appWidgetId,views)
         }
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
+
+        val views = RemoteViews(context?.packageName, R.layout.meal_widget)
+        views.setOnClickPendingIntent(R.id.meal_widget, setMeal(context))
+
+        views.setTextViewText(R.id.time, setTime())
+        views.setTextViewText(R.id.date, setDate())
+        views.setTextViewText(R.id.meal, meal)
     }
 
     private fun setTime(): String {
@@ -69,20 +83,20 @@ class MealWidget : AppWidgetProvider() {
     private fun setDate(): String =
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
-    private fun setMeal(): String {
-        var text = "정보를 불러오지 못했습니다."
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun setMeal(context: Context?): PendingIntent {
         val localDateTime = LocalDateTime.now()
         val date = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
         val builder = WidgetRetrofitBuilder()
         builder.widgetApi().getMeal(date).enqueue(object : Callback<MealResponse> {
             override fun onResponse(call: Call<MealResponse>, response: Response<MealResponse>) {
-                text = ""
+                meal = ""
                 val mealList = response.body()?.breakfast
                 if (!mealList.isNullOrEmpty()) {
                     for (i in mealList.indices) {
-                        text = buildAnnotatedString {
-                            append(text)
+                        meal = buildAnnotatedString {
+                            append(meal)
                             append(", ")
                             append(mealList[i])
                         }.toString()
@@ -90,9 +104,11 @@ class MealWidget : AppWidgetProvider() {
                 }
             }
             override fun onFailure(call: Call<MealResponse>, t: Throwable) {
-                text = "등록된 정보가\n없습니다."
+                meal = "등록된 정보가\n없습니다."
             }
         })
-        return text
+        val intent = Intent(context, MealWidget::class.java)
+        intent.action = "android.appwidget.action.APPWIDGET_UPDATE"
+        return PendingIntent.getBroadcast(context, 0, intent, 0)
     }
 }
