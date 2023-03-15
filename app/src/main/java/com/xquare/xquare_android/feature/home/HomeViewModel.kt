@@ -1,16 +1,15 @@
 package com.xquare.xquare_android.feature.home
 
 import com.xquare.domain.entity.ClassPositionEntity
+import com.xquare.domain.entity.pick.PassCheckEntity
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.domain.usecase.meal.FetchTodayMealUseCase
-import com.xquare.domain.usecase.point.FetchDormitoryPointUseCase
 import com.xquare.domain.usecase.user.FetchUserSimpleDataUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.lang.Thread.State
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,7 +57,8 @@ class HomeViewModel @Inject constructor(
     private val _clasPosition = MutableStateFlow(ClassPositionEntity("수준호","세미나실2-1"))
     val classPosition: StateFlow<ClassPositionEntity> = _clasPosition
 
-    private val passCheck = MutableStateFlow()
+    private val _passCheck = MutableStateFlow(PassCheckEntity("","수준호","20시 30분"))
+    val passCheck: StateFlow<PassCheckEntity> = _passCheck
 
     sealed class Event {
 

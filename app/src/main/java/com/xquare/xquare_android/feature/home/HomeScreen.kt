@@ -1,14 +1,12 @@
 package com.xquare.xquare_android.feature.home
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,9 +29,11 @@ import com.semicolon.design.Body2
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.semicolon.design.notoSansFamily
 import com.xquare.domain.entity.ClassPositionEntity
+import com.xquare.domain.entity.pick.PassCheckEntity
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.xquare_android.R
@@ -46,6 +46,7 @@ fun HomeScreen(navController: NavController) {
     val userData = viewModel.userSimpleData.collectAsState().value
     val meal = viewModel.todayMeal.collectAsState().value
     val classPosition = viewModel.classPosition.collectAsState().value
+    val passCheck = viewModel.passCheck.collectAsState().value
     LaunchedEffect(Unit) {
         viewModel.run {
             fetchTodayMeal()
@@ -56,6 +57,7 @@ fun HomeScreen(navController: NavController) {
         userData = userData,
         meal = meal,
         classPosition = classPosition,
+        passCheck = passCheck,
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
         onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
         onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
@@ -67,7 +69,7 @@ fun HomeContent(
     userData: HomeUserEntity,
     meal: MealEntity,
     classPosition: ClassPositionEntity,
-    ,
+    passCheck: PassCheckEntity,
     onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
     onAlarmClick: () -> Unit,
@@ -83,21 +85,7 @@ fun HomeContent(
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
-        if (classPosition.name.isNotEmpty()) {
-            Spacer(modifier = Modifier.size(16.dp))
-            HomePickCard(
-                state = HomePickCardButtonState.ClassPosition,
-                topText = buildAnnotatedString {
-                    append("현재 ")
-                    append(classPosition.name)
-                    append("님은")
-                }.toString(),
-                underText = "에 있습니다",
-                pointText = classPosition.place,
-            ) {
-
-            }
-        }
+        HomePickContent(classPosition = classPosition, passCheck = passCheck)
     }
 }
 
@@ -285,7 +273,49 @@ enum class HomePickCardButtonState(
         text = "교실로 돌아가기",
         textColor = gray700,
         strokeColor = gray400,
-    )
+    ),
+    PassCheck(
+        backgroundColor = purple400,
+        text = "외출증 확인하기",
+        textColor = white,
+        strokeColor = Color(0x00000000)
+    ),
+}
+
+@Composable
+fun HomePickContent(
+    classPosition: ClassPositionEntity,
+    passCheck: PassCheckEntity,
+) {
+    if (classPosition.name.isNotEmpty()) {
+        Spacer(modifier = Modifier.size(16.dp))
+        HomePickCard(
+            state = HomePickCardButtonState.ClassPosition,
+            topText = buildAnnotatedString {
+                append("현재 ")
+                append(classPosition.name)
+                append("님은")
+            }.toString(),
+            underText = "에 있습니다.",
+            pointText = classPosition.place,
+        ) {
+
+        }
+    }
+    if (passCheck.end_time.isNotEmpty()) {
+        Spacer(modifier = Modifier.size(16.dp))
+        HomePickCard(
+            state = HomePickCardButtonState.PassCheck,
+            topText = buildAnnotatedString {
+                append(passCheck.name)
+                append("님의 외출시간은")
+            }.toString(),
+            underText = "까지 입니다.",
+            pointText = passCheck.end_time,
+        ) {
+
+        }
+    }
 }
 @Composable
 fun HomePickCard(
