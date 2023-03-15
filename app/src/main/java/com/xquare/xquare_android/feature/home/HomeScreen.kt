@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.home
 
+import android.view.WindowManager
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -36,18 +38,23 @@ import com.xquare.domain.entity.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassCheckEntity
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
+import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun HomeScreen(navController: NavController) {
+    val context = LocalContext.current
+    val mainActivity = context as MainActivity
+
     val viewModel: HomeViewModel = hiltViewModel()
     val userData = viewModel.userSimpleData.collectAsState().value
     val meal = viewModel.todayMeal.collectAsState().value
     val classPosition = viewModel.classPosition.collectAsState().value
     val passCheck = viewModel.passCheck.collectAsState().value
     LaunchedEffect(Unit) {
+        mainActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         viewModel.run {
             fetchPassTime()
             fetchUserSimpleData()
