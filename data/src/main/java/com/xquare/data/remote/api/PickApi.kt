@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface PickApi {
 
-    @GET("pick/applications")
+    @GET("pick/applications/return")
     suspend fun fetchPassTime(): PassCheckResponse
 }
