@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(
     private val _clasPosition = MutableStateFlow(ClassPositionEntity("",""))
     val classPosition: StateFlow<ClassPositionEntity> = _clasPosition
 
-    private val _passCheck = MutableStateFlow(PassCheckEntity("","",""))
+    private val _passCheck = MutableStateFlow(PassCheckEntity("","수준호",""))
     val passCheck: StateFlow<PassCheckEntity> = _passCheck
 
     fun fetchPassTime() {

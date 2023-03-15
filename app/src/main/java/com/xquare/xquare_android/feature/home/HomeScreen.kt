@@ -61,7 +61,8 @@ fun HomeScreen(navController: NavController) {
         passCheck = passCheck,
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
         onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
-        onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
+        onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) },
+        onPassClick = { navController.navigate(AppNavigationItem.Pass.route) }
     )
 }
 
@@ -74,6 +75,7 @@ fun HomeContent(
     onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
     onAlarmClick: () -> Unit,
+    onPassClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -86,7 +88,11 @@ fun HomeContent(
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
-        HomePickContent(classPosition = classPosition, passCheck = passCheck)
+        HomePickContent(
+            classPosition = classPosition,
+            passCheck = passCheck,
+            onPassClick = onPassClick,
+        )
     }
 }
 
@@ -287,6 +293,7 @@ enum class HomePickCardButtonState(
 fun HomePickContent(
     classPosition: ClassPositionEntity,
     passCheck: PassCheckEntity,
+    onPassClick: () -> Unit,
 ) {
     if (classPosition.name.isNotEmpty()) {
         Spacer(modifier = Modifier.size(16.dp))
@@ -303,7 +310,7 @@ fun HomePickContent(
 
         }
     }
-    if (passCheck.end_time.isNotEmpty()) {
+    if (passCheck.end_time.isEmpty()) {
         Spacer(modifier = Modifier.size(16.dp))
         HomePickCard(
             state = HomePickCardButtonState.PassCheck,
@@ -314,7 +321,7 @@ fun HomePickContent(
             underText = "까지 입니다.",
             pointText = passCheck.end_time,
         ) {
-
+            onPassClick()
         }
     }
 }
