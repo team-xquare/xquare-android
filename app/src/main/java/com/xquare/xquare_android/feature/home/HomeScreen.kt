@@ -49,8 +49,9 @@ fun HomeScreen(navController: NavController) {
     val passCheck = viewModel.passCheck.collectAsState().value
     LaunchedEffect(Unit) {
         viewModel.run {
-            fetchTodayMeal()
+            fetchPassTime()
             fetchUserSimpleData()
+            fetchTodayMeal()
         }
     }
     HomeContent(
