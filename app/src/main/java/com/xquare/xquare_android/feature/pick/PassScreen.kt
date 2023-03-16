@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,7 +24,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
@@ -47,8 +50,12 @@ fun PassScreen(
 ) {
     val context = LocalContext.current
     val mainActivity: MainActivity = context as MainActivity
+    val vm: PassViewModel = hiltViewModel()
+    val passData = vm.passData.collectAsState().value
+
     LaunchedEffect(Unit) {
         mainActivity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        vm.fetchPassData()
     }
     Scaffold(
         modifier = Modifier
@@ -73,7 +80,7 @@ fun PassScreen(
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
-                Spacer(modifier = Modifier.size(44.dp))
+                Spacer(modifier = Modifier.size(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -83,7 +90,7 @@ fun PassScreen(
                             .size(60.dp)
                             .clip(CircleShape),
                         painter = rememberAsyncImagePainter(
-                            model = "",
+                            model = passData.profile_file_name,
                             placeholder = ColorPainter(gray200),
                             error = painterResource(id = R.drawable.ic_profile_default)
                         ),
@@ -91,14 +98,21 @@ fun PassScreen(
                         contentDescription = null,
                     )
                     Spacer(modifier = Modifier.size(16.dp))
-                    Subtitle4(text = "2120 수준호")
+                    Subtitle4(text = passData.student_name)
                 }
                 Spacer(modifier = Modifier.size(38.dp))
-                PassInfoText(title = "외출시간", content = "16:30 ~ 20:30")
+                PassInfoText(
+                    title = "외출시간",
+                    content = buildAnnotatedString {
+                        append(passData.start_time)
+                        append(" ~ ")
+                        append(passData.end_time)
+                    }.toString()
+                )
                 Spacer(modifier = Modifier.size(17.dp))
-                PassInfoText(title = "사유", content = "병원")
+                PassInfoText(title = "사유", content = passData.reason)
                 Spacer(modifier = Modifier.size(28.dp))
-                PassInfoText(title = "확인교사", content = "신요셉 선생님")
+                PassInfoText(title = "확인교사", content = passData.teacher_name)
             }
         }
     }

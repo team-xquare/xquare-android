@@ -1,5 +1,6 @@
 package com.xquare.data.remote.api
 
+import com.xquare.data.remote.response.pick.PassDataResponse
 import com.xquare.data.remote.response.pick.PassTimeResponse
 import retrofit2.http.GET
 
@@ -9,5 +10,5 @@ interface PickApi {
     suspend fun fetchPassTime(): PassTimeResponse
 
     @GET("pick/applications/picnic")
-    suspend fun fetchPass()
+    suspend fun fetchPassData(): PassDataResponse
 }
