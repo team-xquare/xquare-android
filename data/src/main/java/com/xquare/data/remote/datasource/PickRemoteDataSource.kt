@@ -1,7 +1,7 @@
 package com.xquare.data.remote.datasource
 
-import com.xquare.domain.entity.pick.PassCheckEntity
+import com.xquare.domain.entity.pick.PassTimeEntity
 
 interface PickRemoteDataSource {
-    suspend fun fetchPassTime(): PassCheckEntity
+    suspend fun fetchPassTime(): PassTimeEntity
 }

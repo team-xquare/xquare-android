@@ -35,7 +35,7 @@ import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.semicolon.design.notoSansFamily
 import com.xquare.domain.entity.ClassPositionEntity
-import com.xquare.domain.entity.pick.PassCheckEntity
+import com.xquare.domain.entity.pick.PassTimeEntity
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.xquare_android.MainActivity
@@ -78,7 +78,7 @@ fun HomeContent(
     userData: HomeUserEntity,
     meal: MealEntity,
     classPosition: ClassPositionEntity,
-    passCheck: PassCheckEntity,
+    passCheck: PassTimeEntity,
     onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
     onAlarmClick: () -> Unit,
@@ -299,7 +299,7 @@ enum class HomePickCardButtonState(
 @Composable
 fun HomePickContent(
     classPosition: ClassPositionEntity,
-    passCheck: PassCheckEntity,
+    passCheck: PassTimeEntity,
     onPassClick: () -> Unit,
 ) {
     if (classPosition.name.isNotEmpty()) {
@@ -317,7 +317,7 @@ fun HomePickContent(
 
         }
     }
-    if (passCheck.end_time.isEmpty()) {
+    if (passCheck.user_id.isNotEmpty()) {
         Spacer(modifier = Modifier.size(16.dp))
         HomePickCard(
             state = HomePickCardButtonState.PassCheck,

@@ -1,16 +1,16 @@
 package com.xquare.data.remote.response.pick
 
-import com.xquare.domain.entity.pick.PassCheckEntity
+import com.xquare.domain.entity.pick.PassTimeEntity
 import java.util.UUID
 
-data class PassCheckResponse(
+data class PassTimeResponse(
     val user_id: UUID,
     val name: String,
     val end_time: String,
 )
 
-fun PassCheckResponse.toEntity() =
-    PassCheckEntity(
+fun PassTimeResponse.toEntity() =
+    PassTimeEntity(
         user_id = user_id.toString(),
         name = name,
         end_time = end_time

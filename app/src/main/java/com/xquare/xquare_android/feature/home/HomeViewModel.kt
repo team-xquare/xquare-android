@@ -1,7 +1,7 @@
 package com.xquare.xquare_android.feature.home
 
 import com.xquare.domain.entity.ClassPositionEntity
-import com.xquare.domain.entity.pick.PassCheckEntity
+import com.xquare.domain.entity.pick.PassTimeEntity
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.domain.usecase.meal.FetchTodayMealUseCase
@@ -59,8 +59,8 @@ class HomeViewModel @Inject constructor(
     private val _clasPosition = MutableStateFlow(ClassPositionEntity("",""))
     val classPosition: StateFlow<ClassPositionEntity> = _clasPosition
 
-    private val _passCheck = MutableStateFlow(PassCheckEntity("","수준호",""))
-    val passCheck: StateFlow<PassCheckEntity> = _passCheck
+    private val _passCheck = MutableStateFlow(PassTimeEntity("","수준호",""))
+    val passCheck: StateFlow<PassTimeEntity> = _passCheck
 
     fun fetchPassTime() {
         execute(
