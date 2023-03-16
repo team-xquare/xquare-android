@@ -5,14 +5,8 @@ import android.os.Build
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.webkit.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,11 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.semicolon.design.color.primary.purple.purple100
+import com.semicolon.design.color.primary.purple.purple400
+import com.xquare.xquare_android.R
 import com.xquare.xquare_android.util.DevicePaddings
 
-@SuppressLint("SetJavaScriptEnabled", "JavascriptInterface")
+@SuppressLint("SetJavaScriptEnabled", "JavascriptInterface", "ResourceAsColor")
 @Composable
 fun WebView(
     modifier: Modifier = Modifier,
@@ -48,66 +44,61 @@ fun WebView(
         else DevicePaddings.navigationBarHeightDp.dp
     var bottomPadding by remember { mutableStateOf(bottomState) }
 
-    var isRefreshing by remember { mutableStateOf(false) }
-    val refreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing)
-
-    SwipeRefresh(
-        state = refreshState,
-        onRefresh = {
-            isRefreshing = true
-        }
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-               // .pullRefresh()
-        ) {
-            AndroidView(
-                factory = { context ->
-                    WebView(context).apply {
-                        if (!bottomPaddingFalseUrlList.contains(url)) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                                view.rootView.setOnApplyWindowInsetsListener { _, insets ->
-                                    if (insets.isVisible(WindowInsets.Type.ime())) {
-                                        bottomPadding = 0.dp
-                                        keyboardCheck(true)
-                                    } else {
-                                        bottomPadding = DevicePaddings.navigationBarHeightDp.dp
-                                        keyboardCheck(false)
-                                    }
-                                    insets.consumeSystemWindowInsets()
-                                }
-                            }
-                        }
-
-                        layoutParams = ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
-                        webViewClient = object : WebViewClient() {
-                            override fun onPageFinished(view: WebView?, url: String?) {
-                                CookieManager.getInstance().flush()
-                            }
-                        }
-                        webChromeClient = WebChromeClient()
-                        settings.loadWithOverviewMode = true
-                        settings.useWideViewPort = true
-                        settings.setSupportZoom(false)
-                        settings.builtInZoomControls = false
-                        settings.javaScriptEnabled = true
-                        settings.javaScriptCanOpenWindowsAutomatically = true
-                        settings.setSupportMultipleWindows(false)
-                        settings.domStorageEnabled = true
-                        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                        bridges.forEach { addJavascriptInterface(it.value, it.key) }
-                        loadUrl(url, headers)
-                        onCreate(this)
+    AndroidView(
+        factory = { context ->
+            SwipeRefreshLayout(context).apply {
+                setColorSchemeColors(R.color.purple_200)
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                addView(WebView(context).apply {
+                    setOnRefreshListener {
+                        reload()
+                        isRefreshing = false
                     }
-                },
-                modifier = modifier
-                    .imePadding()
-                    .padding(bottom = bottomPadding)
-            )
-        }
-    }
+                    if (!bottomPaddingFalseUrlList.contains(url)) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            view.rootView.setOnApplyWindowInsetsListener { _, insets ->
+                                if (insets.isVisible(WindowInsets.Type.ime())) {
+                                    bottomPadding = 0.dp
+                                    keyboardCheck(true)
+                                } else {
+                                    bottomPadding = DevicePaddings.navigationBarHeightDp.dp
+                                    keyboardCheck(false)
+                                }
+                                insets.consumeSystemWindowInsets()
+                            }
+                        }
+                    }
+
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    webViewClient = object : WebViewClient() {
+                        override fun onPageFinished(view: WebView?, url: String?) {
+                            CookieManager.getInstance().flush()
+                        }
+                    }
+                    webChromeClient = WebChromeClient()
+                    settings.loadWithOverviewMode = true
+                    settings.useWideViewPort = true
+                    settings.setSupportZoom(false)
+                    settings.builtInZoomControls = false
+                    settings.javaScriptEnabled = true
+                    settings.javaScriptCanOpenWindowsAutomatically = true
+                    settings.setSupportMultipleWindows(false)
+                    settings.domStorageEnabled = true
+                    settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                    bridges.forEach { addJavascriptInterface(it.value, it.key) }
+                    loadUrl(url, headers)
+                    onCreate(this)
+                })
+            }
+        },
+        modifier = modifier
+            .imePadding()
+            .padding(bottom = bottomPadding)
+    )
 }
