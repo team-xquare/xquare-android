@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,7 +65,7 @@ fun ScheduleScreen(navController: NavController) {
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var selectedItem: SchedulesEntity.SchedulesDataEntity? = remember { null }
 
-    var pageNum by remember { mutableStateOf(0) }
+    var pageNum by rememberSaveable { mutableStateOf(0) }
     var timetableEntity: TimetableEntity? by remember { mutableStateOf(null) }
 
     var scheduleData: Pair<Int, SchedulesEntity>? by remember { mutableStateOf(null) }
@@ -128,7 +129,10 @@ fun ScheduleScreen(navController: NavController) {
                 Column {
                     AppBar(text = "일정")
                     Spacer(Modifier.size(12.dp))
-                    ToggleButton(items = arrayOf("시간표", "학사일정")) {
+                    ToggleButton(
+                        items = arrayOf("시간표", "학사일정"),
+                        position = pageNum
+                    ) {
                         pageNum = it
                     }
                 }
