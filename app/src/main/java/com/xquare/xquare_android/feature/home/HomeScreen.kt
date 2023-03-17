@@ -1,6 +1,9 @@
 package com.xquare.xquare_android.feature.home
 
+import android.os.Build
+import android.util.Log
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -34,7 +37,7 @@ import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.semicolon.design.notoSansFamily
-import com.xquare.domain.entity.ClassPositionEntity
+import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
@@ -42,7 +45,9 @@ import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
+import java.time.LocalTime
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
@@ -57,8 +62,18 @@ fun HomeScreen(navController: NavController) {
         mainActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         viewModel.run {
             fetchPassTime()
+            fetchClassPosition()
             fetchUserSimpleData()
             fetchTodayMeal()
+        }
+        viewModel.eventFlow.collect {
+            when (it) {
+                is HomeViewModel.Event.SuccessFetchPeriod -> {
+                    Log.d("TAG", "FetchPeriod Success")
+                    viewModel.backToClassRoom(it.period)
+                }
+                is HomeViewModel.Event.BackToClassRoom -> viewModel.fetchClassPosition()
+            }
         }
     }
     HomeContent(
@@ -69,6 +84,7 @@ fun HomeScreen(navController: NavController) {
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
         onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
         onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) },
+        onClassClick = { viewModel.fetchPeriod() },
         onPassClick = { navController.navigate(AppNavigationItem.Pass.route) }
     )
 }
@@ -82,6 +98,7 @@ fun HomeContent(
     onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
     onAlarmClick: () -> Unit,
+    onClassClick: () -> Unit,
     onPassClick: () -> Unit,
 ) {
     Column(
@@ -98,6 +115,7 @@ fun HomeContent(
         HomePickContent(
             classPosition = classPosition,
             passCheck = passCheck,
+            onClassClick = onClassClick,
             onPassClick = onPassClick,
         )
     }
@@ -300,6 +318,7 @@ enum class HomePickCardButtonState(
 fun HomePickContent(
     classPosition: ClassPositionEntity,
     passCheck: PassTimeEntity,
+    onClassClick: () -> Unit,
     onPassClick: () -> Unit,
 ) {
     if (classPosition.name.isNotEmpty()) {
@@ -312,9 +331,9 @@ fun HomePickContent(
                 append("님은")
             }.toString(),
             underText = "에 있습니다.",
-            pointText = classPosition.place,
+            pointText = classPosition.location_classroom,
         ) {
-
+            onClassClick()
         }
     }
     if (passCheck.user_id.isNotEmpty()) {
