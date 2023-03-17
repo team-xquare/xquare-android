@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BaseApp() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppNavigationItem.Splash.route) {
+    NavHost(navController = navController, startDestination = AppNavigationItem.Onboard.route) {
         composable(AppNavigationItem.Splash.route) {
             SplashScreen(navController)
         }
@@ -148,6 +148,14 @@ fun BaseApp() {
                 .map { encoded -> URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString()) }
                 .toTypedArray()
             ImageDetailScreen(navController, images)
+        }
+        composable(AppNavigationItem.WebViewTest.route) {
+            CommonWebViewScreen(
+                navController = navController,
+                url = "https://service.xquare.app/xbridge-test",
+                title = "테스트",
+                haveBackButton = true,
+            )
         }
     }
 }

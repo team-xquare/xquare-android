@@ -100,9 +100,9 @@ fun MinPickerItem(
 
 @Composable
 fun PeriodPickerItem(
-    defaultValue: String,
+    defaultValue: Int,
     itemList: Array<String>,
-    onValueChange: (String) -> Unit,
+    onValueChange: (Int) -> Unit,
 ) {
     AndroidView(
         factory = { context ->
@@ -110,7 +110,7 @@ fun PeriodPickerItem(
             NumberPicker(ContextThemeWrapper(context, style)).apply {
                 minValue = 1
                 maxValue = itemList.size
-                value = defaultValue.toInt()
+                value = defaultValue
                 displayedValues =
                     itemList.map {
                         buildAnnotatedString {
@@ -121,7 +121,7 @@ fun PeriodPickerItem(
                         }.toString()
                     }.toTypedArray()
                 this.setOnValueChangedListener { _,_,value ->
-                    onValueChange(value.toString())
+                    onValueChange(value)
                 }
             }
         }
