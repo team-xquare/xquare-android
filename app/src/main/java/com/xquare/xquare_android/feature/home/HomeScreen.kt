@@ -1,9 +1,6 @@
 package com.xquare.xquare_android.feature.home
 
-import android.os.Build
-import android.util.Log
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -46,7 +43,6 @@ import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current

@@ -1,6 +1,10 @@
 package com.xquare.xquare_android.feature.pick
 
+import android.text.TextUtils
+import android.util.Log
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,18 +18,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -34,6 +42,7 @@ import com.semicolon.design.Body2
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray300
+import com.semicolon.design.color.primary.gray.gray400
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
@@ -43,6 +52,7 @@ import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.getActivity
 import com.xquare.xquare_android.util.DevicePaddings
+import com.xquare.xquare_android.util.updateUi
 
 @Composable
 fun PassScreen(
@@ -81,6 +91,8 @@ fun PassScreen(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Spacer(modifier = Modifier.size(12.dp))
+                PreventCaptureText()
+                Spacer(modifier = Modifier.size(44.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -113,6 +125,8 @@ fun PassScreen(
                 PassInfoText(title = "사유", content = passData.reason)
                 Spacer(modifier = Modifier.size(28.dp))
                 PassInfoText(title = "확인교사", content = passData.teacher_name)
+                Spacer(modifier = Modifier.size(82.dp))
+                PreventCaptureText()
             }
         }
     }
@@ -137,4 +151,24 @@ private fun PassInfoText(
             Body1(text = content, color = gray800)
         }
     }
+}
+
+@Composable
+fun PreventCaptureText() {
+    val content = "캡쳐 방지용 애니메이션입니다. 캡쳐 방지용 애니메이션입니다. 캡쳐 방지용 애니메이션입니다. 캡쳐 방지용 애니메이션입니다."
+    AndroidView(
+        factory = { context ->
+            TextView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                text = content
+                textSize = 14F
+                isSingleLine = true
+                ellipsize = TextUtils.TruncateAt.MARQUEE
+                isSelected = true
+            }
+        }
+    )
 }

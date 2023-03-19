@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.home
 
-import android.util.Log
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
 import com.xquare.domain.entity.meal.MealEntity
@@ -9,7 +8,6 @@ import com.xquare.domain.usecase.meal.FetchTodayMealUseCase
 import com.xquare.domain.usecase.pick.BackToClassRoomUseCase
 import com.xquare.domain.usecase.pick.FetchClassPositionUseCase
 import com.xquare.domain.usecase.pick.FetchPassTimeUseCase
-import com.xquare.domain.usecase.timetables.FetchPeriodUseCase
 import com.xquare.domain.usecase.user.FetchUserSimpleDataUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
