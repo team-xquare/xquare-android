@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class BackToClassRoomUseCase @Inject constructor(
     private val pickRepository: PickRepository
-): UseCase<Int, Unit>() {
-    override suspend fun execute(data: Int) =
-        pickRepository.backToClassRoom(data)
+): UseCase<Unit, Unit>() {
+    override suspend fun execute(data: Unit) =
+        pickRepository.backToClassRoom()
 }

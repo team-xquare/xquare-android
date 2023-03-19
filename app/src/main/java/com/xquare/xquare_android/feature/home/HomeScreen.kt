@@ -45,7 +45,6 @@ import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
-import java.time.LocalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -68,10 +67,6 @@ fun HomeScreen(navController: NavController) {
         }
         viewModel.eventFlow.collect {
             when (it) {
-                is HomeViewModel.Event.SuccessFetchPeriod -> {
-                    Log.d("TAG", "FetchPeriod Success")
-                    viewModel.backToClassRoom(it.period)
-                }
                 is HomeViewModel.Event.BackToClassRoom -> viewModel.fetchClassPosition()
             }
         }
@@ -84,7 +79,7 @@ fun HomeScreen(navController: NavController) {
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
         onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
         onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) },
-        onClassClick = { viewModel.fetchPeriod() },
+        onClassClick = { viewModel.backToClassRoom() },
         onPassClick = { navController.navigate(AppNavigationItem.Pass.route) }
     )
 }

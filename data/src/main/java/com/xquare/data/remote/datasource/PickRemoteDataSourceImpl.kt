@@ -1,7 +1,6 @@
 package com.xquare.data.remote.datasource
 
 import com.xquare.data.remote.api.PickApi
-import com.xquare.data.remote.request.pick.BackToClassRoomRequest
 import com.xquare.data.remote.response.pick.toEntity
 import com.xquare.data.sendHttpRequest
 import com.xquare.domain.entity.pick.ClassPositionEntity
@@ -18,9 +17,9 @@ class PickRemoteDataSourceImpl @Inject constructor(
     override suspend fun fetchPassData(): PassDataEntity =
         sendHttpRequest(httpRequest = { pickApi.fetchPassData().toEntity() })
 
-    override suspend fun backToClassRoom(period: Int)  {
-        sendHttpRequest(httpRequest = { pickApi.backToClassRoom(BackToClassRoomRequest(period)) })
-    }
+    override suspend fun backToClassRoom() =
+        sendHttpRequest(httpRequest = { pickApi.backToClassRoom() })
+
 
     override suspend fun fetchClassPosition(): ClassPositionEntity =
         sendHttpRequest(httpRequest = { pickApi.fetchClassPosition().toEntity() })

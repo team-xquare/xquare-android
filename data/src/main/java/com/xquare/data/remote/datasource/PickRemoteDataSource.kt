@@ -9,7 +9,7 @@ interface PickRemoteDataSource {
 
     suspend fun fetchPassData(): PassDataEntity
 
-    suspend fun backToClassRoom(period: Int)
+    suspend fun backToClassRoom()
 
     suspend fun fetchClassPosition(): ClassPositionEntity
 }

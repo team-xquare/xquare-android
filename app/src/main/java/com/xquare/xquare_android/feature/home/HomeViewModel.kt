@@ -15,7 +15,6 @@ import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +22,6 @@ class HomeViewModel @Inject constructor(
     private val fetchTodayMealUseCase: FetchTodayMealUseCase,
     private val fetchUserSimpleDataUseCase: FetchUserSimpleDataUseCase,
     private val fetchClassPositionUseCase: FetchClassPositionUseCase,
-    private val fetchPeriodUseCase: FetchPeriodUseCase,
     private val backToClassRoomUseCase: BackToClassRoomUseCase,
     private val fetchPassTimeUseCase: FetchPassTimeUseCase,
 ) : BaseViewModel<HomeViewModel.Event>() {
@@ -71,23 +69,13 @@ class HomeViewModel @Inject constructor(
         execute(
             job = { fetchClassPositionUseCase.execute(Unit) },
             onSuccess = { _classPosition.tryEmit(it) },
-            onFailure = {  }
+            onFailure = { _classPosition.tryEmit(ClassPositionEntity("", "")) }
         )
     }
 
-    fun fetchPeriod() {
+    fun backToClassRoom() {
         execute(
-            job = { fetchPeriodUseCase.execute(Unit) },
-            onSuccess = { emitEvent(Event.SuccessFetchPeriod(it)) },
-            onFailure = { Log.d("TAG", "fetchPeriod Fail") }
-        )
-    }
-
-    fun backToClassRoom(
-        period: Int
-    ) {
-        execute(
-            job = { backToClassRoomUseCase.execute(period) },
+            job = { backToClassRoomUseCase.execute(Unit) },
             onSuccess = { emitEvent(Event.BackToClassRoom) },
             onFailure = {},
         )
@@ -100,12 +88,11 @@ class HomeViewModel @Inject constructor(
         execute(
             job = { fetchPassTimeUseCase.execute(Unit) },
             onSuccess = { _passCheck.tryEmit(it) },
-            onFailure = {  }
+            onFailure = {}
         )
     }
 
     sealed class Event {
-        data class SuccessFetchPeriod(val period: Int) : Event()
         object BackToClassRoom : Event()
     }
 }

@@ -16,8 +16,8 @@ class PickRepositoryImpl @Inject constructor(
     override suspend fun fetchPassData(): PassDataEntity =
         pickRemoteDataSource.fetchPassData()
 
-    override suspend fun backToClassRoom(period: Int)  {
-        pickRemoteDataSource.backToClassRoom(period)
+    override suspend fun backToClassRoom()  {
+        pickRemoteDataSource.backToClassRoom()
     }
 
     override suspend fun fetchClassPosition(): ClassPositionEntity =

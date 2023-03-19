@@ -33,7 +33,7 @@ class AuthorizationInterceptor @Inject constructor(
         val expiredAt = runBlocking { authPreference.fetchExpirationAt() }
         val currentTime = LocalDateTime.now(ZoneId.systemDefault())
 
-        if (expiredAt.isBefore(currentTime)) {
+        if (currentTime.isBefore(expiredAt)) {
             val client = OkHttpClient()
             val refreshToken = runBlocking { authPreference.fetchRefreshToken() }
 

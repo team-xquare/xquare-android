@@ -1,7 +1,6 @@
 package com.xquare.data.repository.timetables
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.xquare.data.remote.datasource.TimetablesRemoteDataSource
 import com.xquare.domain.entity.timetables.DayTimetableEntity
@@ -35,7 +34,6 @@ class TimetablesRepositoryImpl @Inject constructor(
                 break
             }
         }
-
 
         return period
     }
