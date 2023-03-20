@@ -11,14 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.semicolon.design.color.primary.purple.purple100
-import com.semicolon.design.color.primary.purple.purple400
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.util.DevicePaddings
 
@@ -43,6 +42,8 @@ fun WebView(
         if (bottomPaddingFalseUrlList.contains(url)) 0.dp
         else DevicePaddings.navigationBarHeightDp.dp
     var bottomPadding by remember { mutableStateOf(bottomState) }
+
+    var scrollState by rememberSaveable { mutableStateOf(0) }
 
     AndroidView(
         factory = { context ->
@@ -79,8 +80,10 @@ fun WebView(
                     webViewClient = object : WebViewClient() {
                         override fun onPageFinished(view: WebView?, url: String?) {
                             CookieManager.getInstance().flush()
+                            scrollTo(0, scrollState)
                         }
                     }
+                    setOnScrollChangeListener { _, _, _, _, _ -> scrollState = scrollY }
                     webChromeClient = WebChromeClient()
                     settings.loadWithOverviewMode = true
                     settings.useWideViewPort = true
