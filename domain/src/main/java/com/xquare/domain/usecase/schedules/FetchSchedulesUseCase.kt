@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class FetchSchedulesUseCase @Inject constructor(
     private val schedulesRepository: SchedulesRepository
-): UseCase<Int, Flow<SchedulesEntity>>() {
-    override suspend fun execute(data: Int): Flow<SchedulesEntity> =
+): UseCase<Int, SchedulesEntity>() {
+    override suspend fun execute(data: Int): SchedulesEntity =
         schedulesRepository.fetchSchedules(data)
 }

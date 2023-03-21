@@ -6,7 +6,7 @@ import com.xquare.domain.entity.schedules.FixSchedulesEntity
 import kotlinx.coroutines.flow.Flow
 
 interface SchedulesRepository {
-    suspend fun fetchSchedules(month: Int): Flow<SchedulesEntity>
+    suspend fun fetchSchedules(month: Int): SchedulesEntity
 
     suspend fun createSchedules(data: CreateSchedulesEntity)
 

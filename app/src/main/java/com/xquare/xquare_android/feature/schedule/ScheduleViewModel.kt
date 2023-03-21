@@ -27,7 +27,7 @@ class ScheduleViewModel @Inject constructor(
     fun fetchSchedules(month: Int) {
         execute(
             job = { fetchSchedulesUseCase.execute(month) },
-            onSuccess = { it.collect{ schedule -> emitEvent(Event.Success(schedule)) } },
+            onSuccess = { emitEvent(Event.Success(it)) },
             onFailure = {  }
         )
     }

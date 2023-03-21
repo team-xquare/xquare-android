@@ -30,8 +30,4 @@ abstract class LocalDataSourceModule {
         timetableLocalDataSourceImpl: TimetableLocalDataSourceImpl
     ): TimetableLocalDataSource
 
-    @Binds
-    abstract fun bindScheduleLocalDataSource(
-        scheduleLocalDataSourceImpl: ScheduleLocalDataSourceImpl
-    ): ScheduleLocalDataSource
 }
