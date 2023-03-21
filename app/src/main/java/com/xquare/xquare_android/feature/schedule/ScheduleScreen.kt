@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.feature.schedule
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,32 +59,21 @@ fun ScheduleScreen(navController: NavController) {
     val context = LocalContext.current
     val timetableViewModel: TimetableViewModel = hiltViewModel()
     val scheduleViewModel: ScheduleViewModel = hiltViewModel()
-
     val actionSheetScope = rememberCoroutineScope()
-    val actionSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var selectedItem: SchedulesEntity.SchedulesDataEntity? = remember { null }
-
     var pageNum by remember { mutableStateOf(0) }
-    var timetableEntity: TimetableEntity? by remember { mutableStateOf(null) }
-
     var scheduleData: Pair<Int, SchedulesEntity>? by remember { mutableStateOf(null) }
+    val timetable = timetableViewModel.timetable.collectAsState().value
     var isLoadingSchedule by remember { mutableStateOf(false) }
     var loadingMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
 
-    LaunchedEffect(Unit) {
-        timetableViewModel.fetchWeekTimetables()
-        timetableViewModel.eventFlow.collect {
-            when (it) {
-                is TimetableViewModel.Event.Success -> {
-                    timetableEntity = it.data
-                }
-                is TimetableViewModel.Event.Failure -> {
-                    makeToast(context, "시간표를 불러오지 못했습니다")
-                }
-            }
+    LaunchedEffect(Unit){
+        timetableViewModel.run {
+            fetchWeekTimetables()
         }
     }
+
     LaunchedEffect(Unit) {
         scheduleViewModel.fetchSchedules(loadingMonth)
         scheduleViewModel.eventFlow.collect {
@@ -134,7 +124,7 @@ fun ScheduleScreen(navController: NavController) {
                 }
             }
         ) {
-            if (pageNum == 0) Timetable(LocalDate.now().dayOfWeek.value, timetableEntity)
+            if (pageNum == 0) Timetable(LocalDate.now().dayOfWeek.value, timetable)
             else Schedule(
                 data = scheduleData,
                 actionSheetScope = actionSheetScope,
@@ -225,8 +215,7 @@ private fun Timetable(
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun TimetablePage(
-    weekTimetableEntity: TimetableEntity.WeekTimetableEntity,
-) {
+    weekTimetableEntity: TimetableEntity.WeekTimetableEntity) {
     Scaffold(
         topBar = {
             Box(modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp)) {
@@ -248,6 +237,8 @@ private fun TimetablePage(
 private fun TimetableItem(
     dayTimetableEntity: TimetableEntity.WeekTimetableEntity.DayTimetableEntity,
 ) {
+    if (dayTimetableEntity != null)
+        Log.d("asdas",dayTimetableEntity.toString())
     Row(
         modifier = Modifier
             .fillMaxWidth()

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -102,7 +103,7 @@ fun AllScreen(navController: NavController) {
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))
-            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium)
+            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
             userMenuList.forEachIndexed { index, title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {

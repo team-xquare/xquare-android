@@ -1,11 +1,6 @@
 package com.xquare.di
 
-import com.xquare.data.local.datasource.AlarmLocalDataSource
-import com.xquare.data.local.datasource.AlarmLocalDataSourceImpl
-import com.xquare.data.local.datasource.AuthLocalDataSource
-import com.xquare.data.local.datasource.AuthLocalDataSourceImpl
-import com.xquare.data.local.datasource.MealLocalDataSource
-import com.xquare.data.local.datasource.MealLocalDataSourceImpl
+import com.xquare.data.local.datasource.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -29,4 +24,14 @@ abstract class LocalDataSourceModule {
     abstract fun bindAlarmLocalDataSource(
         alarmLocalDataSourceImpl: AlarmLocalDataSourceImpl
     ): AlarmLocalDataSource
+
+    @Binds
+    abstract fun bindTimetableLocalDataSource(
+        timetableLocalDataSourceImpl: TimetableLocalDataSourceImpl
+    ): TimetableLocalDataSource
+
+    @Binds
+    abstract fun bindScheduleLocalDataSource(
+        scheduleLocalDataSourceImpl: ScheduleLocalDataSourceImpl
+    ): ScheduleLocalDataSource
 }
