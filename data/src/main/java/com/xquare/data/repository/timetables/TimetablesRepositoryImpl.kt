@@ -17,7 +17,7 @@ class TimetablesRepositoryImpl @Inject constructor(
         fetchDataWithOfflineCache(
             fetchLocalData = { timetablesLocalDataSource.fetchTimetable() },
             fetchRemoteData = { timetablesRemoteDataSource.fetchWeekTimetables() },
-            refreshLocalData = {timetablesLocalDataSource.saveTimetable(it)},
+            refreshLocalData = { timetablesLocalDataSource.saveTimetable(it) },
             offlineOnly = true
         )
 }

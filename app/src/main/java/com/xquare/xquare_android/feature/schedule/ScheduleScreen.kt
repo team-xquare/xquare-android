@@ -164,8 +164,8 @@ private fun Timetable(
     if (timetableEntity == null) return
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
-        val initPage = getTimeTablePage(dayOfWeek)
-        pagerState.scrollToPage(initPage)
+//        val initPage = getTimeTablePage(dayOfWeek)
+//        pagerState.scrollToPage(initPage)
     }
     Scaffold(
         bottomBar = {

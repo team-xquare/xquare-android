@@ -10,7 +10,7 @@ import com.xquare.data.local.entity.timetable.TimetableRoomEntity
 @Dao
 interface ScheduleDao {
 
-    @Query("SELECT * FROM ScheduleRoomEntity WHERE scheduleId = 0")
+    @Query("SELECT * FROM ScheduleRoomEntity")
     suspend fun fetchSchedule(): ScheduleRoomEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
