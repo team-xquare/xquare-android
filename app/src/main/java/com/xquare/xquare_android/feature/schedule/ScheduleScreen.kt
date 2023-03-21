@@ -1,7 +1,6 @@
 package com.xquare.xquare_android.feature.schedule
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -162,10 +161,14 @@ private fun Timetable(
     timetableEntity: TimetableEntity?,
 ) {
     if (timetableEntity == null) return
+    if (timetableEntity.week_timetable.isEmpty()) return
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
-//        val initPage = getTimeTablePage(dayOfWeek)
-//        pagerState.scrollToPage(initPage)
+        val lastIndex = timetableEntity.week_timetable.lastIndex
+        //val coerce = dayOfWeek.coerceIn(0, lastIndex)
+        val initPage = getTimeTablePage(dayOfWeek = dayOfWeek, lastIndex = lastIndex)
+
+        pagerState.scrollToPage(initPage)
     }
     Scaffold(
         bottomBar = {
@@ -237,8 +240,6 @@ private fun TimetablePage(
 private fun TimetableItem(
     dayTimetableEntity: TimetableEntity.WeekTimetableEntity.DayTimetableEntity,
 ) {
-    if (dayTimetableEntity != null)
-        Log.d("asdas",dayTimetableEntity.toString())
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -459,9 +460,13 @@ private fun getWeekdayStringByInt(int: Int) =
         else -> throw IllegalArgumentException()
     }
 
-private fun getTimeTablePage(int: Int) =
-    when (int) {
-        1,2,3,4,5 -> int - 1
-        6 -> 4
-        else -> 0
+private fun getTimeTablePage(dayOfWeek: Int, lastIndex: Int): Int {
+    return if (dayOfWeek - 1 > lastIndex) {
+        when (dayOfWeek) {
+            7 -> 0
+            else -> 4
+        }
+    } else {
+        dayOfWeek - 1
     }
+}
