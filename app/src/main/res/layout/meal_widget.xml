@@ -43,6 +43,15 @@
             android:fontFamily="@font/noto_sans_kr_medium"
             android:layout_marginTop="8dp"/>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/gray900"
+            android:fontFamily="@font/noto_sans_kr_medium"
+            android:layout_marginTop="4dp"/>
+         </LinearLayout>
 
 </LinearLayout>
