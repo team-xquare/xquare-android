@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="158dp"
+    android:layout_height="158dp"
+    android:background="@drawable/widget_meal"
+    android:id="@+id/meal_widget">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        tools:ignore="ScrollViewSize">
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/gray900"
+            android:fontFamily="@font/noto_sans_kr_bold"
+            tools:ignore="HardcodedText" />
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="10sp"
+            android:textColor="@color/gray600"
+            android:fontFamily="@font/noto_sans_kr_medium"
+            android:layout_marginTop="3dp"/>
+
+        <TextView
+            android:id="@+id/meal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/gray900"
+            android:fontFamily="@font/noto_sans_kr_medium"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/gray900"
+            android:fontFamily="@font/noto_sans_kr_medium"
+            android:layout_marginTop="4dp"/>
+         </LinearLayout>
+
+</LinearLayout>
