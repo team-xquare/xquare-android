@@ -5,7 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class WidgetRetrofitBuilder {
+object WidgetRetrofitBuilder {
     private val baseURI = "https://api.xquare.app/"
 
     val retrofit = Retrofit.Builder()
