@@ -3,38 +3,32 @@ package com.xquare.xquare_android.widget.ui
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.provider.Settings.Global
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.text.buildAnnotatedString
-import com.xquare.domain.repository.meal.MealRepository
-import com.xquare.domain.usecase.meal.FetchTodayMealUseCase
+import com.xquare.domain.entity.meal.MealEntity
+import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
-import com.xquare.xquare_android.widget.data.MealResponse
-import com.xquare.xquare_android.widget.data.WidgetRetrofitBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import com.xquare.xquare_android.widget.data.*
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
+@Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 @SuppressLint("WeekBasedYear")
 @RequiresApi(Build.VERSION_CODES.O)
-class MealWidget : AppWidgetProvider() {
+class MealWidget(): BaseWidget(), CoroutineScope by MainScope() {
 
-    private var meal = "정보를 불러오지 못했습니다."
+
+    private val meals = "정보를 불러오지 못했다 이새기야"
 
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
@@ -45,30 +39,34 @@ class MealWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
-        setMeal(context)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, MainActivity::class.java),
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
-        val views = RemoteViews(context?.packageName, R.layout.meal_widget)
-        views.setOnClickPendingIntent(R.id.meal_widget, setMeal(context))
 
-        views.setTextViewText(R.id.time, setTime())
-        views.setTextViewText(R.id.date, setDate())
-        views.setTextViewText(R.id.meal, meal)
+        val meal = getMeal(context)
 
-        appWidgetIds?.forEach { appWidgetId ->
-            appWidgetManager?.updateAppWidget(appWidgetId,views)
+        val views = RemoteViews(context?.packageName, R.layout.meal_widget).apply {
+            setOnClickPendingIntent(R.id.meal_widget, pendingIntent)
+            setTextViewText(R.id.meal, meal.meal)
+            setTextViewText(R.id.time, setTime())
+            setTextViewText(R.id.date, setDate())
+            setTextViewText(R.id.calories, meal.calories)
+        }
+
+        views.setOnClickPendingIntent(R.id.meal_widget, pendingIntent)
+
+        appWidgetManager!!.apply {
+            updateAppWidget(appWidgetIds, views)
+            notifyAppWidgetViewDataChanged(appWidgetIds, R.id.meal_widget)
         }
     }
 
-    override fun onReceive(context: Context?, intent: Intent?) {
-        super.onReceive(context, intent)
 
-        val views = RemoteViews(context?.packageName, R.layout.meal_widget)
-        views.setOnClickPendingIntent(R.id.meal_widget, setMeal(context))
 
-        views.setTextViewText(R.id.time, setTime())
-        views.setTextViewText(R.id.date, setDate())
-        views.setTextViewText(R.id.meal, meal)
-    }
 
     private fun setTime(): String {
         val time = LocalTime.now()
@@ -84,31 +82,54 @@ class MealWidget : AppWidgetProvider() {
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
     @SuppressLint("UnspecifiedImmutableFlag")
-    private fun setMeal(context: Context?): PendingIntent {
+    private fun setMeal(context: Context?): MealWidgetState {
         val localDateTime = LocalDateTime.now()
         val date = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val mealWidget = getMeal(context)
 
-        val builder = WidgetRetrofitBuilder()
+        val builder = WidgetRetrofitBuilder
         builder.widgetApi().getMeal(date).enqueue(object : Callback<MealResponse> {
             override fun onResponse(call: Call<MealResponse>, response: Response<MealResponse>) {
-                meal = ""
+
+                Log.e("RESPONSE", "onResponse: ${response.body()}", )
+                val meal = MealEntity(breakfast = listOf(""), lunch = listOf(""), dinner = listOf(""), "", "", "")
                 val mealList = response.body()?.breakfast
                 if (!mealList.isNullOrEmpty()) {
-                    for (i in mealList.indices) {
-                        meal = buildAnnotatedString {
-                            append(meal)
-                            append(", ")
-                            append(mealList[i])
-                        }.toString()
-                    }
+                    meal.breakfast
+                    meal.caloriesOfBreakfast
                 }
             }
             override fun onFailure(call: Call<MealResponse>, t: Throwable) {
-                meal = "등록된 정보가\n없습니다."
+                t.printStackTrace()
             }
         })
-        val intent = Intent(context, MealWidget::class.java)
-        intent.action = "android.appwidget.action.APPWIDGET_UPDATE"
-        return PendingIntent.getBroadcast(context, 0, intent, 0)
+        val time = LocalDateTime.now()
+
+        val mealEntity = MealEntity(
+            breakfast = listOf(),
+            lunch = listOf(),
+            dinner = listOf(),
+            "","",""
+        )
+
+        val currentMealType = MealType.getCurrentMealType(time)
+
+
+        val meal = when (currentMealType) {
+            MealType.Breakfast -> mealEntity.breakfast
+            MealType.Lunch -> mealEntity.lunch
+            MealType.Dinner -> mealEntity.dinner
+        }
+
+        val mealNotFound: Boolean = meal.size > 1
+
+        return MealWidgetState(
+            mealType = currentMealType,
+            meal = if (mealNotFound) meal
+                .dropLast(1)
+                .joinToString ("\n") else context!!.getString(R.string.app_name),
+            date = LocalDate.now(),
+            calories = if (mealNotFound) meal.last() else "이건 뭐..뭐노??"
+        )
     }
 }
