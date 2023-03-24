@@ -36,8 +36,8 @@ fun TimetablesResponse.WeekTimeTableResponse.toEntity() =
 fun TimetablesResponse.WeekTimeTableResponse.DayTimeTableResponse.toEntity() =
     TimetableEntity.WeekTimetableEntity.DayTimetableEntity(
         period = period,
-        begin_time = begin_time,
-        end_time = end_time,
+        begin_time = begin_time.substring(0..4),
+        end_time = end_time.substring(0..4),
         subject_name = subject_name,
         subject_image = subject_image,
     )

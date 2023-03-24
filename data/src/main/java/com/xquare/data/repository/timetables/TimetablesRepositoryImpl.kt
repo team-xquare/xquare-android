@@ -18,6 +18,6 @@ class TimetablesRepositoryImpl @Inject constructor(
             fetchLocalData = { timetablesLocalDataSource.fetchTimetable() },
             fetchRemoteData = { timetablesRemoteDataSource.fetchWeekTimetables() },
             refreshLocalData = { timetablesLocalDataSource.saveTimetable(it) },
-            offlineOnly = true
+            offlineOnly = false
         )
 }
