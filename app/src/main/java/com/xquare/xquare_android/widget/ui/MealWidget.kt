@@ -26,9 +26,7 @@ import java.time.format.DateTimeFormatter
 @SuppressLint("WeekBasedYear")
 @RequiresApi(Build.VERSION_CODES.O)
 class MealWidget(): BaseWidget(), CoroutineScope by MainScope() {
-
-
-    private val meals = "정보를 불러오지 못했다 이새기야"
+    
 
     override fun onEnabled(context: Context?) {
         super.onEnabled(context)
