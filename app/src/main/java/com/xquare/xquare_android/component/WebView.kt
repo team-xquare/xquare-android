@@ -83,6 +83,7 @@ fun WebView(
                             scrollTo(0, scrollState)
                         }
                     }
+                    // TODO 스크롤 초기화 방지 방안 개선
                     setOnScrollChangeListener { _, _, _, _, _ -> scrollState = scrollY }
                     webChromeClient = WebChromeClient()
                     settings.loadWithOverviewMode = true
