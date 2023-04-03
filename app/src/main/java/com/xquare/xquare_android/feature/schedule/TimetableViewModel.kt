@@ -25,8 +25,6 @@ class TimetableViewModel @Inject constructor(
             onSuccess = { it.collect { timetable -> _timetable.tryEmit(timetable) } },
             onFailure = {  }
         )
-
-        Log.d("TEST", _timetable.toString())
     }
 
     sealed class Event {}

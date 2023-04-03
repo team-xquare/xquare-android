@@ -6,6 +6,7 @@ import com.xquare.data.remote.api.AttachmentApi
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.MealApi
 import com.xquare.data.remote.api.NotificationApi
+import com.xquare.data.remote.api.PickApi
 import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.api.ProfileApi
 import com.xquare.data.remote.api.SchedulesApi
@@ -19,12 +20,13 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.xquare.app/"
+    private const val BASE_URL = "https://stag-api.xquare.app/"
 
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
@@ -104,4 +106,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): NotificationApi =
         retrofit.create(NotificationApi::class.java)
+
+    @Provides
+    fun providePickApi(
+        retrofit: Retrofit
+    ): PickApi =
+        retrofit.create(PickApi::class.java)
 }

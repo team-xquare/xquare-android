@@ -54,4 +54,9 @@ abstract class RemoteDataSourceModule {
     abstract fun bindAlarmRemoteDataSource(
         alarmRemoteDataSourceImpl: AlarmRemoteDataSourceImpl
     ): AlarmRemoteDataSource
+
+    @Binds
+    abstract fun bindPickRemoteDataSource(
+        pickRemoteDataSourceImpl: PickRemoteDataSourceImpl
+    ): PickRemoteDataSource
 }

@@ -1,7 +1,7 @@
 package com.xquare.xquare_android.feature.home
 
+import android.view.WindowManager
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +17,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,32 +28,55 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
+import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.purple.purple400
+import com.semicolon.design.color.primary.white.white
 import com.semicolon.design.notoSansFamily
+import com.xquare.domain.entity.pick.ClassPositionEntity
+import com.xquare.domain.entity.pick.PassTimeEntity
 import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
+import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun HomeScreen(navController: NavController) {
+    val context = LocalContext.current
+    val mainActivity = context as MainActivity
+
     val viewModel: HomeViewModel = hiltViewModel()
     val userData = viewModel.userSimpleData.collectAsState().value
     val meal = viewModel.todayMeal.collectAsState().value
+    val classPosition = viewModel.classPosition.collectAsState().value
+    val passCheck = viewModel.passCheck.collectAsState().value
     LaunchedEffect(Unit) {
+        mainActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         viewModel.run {
-            fetchTodayMeal()
+            fetchPassTime()
+            fetchClassPosition()
             fetchUserSimpleData()
+            fetchTodayMeal()
+        }
+        viewModel.eventFlow.collect {
+            when (it) {
+                is HomeViewModel.Event.BackToClassRoom -> viewModel.fetchClassPosition()
+            }
         }
     }
     HomeContent(
         userData = userData,
         meal = meal,
+        classPosition = classPosition,
+        passCheck = passCheck,
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
         onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
-        onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) }
+        onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) },
+        onClassClick = { viewModel.backToClassRoom() },
+        onPassClick = { navController.navigate(AppNavigationItem.Pass.route) }
     )
 }
 
@@ -59,9 +84,13 @@ fun HomeScreen(navController: NavController) {
 fun HomeContent(
     userData: HomeUserEntity,
     meal: MealEntity,
+    classPosition: ClassPositionEntity,
+    passCheck: PassTimeEntity,
     onUserCardClick: () -> Unit,
     onAllMealClick: () -> Unit,
     onAlarmClick: () -> Unit,
+    onClassClick: () -> Unit,
+    onPassClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -74,6 +103,12 @@ fun HomeContent(
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
+        HomePickContent(
+            classPosition = classPosition,
+            passCheck = passCheck,
+            onClassClick = onClassClick,
+            onPassClick = onPassClick,
+        )
     }
 }
 
@@ -246,6 +281,123 @@ fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
             menus.forEach {
                 Body2(text = it, color = gray800)
             }
+        }
+    }
+}
+
+enum class HomePickCardButtonState(
+    val backgroundColor: Color,
+    val text: String,
+    val textColor: Color,
+    val strokeColor: Color,
+) {
+    ClassPosition(
+        backgroundColor = white,
+        text = "교실로 돌아가기",
+        textColor = gray700,
+        strokeColor = gray400,
+    ),
+    PassCheck(
+        backgroundColor = purple400,
+        text = "외출증 확인하기",
+        textColor = white,
+        strokeColor = Color(0x00000000)
+    ),
+}
+
+@Composable
+fun HomePickContent(
+    classPosition: ClassPositionEntity,
+    passCheck: PassTimeEntity,
+    onClassClick: () -> Unit,
+    onPassClick: () -> Unit,
+) {
+    if (classPosition.name.isNotEmpty()) {
+        Spacer(modifier = Modifier.size(16.dp))
+        HomePickCard(
+            state = HomePickCardButtonState.ClassPosition,
+            topText = buildAnnotatedString {
+                append("현재 ")
+                append(classPosition.name)
+                append("님은")
+            }.toString(),
+            underText = "에 있습니다.",
+            pointText = classPosition.location_classroom,
+        ) {
+            onClassClick()
+        }
+    }
+    if (passCheck.user_id.isNotEmpty()) {
+        Spacer(modifier = Modifier.size(16.dp))
+        HomePickCard(
+            state = HomePickCardButtonState.PassCheck,
+            topText = buildAnnotatedString {
+                append(passCheck.name)
+                append("님의 외출시간은")
+            }.toString(),
+            underText = "까지 입니다.",
+            pointText = passCheck.end_time,
+        ) {
+            onPassClick()
+        }
+    }
+}
+@Composable
+fun HomePickCard(
+    state: HomePickCardButtonState,
+    topText: String,
+    underText: String,
+    pointText: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = white,
+                shape = RoundedCornerShape(16.dp)
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.size(16.dp))
+        Column {
+            Spacer(modifier = Modifier.size(16.dp))
+            Body2(text = topText)
+            Row {
+                Body2(text = pointText, fontWeight = FontWeight.Medium)
+                Body2(text = underText)
+            }
+            Spacer(modifier = Modifier.size(16.dp))
+        }
+        Box(
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .fillMaxWidth()
+                .width(118.dp)
+                .height(48.dp)
+                .wrapContentWidth(align = Alignment.End)
+                .background(
+                    color = state.backgroundColor,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .border(
+                    width = 1.dp,
+                    color = state.strokeColor,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                ) {
+                    onClick()
+                },
+            contentAlignment = Alignment.Center,
+        ) {
+            Body3(
+                text = state.text,
+                color = state.textColor,
+                modifier = Modifier.padding(horizontal = 5.dp)
+            )
         }
     }
 }
