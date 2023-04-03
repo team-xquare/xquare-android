@@ -18,6 +18,7 @@ class XquareExceptionHandler(
             is NoInternetException -> makeToast(context, InternetErrorMsg)
             is NeedLoginException -> makeToast(context, LoginErrorMsg)
             else -> {
+                Log.d("TAG", "uncaughtException: $e")
                 makeToast(context, UnknownErrorMsg)
                 exitProcess(2)
             }
