@@ -222,12 +222,14 @@ fun HomeMealCard(
 
 @Composable
 fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .size(150.dp, 210.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(gray50)
             .padding(horizontal = 16.dp, vertical = 12.dp)
+            .verticalScroll(scrollState)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Body1(text = title, color = gray800)
