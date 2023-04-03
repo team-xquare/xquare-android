@@ -37,7 +37,7 @@ class MealRepositoryImpl @Inject constructor(
             fetchLocalData = { mealLocalDataSource.fetchAllMeal(year, month) },
             fetchRemoteData = { mealRemoteDataSource.fetchAllMeal(year, month) },
             refreshLocalData = { mealLocalDataSource.saveAllMeal(year, month, it) },
-            offlineOnly = true
+            offlineOnly = false
         )
     }
 }
