@@ -56,4 +56,6 @@ sealed class AppNavigationItem(val route: String) {
             return "imageDetail/$joinedEncodedImage"
         }
     }
+
+    object WebViewTest : AppNavigationItem("WebViewTest")
 }

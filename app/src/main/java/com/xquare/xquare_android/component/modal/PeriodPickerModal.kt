@@ -29,13 +29,13 @@ import com.xquare.xquare_android.component.PrimaryModalButton
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PeriodPickerModal(
-    defaultPeriod: String,
+    defaultPeriod: Int?,
     cancelText: String = "취소하기",
     confirmText: String = "선택하기",
     onCancel: () -> Unit,
-    onConfirm: (String) -> Unit,
+    onConfirm: (Int) -> Unit,
 ) {
-    val defaultPeriod = defaultPeriod.ifEmpty { "1" }
+    val defaultPeriod = defaultPeriod ?: 1
     var period by remember { mutableStateOf(defaultPeriod) }
 
     Dialog(
@@ -66,7 +66,7 @@ fun PeriodPickerModal(
                     Modifier.weight(1f), text = cancelText) { onCancel() }
                 Spacer(Modifier.size(16.dp))
                 PrimaryModalButton(
-                    Modifier.weight(1f), text = confirmText) { onConfirm(defaultPeriod) }
+                    Modifier.weight(1f), text = confirmText) { onConfirm(period) }
             }
         }
     }
@@ -76,7 +76,7 @@ fun PeriodPickerModal(
 @Preview(showBackground = true)
 fun PreviewPeriodPicker() {
     PeriodPickerModal(
-        defaultPeriod = "2",
+        defaultPeriod = 1,
         onCancel = {
 
         },
