@@ -30,4 +30,9 @@ abstract class LocalDataSourceModule {
         timetableLocalDataSourceImpl: TimetableLocalDataSourceImpl
     ): TimetableLocalDataSource
 
+    @Binds
+    abstract fun bindPointLocalDataSource(
+        pointLocalDataSourceImpl: PointLocalDataSourceImpl
+    ): PointLocalDataSource
+
 }
