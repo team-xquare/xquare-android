@@ -38,6 +38,10 @@ fun WebView(
         "https://service.xquare.app/apply",
     )
 
+    val canRefreshList = listOf(
+        "https://service.xquare.app/feed",
+    )
+
     val bottomState =
         if (bottomPaddingFalseUrlList.contains(url)) 0.dp
         else DevicePaddings.navigationBarHeightDp.dp
@@ -48,6 +52,7 @@ fun WebView(
     AndroidView(
         factory = { context ->
             SwipeRefreshLayout(context).apply {
+                isEnabled = canRefreshList.contains(url)
                 setColorSchemeColors(R.color.purple_200)
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
