@@ -12,7 +12,10 @@ class SplashViewModel @Inject constructor(
 
     fun autoLogin() = execute(
         job = { autoSignInUseCase.execute(Unit) },
-        onSuccess = { emitEvent(Event.AutoLoginSuccess) },
+        onSuccess = {
+            if (it) emitEvent(Event.AutoLoginSuccess)
+            else emitEvent(Event.AutoLoginFailure)
+        },
         onFailure = { emitEvent(Event.AutoLoginFailure) }
     )
 
