@@ -35,4 +35,9 @@ abstract class LocalDataSourceModule {
         pointLocalDataSourceImpl: PointLocalDataSourceImpl
     ): PointLocalDataSource
 
+    @Binds
+    abstract fun bindHomeUserLocalDataSource(
+        homeUserLocalDataSourceImpl: HomeUserLocalDataSourceImpl
+    ): HomeUserLocalDataSource
+
 }

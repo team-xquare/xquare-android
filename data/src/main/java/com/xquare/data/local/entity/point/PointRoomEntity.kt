@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 @Entity
 data class PointRoomEntity (
-    @PrimaryKey(autoGenerate = true) var pointId: Int = 0,
-    val point: PointHistoriesEntity
+    @PrimaryKey(autoGenerate = true) var badPointId: Int = 0,
+    val badPoint: PointHistoriesEntity,
 )
 
 @ProvidedTypeConverter
@@ -30,12 +30,12 @@ class PointEntityTypeConverter @Inject constructor(
 
 fun PointRoomEntity.toEntity() =
     PointHistoriesEntity(
-        goodPoint = this.point.goodPoint,
-        badPoint = this.point.badPoint,
-        pointHistories = this.point.pointHistories
+        goodPoint = this.badPoint.goodPoint,
+        badPoint = this.badPoint.badPoint,
+        pointHistories = this.badPoint.pointHistories
     )
 
 fun PointHistoriesEntity.toRoomEntity() =
     PointRoomEntity(
-        point = this
+        badPoint = this,
     )

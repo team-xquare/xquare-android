@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class PointLocalDataSourceImpl @Inject constructor(
     private val pointDao: PointDao
-):PointLocalDataSource{
+): PointLocalDataSource {
     override suspend fun fetchPoint(): PointHistoriesEntity =
         pointDao.fetchPoint().toEntity()
 

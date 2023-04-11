@@ -6,21 +6,12 @@ import com.xquare.data.remote.datasource.PointRemoteDataSource
 import com.xquare.domain.entity.point.PointHistoriesEntity
 import com.xquare.domain.repository.PointRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class PointRepositoryImpl @Inject constructor(
     private val pointRemoteDataSource: PointRemoteDataSource,
     private val pointLocalDataSource: PointLocalDataSource,
 ) : PointRepository {
-
-    override suspend fun fetchPointSummary(): Flow<PointHistoriesEntity> =
-        fetchDataWithOfflineCache(
-            fetchLocalData = { pointLocalDataSource.fetchPoint() },
-            fetchRemoteData = { pointRemoteDataSource.fetchPointSummary() },
-            refreshLocalData = {pointLocalDataSource.savePoint(it) },
-            offlineOnly = false
-        )
 
     override suspend fun fetchGoodPointHistories(): Flow<PointHistoriesEntity> =
         fetchDataWithOfflineCache(
