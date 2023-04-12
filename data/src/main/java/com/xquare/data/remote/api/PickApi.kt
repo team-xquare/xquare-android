@@ -1,6 +1,5 @@
 package com.xquare.data.remote.api
 
-import com.xquare.data.remote.request.pick.BackToClassRoomRequest
 import com.xquare.data.remote.response.pick.ClassPositionResponse
 import com.xquare.data.remote.response.pick.PassDataResponse
 import com.xquare.data.remote.response.pick.PassTimeResponse
@@ -16,9 +15,7 @@ interface PickApi {
     suspend fun fetchPassData(): PassDataResponse
 
     @DELETE("pick/applications")
-    suspend fun backToClassRoom(
-        body: BackToClassRoomRequest
-    )
+    suspend fun backToClassRoom()
 
     @GET("pick/class-room/location")
     suspend fun fetchClassPosition(): ClassPositionResponse

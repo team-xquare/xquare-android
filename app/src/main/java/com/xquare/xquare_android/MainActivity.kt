@@ -153,6 +153,14 @@ fun BaseApp() {
                 .toTypedArray()
             ImageDetailScreen(navController, images)
         }
+        composable(AppNavigationItem.WebViewTest.route) {
+            CommonWebViewScreen(
+                navController = navController,
+                url = "https://service.xquare.app/xbridge-test",
+                title = "테스트",
+                haveBackButton = true,
+            )
+        }
     }
 }
 

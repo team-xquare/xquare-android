@@ -6,6 +6,7 @@ import com.xquare.data.remote.datasource.AuthRemoteDataSource
 import com.xquare.domain.AppCookieManager
 import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.domain.entity.auth.SignUpEntity
+import com.xquare.domain.exception.NoInternetException
 import com.xquare.domain.repository.AuthRepository
 import javax.inject.Inject
 
@@ -27,11 +28,15 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun signUp(signUpEntity: SignUpEntity) =
         authRemoteDataSource.signUp(signUpEntity)
 
-    override suspend fun autoSignIn() {
+    override suspend fun autoSignIn(): Boolean {
         val refreshToken = authLocalDataSource.fetchToken().refreshToken
-        val token = authRemoteDataSource.tokenRefresh("Bearer $refreshToken")
-        authLocalDataSource.saveToken(token)
-        appCookieManager.writeToken(token)
+
+        try {
+            val token = authRemoteDataSource.tokenRefresh("Bearer $refreshToken")
+            authLocalDataSource.saveToken(token)
+            appCookieManager.writeToken(token)
+        } catch (_: NoInternetException) { }
+        return refreshToken != ""
     }
 
     override suspend fun logout() {

@@ -1,9 +1,6 @@
 package com.xquare.xquare_android.feature.home
 
-import android.os.Build
-import android.util.Log
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -45,9 +42,7 @@ import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
-import java.time.LocalTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
@@ -68,10 +63,6 @@ fun HomeScreen(navController: NavController) {
         }
         viewModel.eventFlow.collect {
             when (it) {
-                is HomeViewModel.Event.SuccessFetchPeriod -> {
-                    Log.d("TAG", "FetchPeriod Success")
-                    viewModel.backToClassRoom(it.period)
-                }
                 is HomeViewModel.Event.BackToClassRoom -> viewModel.fetchClassPosition()
             }
         }
@@ -84,7 +75,7 @@ fun HomeScreen(navController: NavController) {
         onAllMealClick = { navController.navigate(AppNavigationItem.AllMeal.route) },
         onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
         onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) },
-        onClassClick = { viewModel.fetchPeriod() },
+        onClassClick = { viewModel.backToClassRoom() },
         onPassClick = { navController.navigate(AppNavigationItem.Pass.route) }
     )
 }
@@ -266,12 +257,14 @@ fun HomeMealCard(
 
 @Composable
 fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .size(150.dp, 210.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(gray50)
             .padding(horizontal = 16.dp, vertical = 12.dp)
+            .verticalScroll(scrollState)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Body1(text = title, color = gray800)

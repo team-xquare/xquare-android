@@ -18,7 +18,7 @@ fun WebView.sendResultOfTimePicker(
 
 fun WebView.sendResultOfPeriodPicker(
     id: String,
-    period: String
+    period: Int
 ) = this.loadUrl(
     "javascript:window.dispatchEvent(new CustomEvent('periodPickerXBridge', { detail: { id: '$id', period: '$period' }}))"
 )

@@ -5,9 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.notification.AlarmEntity
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @Entity

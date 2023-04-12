@@ -28,7 +28,7 @@ class ScheduleViewModel @Inject constructor(
         execute(
             job = { fetchSchedulesUseCase.execute(month) },
             onSuccess = { emitEvent(Event.Success(it)) },
-            onFailure = { emitEvent(Event.Failure("일정을 불러오는데 실패하였습니다.")) }
+            onFailure = {  }
         )
     }
 

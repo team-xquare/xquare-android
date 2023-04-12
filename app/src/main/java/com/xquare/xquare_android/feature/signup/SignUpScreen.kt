@@ -1,9 +1,11 @@
 package com.xquare.xquare_android.feature.signup
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,6 +27,7 @@ import com.xquare.xquare_android.component.AnnotatedBody2
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.HighlightedText
 import com.xquare.xquare_android.component.TextField
+import com.xquare.xquare_android.feature.webview.CommonWebViewScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -66,7 +69,7 @@ fun SignUpScreen(navController: NavController) {
         },
         onSignUpClick = {
             signUpViewModel.signUp(it)
-        }
+        },
     )
 }
 
@@ -77,10 +80,10 @@ private fun SignUp(
     onTermsClick: () -> Unit,
     onSignUpClick: (SignUpEntity) -> Unit
 ) {
-    var verificationCode by remember { mutableStateOf("") }
-    var accountId by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var reEnteredPassword by remember { mutableStateOf("") }
+    var verificationCode by rememberSaveable { mutableStateOf("") }
+    var accountId by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var reEnteredPassword by rememberSaveable { mutableStateOf("") }
     val isSignUpEnabled =
         if (verificationCode.length != 6) false
         else if (accountId.length < 6 || accountId.length > 20) false

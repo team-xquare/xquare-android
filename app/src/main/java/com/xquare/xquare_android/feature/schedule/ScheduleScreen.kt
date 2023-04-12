@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,32 +59,23 @@ fun ScheduleScreen(navController: NavController) {
     val context = LocalContext.current
     val timetableViewModel: TimetableViewModel = hiltViewModel()
     val scheduleViewModel: ScheduleViewModel = hiltViewModel()
-
     val actionSheetScope = rememberCoroutineScope()
-    val actionSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var selectedItem: SchedulesEntity.SchedulesDataEntity? = remember { null }
 
-    var pageNum by remember { mutableStateOf(0) }
-    var timetableEntity: TimetableEntity? by remember { mutableStateOf(null) }
+    var pageNum by rememberSaveable { mutableStateOf(0) }
 
     var scheduleData: Pair<Int, SchedulesEntity>? by remember { mutableStateOf(null) }
+    val timetable = timetableViewModel.timetable.collectAsState().value
     var isLoadingSchedule by remember { mutableStateOf(false) }
     var loadingMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
 
-    LaunchedEffect(Unit) {
-        timetableViewModel.fetchWeekTimetables()
-        timetableViewModel.eventFlow.collect {
-            when (it) {
-                is TimetableViewModel.Event.Success -> {
-                    timetableEntity = it.data
-                }
-                is TimetableViewModel.Event.Failure -> {
-                    makeToast(context, "시간표를 불러오지 못했습니다")
-                }
-            }
+    LaunchedEffect(Unit){
+        timetableViewModel.run {
+            fetchWeekTimetables()
         }
     }
+
     LaunchedEffect(Unit) {
         scheduleViewModel.fetchSchedules(loadingMonth)
         scheduleViewModel.eventFlow.collect {
@@ -128,13 +120,16 @@ fun ScheduleScreen(navController: NavController) {
                 Column {
                     AppBar(text = "일정")
                     Spacer(Modifier.size(12.dp))
-                    ToggleButton(items = arrayOf("시간표", "학사일정")) {
+                    ToggleButton(
+                        items = arrayOf("시간표", "학사일정"),
+                        position = pageNum
+                    ) {
                         pageNum = it
                     }
                 }
             }
         ) {
-            if (pageNum == 0) Timetable(LocalDate.now().dayOfWeek.value, timetableEntity)
+            if (pageNum == 0) Timetable(LocalDate.now().dayOfWeek.value, timetable)
             else Schedule(
                 data = scheduleData,
                 actionSheetScope = actionSheetScope,
@@ -172,9 +167,13 @@ private fun Timetable(
     timetableEntity: TimetableEntity?,
 ) {
     if (timetableEntity == null) return
+    if (timetableEntity.week_timetable.isEmpty()) return
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
-        val initPage = getTimeTablePage(dayOfWeek)
+        val lastIndex = timetableEntity.week_timetable.lastIndex
+        //val coerce = dayOfWeek.coerceIn(0, lastIndex)
+        val initPage = getTimeTablePage(dayOfWeek = dayOfWeek, lastIndex = lastIndex)
+
         pagerState.scrollToPage(initPage)
     }
     Scaffold(
@@ -225,8 +224,7 @@ private fun Timetable(
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun TimetablePage(
-    weekTimetableEntity: TimetableEntity.WeekTimetableEntity,
-) {
+    weekTimetableEntity: TimetableEntity.WeekTimetableEntity) {
     Scaffold(
         topBar = {
             Box(modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp)) {
@@ -468,9 +466,13 @@ private fun getWeekdayStringByInt(int: Int) =
         else -> throw IllegalArgumentException()
     }
 
-private fun getTimeTablePage(int: Int) =
-    when (int) {
-        1,2,3,4,5 -> int - 1
-        6 -> 4
-        else -> 0
+private fun getTimeTablePage(dayOfWeek: Int, lastIndex: Int): Int {
+    return if (dayOfWeek - 1 > lastIndex) {
+        when (dayOfWeek) {
+            7 -> 0
+            else -> 4
+        }
+    } else {
+        dayOfWeek - 1
     }
+}

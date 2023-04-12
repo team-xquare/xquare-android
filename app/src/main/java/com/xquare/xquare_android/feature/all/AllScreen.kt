@@ -1,5 +1,8 @@
 package com.xquare.xquare_android.feature.all
 
+
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,8 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +40,7 @@ import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.modal.ConfirmModal
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
+
 
 @Composable
 fun AllScreen(navController: NavController) {
@@ -58,6 +64,8 @@ fun AllScreen(navController: NavController) {
     }
 
     var logoutDialogState by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier
@@ -98,11 +106,12 @@ fun AllScreen(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.size(8.dp))
                 RowMenuItem(painterResource(id = R.drawable.ic_warning), "버그 제보") {
-                    navController.navigate(AppNavigationItem.Bug.route)
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=100091948951498"))
+                    context.startActivity(intent)
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))
-            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium)
+            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
             userMenuList.forEachIndexed { index, title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {

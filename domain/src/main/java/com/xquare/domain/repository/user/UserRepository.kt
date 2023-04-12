@@ -8,7 +8,7 @@ interface UserRepository {
 
     suspend fun fetchProfile(): Flow<ProfileEntity>
 
-    suspend fun fetchUserSimpleData(): HomeUserEntity
+    suspend fun fetchUserSimpleData(): Flow<HomeUserEntity>
 
     suspend fun fixProfileImage(image: String?)
 }
