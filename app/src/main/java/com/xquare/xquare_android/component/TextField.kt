@@ -17,9 +17,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
+import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.gray300
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.purple.purple400
+import com.semicolon.design.color.primary.white.white
 
 @Composable
 fun TextField(
@@ -51,8 +53,15 @@ fun TextField(
         modifier = Modifier
             .fillMaxWidth()
             .height(44.dp)
-            .background(gray50)
-            .border(width = 1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
+            .background(
+                if (text.isBlank()){ gray50 }
+                else { white }
+            )
+            .border(
+                width = 1.dp,
+                color = if (text.isBlank()){ gray300} else { black },
+                shape = RoundedCornerShape(8.dp)
+            )
             .padding(horizontal = 16.dp)
     )
 }
@@ -67,8 +76,14 @@ fun TextFieldBtn(
         modifier = Modifier
             .fillMaxWidth()
             .height(44.dp)
-            .background(gray50)
-            .border(width = 1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
+            .background(
+                if (text.isBlank()){ gray50 }
+                else { white }
+            )
+            .border(
+                width = 1.dp,
+                color = if (text.isBlank()){ gray300} else { black },
+                shape = RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp)
             .clickable(
                 interactionSource = MutableInteractionSource(),

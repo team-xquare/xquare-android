@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 class FetchGoodPointHistoriesUseCase @Inject constructor(
     private val pointRepository: PointRepository
-) : UseCase<Unit, Flow<PointHistoriesEntity>>() {
+) : UseCase<Boolean, Flow<PointHistoriesEntity>>() {
 
-    override suspend fun execute(data: Unit): Flow<PointHistoriesEntity> =
-        pointRepository.fetchGoodPointHistories()
+    override suspend fun execute(data: Boolean): Flow<PointHistoriesEntity> =
+        pointRepository.fetchPointHistories(offlineOnly = data, pointType = 0)
 }

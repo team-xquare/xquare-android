@@ -45,11 +45,6 @@ abstract class RepositoryModule {
     ): PointRepository
 
     @Binds
-    abstract fun bindSimplePointRepository(
-        pointRepositoryImpl: com.xquare.data.repository.point.PointRepositoryImpl,
-    ): com.xquare.domain.repository.point.PointRepository
-
-    @Binds
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl,
     ): AuthRepository

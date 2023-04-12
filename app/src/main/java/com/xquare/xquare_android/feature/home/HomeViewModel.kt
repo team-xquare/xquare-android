@@ -39,7 +39,7 @@ class HomeViewModel @Inject constructor(
     fun fetchUserSimpleData() {
         execute(
             job = { fetchUserSimpleDataUseCase.execute(Unit) },
-            onSuccess = { _userSimpleData.tryEmit(it) },
+            onSuccess = { it.collect { userSimpleData -> _userSimpleData.tryEmit(userSimpleData)} },
             onFailure = {  }
         )
     }

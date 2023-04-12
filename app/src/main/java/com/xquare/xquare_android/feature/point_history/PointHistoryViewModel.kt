@@ -13,19 +13,21 @@ class PointHistoryViewModel @Inject constructor(
     private val fetchBadPointHistoriesUseCase: FetchBadPointHistoriesUseCase,
 ) : BaseViewModel<PointHistoryViewModel.Event>() {
 
-    fun fetchGoodPointHistories() =
+    fun fetchGoodPointHistories(offlineOnly: Boolean = true) {
         execute(
-            job = { fetchGoodPointHistoriesUseCase.execute(Unit) },
+            job = { fetchGoodPointHistoriesUseCase.execute(offlineOnly) },
             onSuccess = { it.collect { pointHistory -> emitEvent(Event.Success(pointHistory)) } },
             onFailure = { emitEvent(Event.Failure) }
         )
+    }
 
-    fun fetchBadPointHistories() =
+    fun fetchBadPointHistories(offlineOnly: Boolean = true) {
         execute(
-            job = { fetchBadPointHistoriesUseCase.execute(Unit) },
+            job = { fetchBadPointHistoriesUseCase.execute(offlineOnly) },
             onSuccess = { it.collect { pointHistory -> emitEvent(Event.Success(pointHistory)) } },
             onFailure = { emitEvent(Event.Failure) }
         )
+    }
 
     sealed class Event {
         data class Success(val data: PointHistoriesEntity) : Event()

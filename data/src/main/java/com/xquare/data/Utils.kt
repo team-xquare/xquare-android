@@ -79,5 +79,28 @@ fun <T> fetchDataWithOfflineCache(
     }
 }
 
+fun <T> fetchPointWithOfflineCache(
+    fetchLocalData: suspend () -> T,
+    fetchRemoteData: suspend () -> T,
+    refreshLocalData: suspend (remoteData: T) -> Unit,
+    offlineOnly: Boolean = false
+) = flow {
+    try {
+        val localData = fetchLocalData()
+        if (!offlineOnly) {
+            emit(fetchLocalData())
+            val remoteData = fetchRemoteData()
+            refreshLocalData(remoteData)
+            emit(fetchLocalData())
+        } else {
+            emit(localData)
+        }
+    } catch (e: NullPointerException) {
+        val remoteData = fetchRemoteData()
+        refreshLocalData(remoteData)
+        emit(fetchLocalData())
+    }
+}
+
 fun today(): LocalDate =
     LocalDate.now()
