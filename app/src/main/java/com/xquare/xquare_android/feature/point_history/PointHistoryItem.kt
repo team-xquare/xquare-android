@@ -12,11 +12,11 @@ import com.semicolon.design.Body1
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.gray50
-import com.xquare.domain.entity.point.PointHistoryEntity
+import com.xquare.domain.entity.point.PointHistoriesEntity
 import org.threeten.bp.LocalDate
 
 @Composable
-fun PointHistoryItem(pointHistoryEntity: PointHistoryEntity) {
+fun PointHistoryItem(pointHistoryEntity: PointHistoriesEntity.PointHistoryEntity) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,11 +38,11 @@ fun PointHistoryItem(pointHistoryEntity: PointHistoryEntity) {
 @Composable
 fun PointHistoryItemPreview() {
     PointHistoryItem(pointHistoryEntity =
-    PointHistoryEntity(
+    PointHistoriesEntity.PointHistoryEntity(
         "",
         LocalDate.parse("2022-12-31"),
         "그냥",
-        false,
+        1,
         5
     )
     )

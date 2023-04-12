@@ -32,7 +32,7 @@ fun PointHistoryScreen(navController: NavController) {
     val viewModel: PointHistoryViewModel = hiltViewModel()
     var pointHistories: PointHistoriesEntity? by remember { mutableStateOf(null) }
     LaunchedEffect(Unit) {
-        viewModel.fetchGoodPointHistories()
+        viewModel.fetchGoodPointHistories(offlineOnly = false)
         viewModel.eventFlow.collect {
             when (it) {
                 is PointHistoryViewModel.Event.Success -> {
