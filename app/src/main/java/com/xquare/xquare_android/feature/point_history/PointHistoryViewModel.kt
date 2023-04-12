@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.point_history
 
-import android.util.Log
 import com.xquare.domain.entity.point.PointHistoriesEntity
 import com.xquare.domain.usecase.point.FetchBadPointHistoriesUseCase
 import com.xquare.domain.usecase.point.FetchGoodPointHistoriesUseCase
@@ -14,19 +13,17 @@ class PointHistoryViewModel @Inject constructor(
     private val fetchBadPointHistoriesUseCase: FetchBadPointHistoriesUseCase,
 ) : BaseViewModel<PointHistoryViewModel.Event>() {
 
-    fun fetchGoodPointHistories() {
-        Log.d("TEST", "good")
+    fun fetchGoodPointHistories(offlineOnly: Boolean = true) {
         execute(
-            job = { fetchGoodPointHistoriesUseCase.execute(Unit) },
+            job = { fetchGoodPointHistoriesUseCase.execute(offlineOnly) },
             onSuccess = { it.collect { pointHistory -> emitEvent(Event.Success(pointHistory)) } },
             onFailure = { emitEvent(Event.Failure) }
         )
     }
 
-    fun fetchBadPointHistories() {
-        Log.d("TEST", "bad")
+    fun fetchBadPointHistories(offlineOnly: Boolean = true) {
         execute(
-            job = { fetchBadPointHistoriesUseCase.execute(Unit) },
+            job = { fetchBadPointHistoriesUseCase.execute(offlineOnly) },
             onSuccess = { it.collect { pointHistory -> emitEvent(Event.Success(pointHistory)) } },
             onFailure = { emitEvent(Event.Failure) }
         )

@@ -7,11 +7,12 @@ import com.xquare.domain.entity.point.PointHistoriesEntity
 import javax.inject.Inject
 
 class PointLocalDataSourceImpl @Inject constructor(
-    private val pointDao: PointDao
+    private val pointDao: PointDao,
 ): PointLocalDataSource {
-    override suspend fun fetchPoint(): PointHistoriesEntity =
-        pointDao.fetchPoint().toEntity()
+    override suspend fun fetchPoint(pointType: Int): PointHistoriesEntity =
+        pointDao.fetchPoint().toEntity(pointType = pointType)
 
     override suspend fun savePoint(pointHistoriesEntity: PointHistoriesEntity) =
-        pointDao.updatePoint(pointHistoriesEntity.toRoomEntity())
+        pointDao.insertPoint(pointRoomEntity = pointHistoriesEntity.toRoomEntity())
+
 }

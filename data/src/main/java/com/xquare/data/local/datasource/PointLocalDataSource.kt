@@ -4,7 +4,7 @@ import com.xquare.domain.entity.point.PointHistoriesEntity
 
 interface PointLocalDataSource {
 
-    suspend fun fetchPoint(): PointHistoriesEntity
+    suspend fun fetchPoint(pointType: Int): PointHistoriesEntity
 
     suspend fun savePoint(pointHistoriesEntity: PointHistoriesEntity)
 }

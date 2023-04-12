@@ -1,6 +1,5 @@
 package com.xquare.data.dao
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -21,7 +20,6 @@ interface PointDao {
 
     @Transaction
     suspend fun updatePoint(repo: PointRoomEntity){
-        Log.d("repo",repo.badPoint.pointHistories.toString())
         deletePoint()
         insertPoint(repo)
     }

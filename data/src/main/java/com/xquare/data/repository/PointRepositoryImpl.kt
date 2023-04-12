@@ -1,6 +1,7 @@
 package com.xquare.data.repository
 
 import com.xquare.data.fetchDataWithOfflineCache
+import com.xquare.data.fetchPointWithOfflineCache
 import com.xquare.data.local.datasource.PointLocalDataSource
 import com.xquare.data.remote.datasource.PointRemoteDataSource
 import com.xquare.domain.entity.point.PointHistoriesEntity
@@ -13,20 +14,15 @@ class PointRepositoryImpl @Inject constructor(
     private val pointLocalDataSource: PointLocalDataSource,
 ) : PointRepository {
 
-    override suspend fun fetchGoodPointHistories(): Flow<PointHistoriesEntity> =
-        fetchDataWithOfflineCache(
-            fetchRemoteData = { pointRemoteDataSource.fetchGoodPointHistories() },
-            fetchLocalData = { pointLocalDataSource.fetchPoint()},
+    override suspend fun fetchPointHistories(
+        offlineOnly: Boolean,
+        pointType: Int
+    ): Flow<PointHistoriesEntity> {
+        return fetchPointWithOfflineCache(
+            fetchRemoteData = { pointRemoteDataSource.fetchPointSummary() },
+            fetchLocalData = { pointLocalDataSource.fetchPoint(pointType = pointType) },
             refreshLocalData = { pointLocalDataSource.savePoint(it) },
-            offlineOnly = false
+            offlineOnly = offlineOnly
         )
-
-
-    override suspend fun fetchBadPointHistories(): Flow<PointHistoriesEntity> =
-        fetchDataWithOfflineCache(
-            fetchRemoteData = { pointRemoteDataSource.fetchBadPointHistories() },
-            fetchLocalData = { pointLocalDataSource.fetchPoint()},
-            refreshLocalData = { pointLocalDataSource.savePoint(it) },
-            offlineOnly = false
-        )
+    }
 }

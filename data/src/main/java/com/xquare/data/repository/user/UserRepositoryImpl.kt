@@ -26,7 +26,7 @@ class UserRepositoryImpl @Inject constructor(
             fetchRemoteData = { userSimpleRemoteDataSource.fetchUserSimpleData()},
             fetchLocalData = { userLocalDataSource.fetchHomeUser() },
             refreshLocalData = { userLocalDataSource.saveHomeUser(it) },
-            offlineOnly = true
+            offlineOnly = false
         )
 
     override suspend fun fixProfileImage(image: String?) =

@@ -1,5 +1,6 @@
 package com.xquare.data.local.entity.point
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.ProvidedTypeConverter
@@ -10,8 +11,8 @@ import javax.inject.Inject
 
 @Entity
 data class PointRoomEntity (
-    @PrimaryKey(autoGenerate = true) var badPointId: Int = 0,
-    val badPoint: PointHistoriesEntity,
+    @PrimaryKey(autoGenerate = true) var point: Int = 0,
+    val pointHistoryEntity: PointHistoriesEntity,
 )
 
 @ProvidedTypeConverter
@@ -28,14 +29,15 @@ class PointEntityTypeConverter @Inject constructor(
         gson.toJson(value)
 }
 
-fun PointRoomEntity.toEntity() =
-    PointHistoriesEntity(
-        goodPoint = this.badPoint.goodPoint,
-        badPoint = this.badPoint.badPoint,
-        pointHistories = this.badPoint.pointHistories
+fun PointRoomEntity.toEntity(pointType: Int): PointHistoriesEntity {
+    return PointHistoriesEntity(
+        goodPoint = this.pointHistoryEntity.goodPoint,
+        badPoint = this.pointHistoryEntity.badPoint,
+        pointHistories = this.pointHistoryEntity.pointHistories.filter { it.pointType == pointType }
     )
+}
 
 fun PointHistoriesEntity.toRoomEntity() =
     PointRoomEntity(
-        badPoint = this,
+        pointHistoryEntity = this,
     )
