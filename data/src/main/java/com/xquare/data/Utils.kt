@@ -82,8 +82,6 @@ fun <T> fetchDataWithOfflineCache(
 fun <T> fetchPointWithOfflineCache(
     fetchLocalData: suspend () -> T,
     fetchRemoteData: suspend () -> T,
-    checkNeedRefresh: suspend (localData: T, remoteData: T) -> Boolean =
-        { localData, remoteData -> localData != remoteData },
     refreshLocalData: suspend (remoteData: T) -> Unit,
     offlineOnly: Boolean = false
 ) = flow {
