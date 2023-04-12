@@ -32,6 +32,8 @@ sealed class AppNavigationItem(val route: String) {
 
     object Bug : AppNavigationItem("Bug")
 
+    object Pass : AppNavigationItem("Pass")
+
     object WriteSchedule : AppNavigationItem("writeSchedule/{schedulesData}") {
         fun createRoute(schedulesData: SchedulesEntity.SchedulesDataEntity?): String {
             return if (schedulesData == null) "writeSchedule/null" else "writeSchedule/${
@@ -56,4 +58,6 @@ sealed class AppNavigationItem(val route: String) {
             return "imageDetail/$joinedEncodedImage"
         }
     }
+
+    object WebViewTest : AppNavigationItem("WebViewTest")
 }

@@ -32,6 +32,7 @@ import com.xquare.xquare_android.feature.bug.BugReportScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
+import com.xquare.xquare_android.feature.pick.PassScreen
 import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
 import com.xquare.xquare_android.feature.profile.ProfileScreen
 import com.xquare.xquare_android.feature.schedule.ScheduleScreen
@@ -116,6 +117,9 @@ fun BaseApp() {
         composable(AppNavigationItem.Bug.route) {
             BugReportScreen(navController)
         }
+        composable(AppNavigationItem.Pass.route) {
+            PassScreen(navController)
+        }
         composable(AppNavigationItem.WriteSchedule.route) {
             val schedulesData = it.arguments?.get("schedulesData").toString()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -148,6 +152,14 @@ fun BaseApp() {
                 .map { encoded -> URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString()) }
                 .toTypedArray()
             ImageDetailScreen(navController, images)
+        }
+        composable(AppNavigationItem.WebViewTest.route) {
+            CommonWebViewScreen(
+                navController = navController,
+                url = "https://service.xquare.app/xbridge-test",
+                title = "테스트",
+                haveBackButton = true,
+            )
         }
     }
 }

@@ -10,10 +10,10 @@ import com.xquare.data.local.entity.alarm.AlarmRoomEntity
 @Dao
 interface AlarmDao {
 
-    @Query("SELECT * FROM AlarmRoomEntity WHERE id = 0")
+    @Query("SELECT * FROM AlarmRoomEntity")
     suspend fun fetchAlarm(): AlarmRoomEntity
 
-    @Query("DELETE FROM AlarmRoomEntity WHERE id = 0")
+    @Query("DELETE FROM AlarmRoomEntity")
     suspend fun deleteAlarm()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

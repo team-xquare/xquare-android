@@ -2,7 +2,6 @@ package com.xquare.data.remote.response.point
 
 import com.google.gson.annotations.SerializedName
 import com.xquare.domain.entity.point.PointHistoriesEntity
-import com.xquare.domain.entity.point.PointHistoryEntity
 import org.threeten.bp.LocalDate
 
 data class PointHistoriesResponse(
@@ -15,7 +14,7 @@ data class PointHistoryResponse(
     @SerializedName("id") val id: String,
     @SerializedName("date") val date: String,
     @SerializedName("reason") val reason: String,
-    @SerializedName("pointType") val pointType: Boolean,
+    @SerializedName("point_type") val pointType: Boolean,
     @SerializedName("point") val point: Int,
 )
 
@@ -27,10 +26,10 @@ fun PointHistoriesResponse.toEntity() =
     )
 
 fun PointHistoryResponse.toEntity() =
-    PointHistoryEntity(
+    PointHistoriesEntity.PointHistoryEntity(
         id = id,
         date = LocalDate.parse(date),
         reason = reason,
-        pointType = pointType,
+        pointType = if (pointType) 0 else 1,
         point = point
     )

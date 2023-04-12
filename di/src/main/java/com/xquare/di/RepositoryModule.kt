@@ -8,6 +8,7 @@ import com.xquare.data.repository.meal.MealRepositoryImpl
 import com.xquare.data.repository.schedules.SchedulesRepositoryImpl
 import com.xquare.data.repository.timetables.TimetablesRepositoryImpl
 import com.xquare.data.repository.notification.AlarmRepositoryImpl
+import com.xquare.data.repository.pick.PickRepositoryImpl
 import com.xquare.data.repository.user.UserRepositoryImpl
 import com.xquare.domain.repository.AuthRepository
 import com.xquare.domain.repository.PointRepository
@@ -17,6 +18,7 @@ import com.xquare.domain.repository.meal.MealRepository
 import com.xquare.domain.repository.schedules.SchedulesRepository
 import com.xquare.domain.repository.timetables.TimetablesRepository
 import com.xquare.domain.repository.notification.AlarmRepository
+import com.xquare.domain.repository.pick.PickRepository
 import com.xquare.domain.repository.user.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -41,11 +43,6 @@ abstract class RepositoryModule {
     abstract fun bindPointRepository(
         pointRepositoryImpl: PointRepositoryImpl,
     ): PointRepository
-
-    @Binds
-    abstract fun bindSimplePointRepository(
-        pointRepositoryImpl: com.xquare.data.repository.point.PointRepositoryImpl,
-    ): com.xquare.domain.repository.point.PointRepository
 
     @Binds
     abstract fun bindAuthRepository(
@@ -76,4 +73,9 @@ abstract class RepositoryModule {
     abstract fun bindAlarmRepository(
         alarmRepositoryImpl: AlarmRepositoryImpl,
     ): AlarmRepository
+
+    @Binds
+    abstract fun bindPickRepository(
+        pickRepositoryImpl: PickRepositoryImpl,
+    ): PickRepository
 }
