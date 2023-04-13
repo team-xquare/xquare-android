@@ -26,17 +26,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.semicolon.design.Body1
-import com.semicolon.design.Body2
-import com.semicolon.design.Body3
-import com.semicolon.design.Subtitle4
+import com.semicolon.design.*
 import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
-import com.semicolon.design.notoSansFamily
+import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
-import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
@@ -197,10 +193,12 @@ fun HomeMealCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
-            .padding(horizontal = 12.dp, vertical = 16.dp)
+            .padding(vertical = 16.dp)
     ) {
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -227,9 +225,13 @@ fun HomeMealCard(
         Spacer(Modifier.size(12.dp))
         CompositionLocalProvider {
             Row(
-                Modifier.horizontalScroll(
-                    scrollState
-                )
+                Modifier
+                    .horizontalScroll(
+                        scrollState
+                    )
+                    .padding(
+                        horizontal = 12.dp,
+                    )
             ) {
                 Spacer(Modifier.size(4.dp))
                 HomeMealItem(
@@ -344,13 +346,14 @@ fun HomePickContent(
         }
     }
 }
+
 @Composable
 fun HomePickCard(
     state: HomePickCardButtonState,
     topText: String,
     underText: String,
     pointText: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
