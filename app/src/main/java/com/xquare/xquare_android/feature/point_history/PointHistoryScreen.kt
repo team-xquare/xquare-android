@@ -22,7 +22,7 @@ import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.point.PointHistoriesEntity
 import com.xquare.xquare_android.R
-import com.xquare.xquare_android.component.AppBar
+import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 
@@ -68,7 +68,7 @@ fun PointHistory(
                 bottom = DevicePaddings.navigationBarHeightDp.dp
             ),
         topBar = {
-            AppBar(
+            CenterAppBar(
                 painter = painterResource(R.drawable.ic_back),
                 text = "상벌점 내역",
                 onIconClick = onBackPress

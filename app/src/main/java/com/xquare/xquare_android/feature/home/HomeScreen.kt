@@ -120,7 +120,7 @@ fun HomeAppBar(onAlarmClick: () -> Unit) {
             .height(56.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Subtitle4(text = "홈")
+        Subtitle4(text = "홈", fontWeight = FontWeight.Bold)
         Icon(
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = "alarm",
@@ -171,9 +171,9 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
         Column {
             Text(
                 text = userData.name,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontFamily = notoSansFamily,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Bold,
                 color = gray900
             )
             Body2(
@@ -206,10 +206,10 @@ fun HomeMealCard(
         ) {
             Text(
                 text = "오늘의 메뉴",
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 color = gray900,
                 fontFamily = notoSansFamily,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Bold,
             )
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow),

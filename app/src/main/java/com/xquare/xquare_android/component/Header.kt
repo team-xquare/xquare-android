@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
@@ -45,7 +46,7 @@ fun Header(
             .background(backgroundColor),
         contentAlignment = Alignment.Center,
     ) {
-        Body1(text = title)
+        Body1(text = title, fontWeight = FontWeight.Bold)
         Row(
             modifier = Modifier
                 .fillMaxSize()

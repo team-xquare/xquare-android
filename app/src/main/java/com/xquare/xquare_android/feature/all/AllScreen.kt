@@ -111,7 +111,7 @@ fun AllScreen(navController: NavController) {
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))
-            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             userMenuList.forEachIndexed { index, title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {
