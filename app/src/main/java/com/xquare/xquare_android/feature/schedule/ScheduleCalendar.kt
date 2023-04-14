@@ -217,7 +217,7 @@ fun RowScope.ScheduleCalendarItem(
                 Box(
                     modifier = Modifier
                         .size(36.dp)
-                        .border(1.dp, purple100, RoundedCornerShape(18.dp)),
+                        .border(1.8.dp, purple100, RoundedCornerShape(18.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Body2(

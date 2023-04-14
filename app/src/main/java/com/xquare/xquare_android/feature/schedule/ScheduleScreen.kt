@@ -427,7 +427,7 @@ fun ScheduleItem(
                 Body1(
                     text = schedulesDataEntity.name,
                     color = gray900,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.size(4.dp))
                 Body2(
