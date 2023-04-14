@@ -162,7 +162,7 @@ private fun RowScope.RowMenuItem(
     ) {
         Icon(modifier = Modifier.height(20.dp), painter = painter, tint = gray700, contentDescription = null)
         Spacer(modifier = Modifier.size(7.dp))
-        Body2(text = title, color = gray600, fontWeight = FontWeight.Medium)
+        Body2(text = title, color = gray600, fontWeight = FontWeight.Bold)
     }
 }
 
