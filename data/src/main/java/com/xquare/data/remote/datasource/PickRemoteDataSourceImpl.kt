@@ -6,6 +6,8 @@ import com.xquare.data.sendHttpRequest
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassDataEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
+import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PickRemoteDataSourceImpl @Inject constructor(
@@ -23,4 +25,10 @@ class PickRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun fetchClassPosition(): ClassPositionEntity =
         sendHttpRequest(httpRequest = { pickApi.fetchClassPosition().toEntity() })
+
+    override suspend fun TodaySelfStudyTeacher(month: Int): TodaySelfStudyTeacherEntity =
+        TODO("나중에 추가할 예정)"
+
+
+
 }
