@@ -2,16 +2,7 @@ package com.xquare.di
 
 import com.xquare.data.interceptor.AuthorizationInterceptor
 import com.xquare.data.interceptor.EmptyBodyInterceptor
-import com.xquare.data.remote.api.AttachmentApi
-import com.xquare.data.remote.api.AuthApi
-import com.xquare.data.remote.api.MealApi
-import com.xquare.data.remote.api.NotificationApi
-import com.xquare.data.remote.api.PickApi
-import com.xquare.data.remote.api.PointApi
-import com.xquare.data.remote.api.ProfileApi
-import com.xquare.data.remote.api.SchedulesApi
-import com.xquare.data.remote.api.TimetablesApi
-import com.xquare.data.remote.api.UserApi
+import com.xquare.data.remote.api.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -112,4 +103,9 @@ object NetworkModule {
         retrofit: Retrofit
     ): PickApi =
         retrofit.create(PickApi::class.java)
+    @Provides
+    fun provideBugApi(
+        retrofit: Retrofit
+    ): BugApi =
+        retrofit.create(BugApi::class.java)
 }

@@ -106,8 +106,9 @@ fun AllScreen(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.size(8.dp))
                 RowMenuItem(painterResource(id = R.drawable.ic_warning), "버그 제보") {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=100091948951498"))
-                    context.startActivity(intent)
+//                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=100091948951498"))
+//                    context.startActivity(intent)
+                    navController.navigate(AppNavigationItem.Bug.route)
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))

@@ -25,11 +25,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -42,6 +38,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
@@ -52,6 +49,7 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.system.red.red400
 import com.semicolon.design.notoSansFamily
+import com.xquare.domain.entity.bug.BugEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
@@ -87,7 +85,7 @@ fun BugReportScreen(
     }
 }
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "ResourceType")
 @Composable
 private fun BugreportContent(
     onIconClick: () -> Unit,
@@ -112,6 +110,7 @@ private fun BugreportContent(
                 onBtnClick = {
                     onBtnClick(where, explanationText)
                     explanationText = ""
+                    BugEntity(reason = explanationText, category = where, image_urls = arrayListOf())
                 },
             )
         }
