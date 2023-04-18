@@ -1,6 +1,7 @@
 package com.xquare.domain.entity.pick
 
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
+
 
 data class TodaySelfStudyTeacherEntity(
     val teacherList: List<TeacherEntity>

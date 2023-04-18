@@ -26,9 +26,8 @@ class PickRemoteDataSourceImpl @Inject constructor(
     override suspend fun fetchClassPosition(): ClassPositionEntity =
         sendHttpRequest(httpRequest = { pickApi.fetchClassPosition().toEntity() })
 
-    override suspend fun TodaySelfStudyTeacher(month: Int): TodaySelfStudyTeacherEntity =
-        TODO("나중에 추가할 예정)"
-
-
+    override suspend fun fetchTodaySelfStudyTeacher(month: String): Flow<TodaySelfStudyTeacherEntity> {
+        TODO("Not yet implemented")
+    }
 
 }

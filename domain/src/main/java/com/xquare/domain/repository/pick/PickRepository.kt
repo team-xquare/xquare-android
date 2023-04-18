@@ -15,5 +15,5 @@ interface PickRepository {
 
     suspend fun fetchClassPosition(): ClassPositionEntity
 
-    suspend fun TodaySelfStudyTeacher(): Flow<TodaySelfStudyTeacherEntity>
+    suspend fun fetchTodaySelfStudyTeacher(month: String): Flow<TodaySelfStudyTeacherEntity>
 }

@@ -15,5 +15,8 @@ interface PickRemoteDataSource {
 
     suspend fun fetchClassPosition(): ClassPositionEntity
 
-    suspend fun TodaySelfStudyTeacher(month: Int): TodaySelfStudyTeacherEntity
+    suspend fun fetchTodaySelfStudyTeacher(month: String): Flow<TodaySelfStudyTeacherEntity>
+
+
+
 }

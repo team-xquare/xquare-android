@@ -11,5 +11,6 @@ class TodaySelfStudyTeacherUseCase @Inject constructor(
 ) : UseCase<Unit, Flow<TodaySelfStudyTeacherEntity>>(){
 
     override suspend fun execute(data: Unit): Flow<TodaySelfStudyTeacherEntity> =
-        pickRepository.TodaySelfStudyTeacher()
+        pickRepository.fetchTodaySelfStudyTeacher(month = "")
+
 }

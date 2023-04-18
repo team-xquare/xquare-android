@@ -1,8 +1,9 @@
 package com.xquare.data.remote.response.pick
 
+
 import com.google.gson.annotations.SerializedName
 import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
-import java.time.LocalDate
+import org.threeten.bp.LocalDate
 
 data class TodaySelfStudyTeacherResponse(
    @SerializedName("self_study_list") val teacherList: List<TodayTeacherWithDataResponse>,

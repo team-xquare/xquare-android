@@ -1,8 +1,6 @@
 package com.xquare.data.repository.pick
 
-import com.xquare.data.fetchTodayTeacherWithOfflineCache
 import com.xquare.data.remote.datasource.PickRemoteDataSource
-import com.xquare.data.today
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassDataEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
@@ -27,7 +25,9 @@ class PickRepositoryImpl @Inject constructor(
     override suspend fun fetchClassPosition(): ClassPositionEntity =
         pickRemoteDataSource.fetchClassPosition()
 
-    override suspend fun TodaySelfStudyTeacher(): Flow<TodaySelfStudyTeacherEntity>  =
-        TODO("나중에 추가할 예정")
+    override suspend fun fetchTodaySelfStudyTeacher(month: String): Flow<TodaySelfStudyTeacherEntity> {
+        TODO("Not yet implemented")
+    }
+
 
 }
