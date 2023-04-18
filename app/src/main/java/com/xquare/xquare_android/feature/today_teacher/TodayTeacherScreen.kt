@@ -1,18 +1,6 @@
 package com.xquare.xquare_android.feature.today_teacher
 
-<<<<<<< Updated upstream
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
-import com.xquare.xquare_android.util.makeToast
-import kotlinx.coroutines.flow.collect
-import kotlin.reflect.KProperty
 
-
-=======
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -40,7 +28,6 @@ import org.threeten.bp.LocalDate
 
 
 @RequiresApi(Build.VERSION_CODES.O)
->>>>>>> Stashed changes
 @Composable
 fun TodayTeacherScreen(
     navController: NavController
@@ -67,26 +54,12 @@ fun TodayTeacherScreen(
     )
 }
 
-<<<<<<< Updated upstream
-=======
-@RequiresApi(Build.VERSION_CODES.O)
->>>>>>> Stashed changes
+
 @Composable
 fun TodayTeacher(
     todayTeacher: TodaySelfStudyTeacherEntity?,
     onBack: () -> Unit,
 ){
-<<<<<<< Updated upstream
-
-}
-
-@Preview(backgroundColor = true)
-@Composable
-fun TodayTeacherPreview(){
-    TodayTeacher(
-        todayTeacher =
-    )
-=======
     val listStatus = rememberLazyListState()
     Column(
         modifier = Modifier
@@ -130,7 +103,6 @@ private fun calculateScrollPosition(todayTeacher: TodaySelfStudyTeacherEntity): 
     return teacher
         .firstOrNull { it.date >= today}
         ?.let { teacher.indexOf(it) } ?: teacher.lastIndex
->>>>>>> Stashed changes
 }
 
 

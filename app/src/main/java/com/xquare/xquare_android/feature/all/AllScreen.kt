@@ -47,7 +47,6 @@ fun AllScreen(navController: NavController) {
     val schoolMenuList = listOf("오늘의 자습감독 선생님")//"동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
     val dormitoryMenuList = listOf("봉사 지원하기", "청소판 확인하기")
     val userMenuList = listOf("로그아웃")
-    val schoolList = listOf("오늘의 자습감독 선생님")
 
     val allViewModel: AllViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
@@ -113,7 +112,7 @@ fun AllScreen(navController: NavController) {
             }
             Spacer(modifier = Modifier.size(30.dp))
             Body1(text = "학교", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
-            schoolList.forEachIndexed{ index, title ->
+            schoolMenuList.forEachIndexed{ index, title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {
                     when(index) {
