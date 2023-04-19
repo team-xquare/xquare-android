@@ -40,6 +40,7 @@ import com.xquare.xquare_android.feature.schedule.WriteScheduleScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
+import com.xquare.xquare_android.feature.today_teacher.TodayTeacherScreen
 import com.xquare.xquare_android.feature.webview.CommonWebViewScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
@@ -119,6 +120,9 @@ fun BaseApp() {
         }
         composable(AppNavigationItem.Pass.route) {
             PassScreen(navController)
+        }
+        composable(AppNavigationItem.TodayTeacher.route){
+            TodayTeacherScreen(navController)
         }
         composable(AppNavigationItem.WriteSchedule.route) {
             val schedulesData = it.arguments?.get("schedulesData").toString()

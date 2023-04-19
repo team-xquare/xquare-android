@@ -3,6 +3,8 @@ package com.xquare.data.remote.datasource
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassDataEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
+import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
+import kotlinx.coroutines.flow.Flow
 
 interface PickRemoteDataSource {
     suspend fun fetchPassTime(): PassTimeEntity
@@ -12,4 +14,9 @@ interface PickRemoteDataSource {
     suspend fun backToClassRoom()
 
     suspend fun fetchClassPosition(): ClassPositionEntity
+
+    suspend fun fetchTodaySelfStudyTeacher(month: String): TodaySelfStudyTeacherEntity
+
+
+
 }

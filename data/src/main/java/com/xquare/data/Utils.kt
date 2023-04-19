@@ -102,5 +102,6 @@ fun <T> fetchPointWithOfflineCache(
     }
 }
 
+
 fun today(): LocalDate =
     LocalDate.now()
