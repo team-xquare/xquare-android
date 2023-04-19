@@ -1,5 +1,7 @@
 package com.xquare.xquare_android.feature.signin
 
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,7 +61,9 @@ fun SignInScreen(navController: NavController) {
         onBackClick = { navController.popBackStack() },
         onSignInClick = { signInViewModel.signIn(it) },
         onFindAccountClick = {
-            makeToast(context, "Xquare 페이스북 페이지로 문의 해주세요.")
+            //makeToast(context, "Xquare 페이스북 페이지로 문의 해주세요.")
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=100091948951498"))
+            context.startActivity(intent)
             //TODO("아이디/비밀번호 찾기로 이동")
         }
     )
