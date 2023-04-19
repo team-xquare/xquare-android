@@ -55,7 +55,7 @@ fun TodayTeacherDetail(
             Body1(
             text = "${month}월 ${day}일 (${week})",
             color = gray900,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column(
@@ -65,22 +65,21 @@ fun TodayTeacherDetail(
                 .background(color = gray50, shape = RoundedCornerShape(16.dp))
         ) {
             val teacher = teacherEntity.teacher
-            Log.d("teacher",teacherEntity.teacher.toString())
             if (teacher[1].isNotEmpty()){
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Body1(text = "2층  "+teacher[1] + "선생님", color = gray800)
+                    Body1(text = "2층  "+teacher[1] + "선생님", color = gray900)
                 }
             }
             if (teacher[2].isNotEmpty()){
                 Spacer(Modifier.size(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Body1(text = "3층  "+teacher[2]+"선생님", color = gray800)
+                    Body1(text = "3층  "+teacher[2]+"선생님", color = gray900)
                 }
             }
             if (teacher[3].isNotEmpty()){
                 Spacer(Modifier.size(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Body1(text = "4층  "+teacher[3] + "선생님", color = gray800)
+                    Body1(text = "4층  "+teacher[3] + "선생님", color = gray900)
                 }
             }
         }
