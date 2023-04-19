@@ -256,7 +256,7 @@ private fun TimetableItem(
         Body1(
             text = "${dayTimetableEntity.period} 교시",
             color = gray900,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.width(54.dp)
         )
         Spacer(Modifier.size(18.dp))
@@ -277,8 +277,8 @@ private fun TimetableItem(
         Column {
             Body1(
                 text = dayTimetableEntity.subject_name,
+                fontWeight = FontWeight.Bold,
                 color = gray900,
-                fontWeight = FontWeight.Medium
             )
             Body3(
                 text = "${dayTimetableEntity.begin_time} ~ ${dayTimetableEntity.end_time}",

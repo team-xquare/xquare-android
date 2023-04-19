@@ -32,7 +32,7 @@ import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.xquare_android.R
-import com.xquare.xquare_android.component.AppBar
+import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.toFile
@@ -117,7 +117,7 @@ private fun Profile(
                 bottom = DevicePaddings.navigationBarHeightDp.dp
             ),
         topBar = {
-            AppBar(
+            CenterAppBar(
                 painter = painterResource(R.drawable.ic_back),
                 text = "마이페이지",
                 onIconClick = onBackPress
