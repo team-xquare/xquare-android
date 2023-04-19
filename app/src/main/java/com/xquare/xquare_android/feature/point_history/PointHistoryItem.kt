@@ -6,11 +6,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
+import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.gray50
 import com.xquare.domain.entity.point.PointHistoriesEntity
 import org.threeten.bp.LocalDate
@@ -27,8 +29,8 @@ fun PointHistoryItem(pointHistoryEntity: PointHistoriesEntity.PointHistoryEntity
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
-            Body1(text = pointHistoryEntity.reason)
-            Body3(text = pointHistoryEntity.date.toString())
+            Body1(text = pointHistoryEntity.reason, color = Color.Black)
+            Body3(text = pointHistoryEntity.date.toString(), color = Color.DarkGray)
         }
         Subtitle4(text = pointHistoryEntity.point.toString())
     }

@@ -112,6 +112,17 @@ fun AllScreen(navController: NavController) {
                 }
             }
             Spacer(modifier = Modifier.size(30.dp))
+            Body1(text = "학교", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+            schoolMenuList.forEachIndexed{ index, title ->
+                Spacer(modifier = Modifier.size(12.dp))
+                ColumnMenuItem(title) {
+                    when(index) {
+                        0 -> navController.navigate(AppNavigationItem.TodayTeacher.route)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.size(30.dp))
             Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
             userMenuList.forEachIndexed { index, title ->
                 Spacer(modifier = Modifier.size(12.dp))

@@ -143,6 +143,7 @@ private fun PassInfoText(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
                 .border(1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
                 .background(color = gray50)
                 .padding(horizontal = 16.dp, vertical = 10.dp),

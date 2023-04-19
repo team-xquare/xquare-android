@@ -11,6 +11,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -53,6 +55,7 @@ fun TextField(
         modifier = Modifier
             .fillMaxWidth()
             .height(44.dp)
+            .clip(RoundedCornerShape(8.dp))
             .background(
                 if (text.isBlank()){ gray50 }
                 else { white }
@@ -80,6 +83,7 @@ fun TextFieldBtn(
                 if (text.isBlank()){ gray50 }
                 else { white }
             )
+            .clip(RoundedCornerShape(8.dp))
             .border(
                 width = 1.dp,
                 color = if (text.isBlank()){ gray300} else { black },
