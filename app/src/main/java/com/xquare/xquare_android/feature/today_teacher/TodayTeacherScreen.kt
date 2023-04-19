@@ -1,29 +1,36 @@
 package com.xquare.xquare_android.feature.today_teacher
 
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.semicolon.design.Body1
+import com.semicolon.design.Body2
+import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.gray.gray700
+import com.semicolon.design.color.primary.gray.gray800
+import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
+import com.xquare.xquare_android.util.toKorean
 import org.threeten.bp.LocalDate
 
 
@@ -55,6 +62,7 @@ fun TodayTeacherScreen(
 }
 
 
+@SuppressLint("NewApi")
 @Composable
 fun TodayTeacher(
     todayTeacher: TodaySelfStudyTeacherEntity?,
@@ -82,6 +90,7 @@ fun TodayTeacher(
             ){
                 items(todayTeacher.teacherList.count()){
                     if (it == 0) Spacer(Modifier.size(20.dp))
+                    if (teacherList[it].teacher[1].isNotEmpty()){
                     TodayTeacherDetail(
                         teacherEntity = todayTeacher.teacherList[it],
                         borderState = it == calculateScrollPosition(todayTeacher)
@@ -90,6 +99,7 @@ fun TodayTeacher(
                         Spacer(Modifier.size(20.dp))
                     }
                     else Spacer(Modifier.size(16.dp))
+                    }
                 }
             }
         }

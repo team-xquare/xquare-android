@@ -13,7 +13,7 @@ class TodayTeacherViewModel @Inject constructor(
 
     fun TodaySelfStudyTeacher() = execute(
         job = { todaySelfStudyTeacherUseCase.execute(Unit)},
-        onSuccess = {it.collect { todayTeacher -> emitEvent(Event.Success(todayTeacher)) } },
+        onSuccess = { emitEvent(Event.Success(it)) },
         onFailure = { emitEvent(Event.Failure)}
     )
 
