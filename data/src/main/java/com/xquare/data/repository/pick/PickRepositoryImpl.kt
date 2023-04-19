@@ -1,6 +1,8 @@
 package com.xquare.data.repository.pick
 
+import com.xquare.data.fetchDataWithOfflineCache
 import com.xquare.data.remote.datasource.PickRemoteDataSource
+import com.xquare.data.today
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassDataEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
@@ -18,16 +20,15 @@ class PickRepositoryImpl @Inject constructor(
     override suspend fun fetchPassData(): PassDataEntity =
         pickRemoteDataSource.fetchPassData()
 
-    override suspend fun backToClassRoom()  {
+    override suspend fun backToClassRoom() {
         pickRemoteDataSource.backToClassRoom()
     }
 
     override suspend fun fetchClassPosition(): ClassPositionEntity =
         pickRemoteDataSource.fetchClassPosition()
 
-    override suspend fun fetchTodaySelfStudyTeacher(month: String): Flow<TodaySelfStudyTeacherEntity> {
-        TODO("Not yet implemented")
-    }
-
-
+    val date = today()
+    val month = date.monthValue
+    override suspend fun fetchTodaySelfStudyTeacher(): TodaySelfStudyTeacherEntity =
+        pickRemoteDataSource.fetchTodaySelfStudyTeacher(month=month.toString())
 }

@@ -7,14 +7,14 @@ import org.threeten.bp.LocalDate
 
 data class TodaySelfStudyTeacherResponse(
    @SerializedName("self_study_list") val teacherList: List<TodayTeacherWithDataResponse>,
-){
+) {
 
    data class TodayTeacherWithDataResponse(
       @SerializedName("type") val type: String,
       @SerializedName("date") val date: String,
       @SerializedName("teacher") val teacher: List<String>?,
    )
-
+}
    fun TodaySelfStudyTeacherResponse.toEntity() =
       TodaySelfStudyTeacherEntity(
          teacherList = teacherList.map { it.toEntity() }
@@ -26,7 +26,7 @@ data class TodaySelfStudyTeacherResponse(
          date = LocalDate.parse(date),
          teacher = teacher ?: listOf()
       )
-}
+
 
 
 
