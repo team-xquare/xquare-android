@@ -52,7 +52,9 @@ fun WriteScheduleScreen(
                     navController.popBackStack()
                 }
                 is ScheduleViewModel.Event.Failure -> makeToast(context, it.message)
-                else -> {}
+                else -> {
+
+                }
             }
         }
     }
@@ -91,21 +93,21 @@ fun WriteScheduleContent(
     var timerModalState by remember { mutableStateOf(false) }
     val btnEnabled = name.length > 1 && date.isNotEmpty()
 
+    Header(
+        painter = painterResource(id = R.drawable.ic_back),
+        title = "일정 작성",
+        btnText = "등록",
+        btnEnabled = btnEnabled,
+        onIconClick = onIconClick,
+        onBtnClick = { onBtnClick(name, date) }
+    )
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxSize()
             .padding(top = DevicePaddings.statusBarHeightDp.dp)
     ) {
-        Header(
-            painter = painterResource(id = R.drawable.ic_back),
-            title = "일정 작성",
-            btnText = "등록",
-            btnEnabled = btnEnabled,
-            onIconClick = onIconClick,
-            onBtnClick = { onBtnClick(name, date) }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(32.dp))
         HighlightedText(text = "일정제목")
         Spacer(modifier = Modifier.height(8.dp))
         TextField(

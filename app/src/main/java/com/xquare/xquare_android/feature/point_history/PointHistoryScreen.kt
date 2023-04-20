@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.dark.dark50
 import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
@@ -80,7 +81,7 @@ fun PointHistory(
                 .padding(horizontal = 16.dp)
                 .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
         ) {
-            Body2(text = "상점 ${pointHistoriesEntity?.goodPoint ?: 0}점 벌점 ${pointHistoriesEntity?.badPoint ?: 0}점")
+            Body2(text = "상점 ${pointHistoriesEntity?.goodPoint ?: 0}점 벌점 ${pointHistoriesEntity?.badPoint ?: 0}점", color = gray700)
             Spacer(Modifier.size(16.dp))
             Row {
                 SelectableButton(text = "상점", isSelected = isGoodPointSelected) {

@@ -153,7 +153,7 @@ private fun BugreportWhereMenu(
 ) {
     val menu = listOf("홈 ", "일정", "피드", "신청", "전체")
     var isDrop by remember { mutableStateOf(false) }
-    var targetValue by remember { mutableStateOf(-90F) }
+    var targetValue by remember { mutableStateOf(0F) }
     val rotateValue: Float by animateFloatAsState(
         targetValue = targetValue,
         tween(300)
@@ -174,7 +174,7 @@ private fun BugreportWhereMenu(
                     indication = null,
                 ) {
                     isDrop = true
-                    targetValue = 0F
+                    targetValue = 180F
                 }
                 .padding(horizontal = 12.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -196,7 +196,7 @@ private fun BugreportWhereMenu(
             expanded = isDrop,
             onDismissRequest = {
                 isDrop = false
-                targetValue = -90F
+                targetValue = 0F
             },
             modifier = Modifier
                 .width(60.dp)
@@ -218,7 +218,7 @@ private fun BugreportWhereMenu(
                             ) {
                                 checkWhere(it)
                                 isDrop = false
-                                targetValue = -90F
+                                targetValue = 0F
                             }
                     )
                     Spacer(modifier = Modifier.height(3.dp))

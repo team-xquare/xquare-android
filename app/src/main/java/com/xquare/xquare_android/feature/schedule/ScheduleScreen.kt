@@ -89,13 +89,16 @@ fun ScheduleScreen(navController: NavController) {
                     scheduleViewModel.fetchSchedules(loadingMonth)
                     makeToast(context, "일정을 삭제하였습니다")
                 }
-                else -> {}
+                else -> {
+
+                }
             }
         }
     }
     ActionSheet(
         state = actionSheetState,
         list = listOf("수정하기", "삭제하기"),
+        fontWeight = FontWeight.Normal,
         onClick = { index ->
             actionSheetScope.launch {
                 actionSheetState.hide()
@@ -254,7 +257,7 @@ private fun TimetableItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Body1(
-            text = "${dayTimetableEntity.period} 교시",
+            text = "${dayTimetableEntity.period}교시",
             color = gray900,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.width(54.dp)
@@ -423,18 +426,11 @@ fun ScheduleItem(
                 )
             }
             Spacer(Modifier.size(21.dp))
-            Column {
                 Body1(
                     text = schedulesDataEntity.name,
                     color = gray900,
                     fontWeight = FontWeight.Medium
                 )
-                Spacer(Modifier.size(4.dp))
-                Body2(
-                    text = "하루종일",
-                    color = gray700,
-                )
-            }
         }
         Box(Modifier
             .size(36.dp)

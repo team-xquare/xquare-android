@@ -18,6 +18,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
@@ -36,6 +37,7 @@ fun ActionSheet(
     state: ModalBottomSheetState,
     list: List<String>,
     onClick: (Int) -> Unit,
+    fontWeight: FontWeight = FontWeight.Normal,
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheetLayout(
@@ -47,7 +49,7 @@ fun ActionSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(color = gray50)
-                    .padding(top = 10.dp, bottom = 35.dp)
+                    .padding(top = 10.dp, bottom = 30.dp, end = 280.dp)
             ){
                 itemsIndexed(list) { index, item ->
                     BottomSheetItem(
