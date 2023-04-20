@@ -99,7 +99,7 @@ fun HomeContent(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        HomeAppBar(onAlarmClick = onAlarmClick)
+        HomeAppBar(/*onAlarmClick = onAlarmClick*/)
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
@@ -113,7 +113,7 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeAppBar(onAlarmClick: () -> Unit) {
+fun HomeAppBar(/*onAlarmClick: () -> Unit*/) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,7 +121,7 @@ fun HomeAppBar(onAlarmClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Subtitle4(text = "홈", fontWeight = FontWeight.Bold)
-        Icon(
+       /* Icon(
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = "alarm",
             tint = gray500,
@@ -135,7 +135,7 @@ fun HomeAppBar(onAlarmClick: () -> Unit) {
                 ) {
                     onAlarmClick()
                 }
-        )
+        )*/
     }
 }
 
@@ -197,10 +197,12 @@ fun HomeMealCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
-            .padding(horizontal = 12.dp, vertical = 16.dp)
+            .padding(vertical = 16.dp)
     ) {
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -209,7 +211,7 @@ fun HomeMealCard(
                 fontSize = 16.sp,
                 color = gray900,
                 fontFamily = notoSansFamily,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Normal,
             )
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow),
@@ -224,12 +226,13 @@ fun HomeMealCard(
                 tint = Color.Unspecified
             )
         }
-        Spacer(Modifier.size(12.dp))
+        Spacer(Modifier.size(12.dp)
+            .padding(horizontal = 12.dp))
         CompositionLocalProvider {
             Row(
-                Modifier.horizontalScroll(
-                    scrollState
-                )
+                Modifier
+                    .horizontalScroll(scrollState)
+                    .padding(horizontal = 12.dp)
             ) {
                 Spacer(Modifier.size(4.dp))
                 HomeMealItem(
