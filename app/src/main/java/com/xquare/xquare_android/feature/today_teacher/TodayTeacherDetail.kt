@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.purple.purple200
 import com.semicolon.design.color.primary.purple.purple400
 import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
 import com.xquare.xquare_android.util.toKorean
@@ -39,7 +40,7 @@ fun TodayTeacherDetail(
     teacherEntity: TodaySelfStudyTeacherEntity.TeacherEntity,
     borderState: Boolean
 ){
-    val borderColor = if (borderState) purple400 else gray50
+    val borderColor = if (borderState) purple200 else gray50
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -65,6 +66,12 @@ fun TodayTeacherDetail(
                 .background(color = gray50, shape = RoundedCornerShape(16.dp))
         ) {
             val teacher = teacherEntity.teacher
+            if (teacher[0].isNotEmpty()){
+                Spacer(Modifier.size(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Body1(text = "1층  "+teacher[0] + "선생님", color = gray900)
+                }
+            }
             if (teacher[1].isNotEmpty()){
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Body1(text = "2층  "+teacher[1] + "선생님", color = gray900)
@@ -80,6 +87,12 @@ fun TodayTeacherDetail(
                 Spacer(Modifier.size(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Body1(text = "4층  "+teacher[3] + "선생님", color = gray900)
+                }
+            }
+            if (teacher[4].isNotEmpty()){
+                Spacer(Modifier.size(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Body1(text = "5층  "+teacher[4] + "선생님", color = gray900)
                 }
             }
         }
