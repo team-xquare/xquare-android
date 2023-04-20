@@ -53,6 +53,7 @@ import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         setStatusBarTransparent()
         DevicePaddings.statusBarHeightDp = getStatusBarHeightDp()
