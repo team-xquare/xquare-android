@@ -79,7 +79,7 @@ fun TodayTeacher(
     ) {
         Header(
             painter = painterResource(R.drawable.ic_back),
-            title = "오늘의 자습감독 선생님",
+            title = "오늘의 자습감독 선생님 확인",
             onIconClick = onBack
         )
         todayTeacher?.run {
@@ -90,7 +90,7 @@ fun TodayTeacher(
             ){
                 items(todayTeacher.teacherList.count()){
                     if (it == 0) Spacer(Modifier.size(20.dp))
-                    if (teacherList[it].teacher[1].isNotEmpty()){
+                    if (teacherList[it].teacher[0].isNotEmpty() || teacherList[it].teacher[1].isNotEmpty() || teacherList[it].teacher[2].isNotEmpty() || teacherList[it].teacher[3].isNotEmpty() || teacherList[it].teacher[4].isNotEmpty()){
                     TodayTeacherDetail(
                         teacherEntity = todayTeacher.teacherList[it],
                         borderState = it == calculateScrollPosition(todayTeacher)
