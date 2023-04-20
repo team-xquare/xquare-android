@@ -78,9 +78,9 @@ fun AllScreen(navController: NavController) {
     ) {
         if (logoutDialogState) {
             ConfirmModal(
-                message = "정말 로그아웃하시겠습니까?",
-                confirmText = "네",
-                cancelText = "아니오",
+                message = "정말 로그아웃 하시겠습니까?",
+                confirmText = "예",
+                cancelText = "아니요",
                 onConfirm = { allViewModel.logout() }
             ) {
                 logoutDialogState = false
@@ -95,9 +95,9 @@ fun AllScreen(navController: NavController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 27.dp)
+                    .padding(horizontal = 16.dp)
             ) {
-                RowMenuItem(painterResource(id = R.drawable.ic_thumbs_up), "상벌점 확인") {
+                RowMenuItem(painterResource(id = R.drawable.ic_thumbs_up), "상벌점 내역") {
                     navController.navigate(AppNavigationItem.PointHistory.route)
                 }
                 Spacer(modifier = Modifier.size(8.dp))
@@ -174,7 +174,7 @@ private fun RowScope.RowMenuItem(
     ) {
         Icon(modifier = Modifier.height(20.dp), painter = painter, tint = gray700, contentDescription = null)
         Spacer(modifier = Modifier.size(7.dp))
-        Body2(text = title, color = gray600, fontWeight = FontWeight.Medium)
+        Body2(text = title, color = gray600, fontWeight = FontWeight.SemiBold)
     }
 }
 
