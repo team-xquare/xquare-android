@@ -25,7 +25,7 @@ import com.xquare.data.local.entity.timetable.TimetableRoomEntity
         PointRoomEntity::class,
         HomeUserRoomEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(
