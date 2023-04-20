@@ -20,7 +20,9 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
+import com.semicolon.design.color.primary.purple.purple200
 import com.semicolon.design.color.primary.purple.purple400
+import com.semicolon.design.color.system.green.green100
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.util.toKorean
 
@@ -32,7 +34,7 @@ fun MealDetail(
     mealWithDateEntity: AllMealEntity.MealWithDateEntity,
     borderState: Boolean,
 ) {
-    val borderColor = if (borderState) purple400 else gray50
+    val borderColor = if (borderState) purple200 else gray50
     Column(
         modifier = Modifier
             .fillMaxWidth()
