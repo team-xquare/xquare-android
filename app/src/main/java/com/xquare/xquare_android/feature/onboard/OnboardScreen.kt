@@ -23,6 +23,10 @@ import com.google.accompanist.pager.rememberPagerState
 import com.semicolon.design.Body2
 import com.semicolon.design.button.ColoredLargeButton
 import com.semicolon.design.color.primary.dark.dark200
+import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.gray.gray500
+import com.semicolon.design.color.primary.gray.gray700
+import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.R
@@ -96,7 +100,7 @@ private fun OnBoard(
                             onSignInClick()
                         },
                 ) {
-                    Body2(text = "이미 계정이 있으신가요? ")
+                    Body2(text = "이미 계정이 있으신가요? ", color = gray800)
                     Body2(text = "로그인하기", fontWeight = FontWeight.Medium)
                 }
                 Spacer(Modifier.size(40.dp))
