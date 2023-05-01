@@ -89,6 +89,8 @@ fun CommonWebViewScreen(
     }
     var keyboardState by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var startTime: String? by remember { mutableStateOf(null) }
+    var endTime: String? by remember { mutableStateOf(null) }
 
     val bridge = WebToAppBridge(
         onNavigate = {
@@ -142,6 +144,10 @@ fun CommonWebViewScreen(
                 is WebViewViewModel.Event.RefreshSuccess -> {
                     headers = it.data
                 }
+                is WebViewViewModel.Event.FetchPicnicSuccess -> {
+                    endTime = it.data.picnicEndTime
+                    startTime = it.data.picnicStartTime
+                }
                 is WebViewViewModel.Event.NeedToLogin -> {
                     navController.navigate(AppNavigationItem.Onboard.route) { popUpTo(0) }
                 }
@@ -175,12 +181,14 @@ fun CommonWebViewScreen(
     timePickerState?.let {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             TimePickerDialog(
-                defaultTime = it.time,
                 onCancel = { timePickerState = null },
                 onConfirm = { time ->
                     webView?.sendResultOfTimePicker(it.id, time)
                     timePickerState = null
-                }
+                },
+                startTime = if (startTime?.length == 7) startTime?.substring(0 , 1).toString()
+                else startTime?.substring(0 , 2).toString(),
+                endTime = endTime?.substring(0 , 2).toString()
             )
         } else {
             makeToast(context, "안드로이드 버전이 낮아 사용할 수 없습니다.")

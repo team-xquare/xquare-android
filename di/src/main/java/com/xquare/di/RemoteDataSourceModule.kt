@@ -64,4 +64,9 @@ abstract class RemoteDataSourceModule {
     abstract fun bindBugRemoteDataSource(
         bugRemoteDataSourceImpl: BugRemoteDataSourceImpl
     ): BugRemoteDataSource
+
+    @Binds
+    abstract fun bindPicnicRemoteDataSource(
+        picnicRemoteDataSourceImpl: PicnicRemoteDataSourceImpl
+    ): PicnicRemoteDataSource
 }

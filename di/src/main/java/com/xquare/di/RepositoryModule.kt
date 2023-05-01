@@ -10,6 +10,7 @@ import com.xquare.data.repository.schedules.SchedulesRepositoryImpl
 import com.xquare.data.repository.timetables.TimetablesRepositoryImpl
 import com.xquare.data.repository.notification.AlarmRepositoryImpl
 import com.xquare.data.repository.pick.PickRepositoryImpl
+import com.xquare.data.repository.picnic.PicnicRepositoryImpl
 import com.xquare.data.repository.user.UserRepositoryImpl
 import com.xquare.domain.repository.AuthRepository
 import com.xquare.domain.repository.PointRepository
@@ -21,6 +22,7 @@ import com.xquare.domain.repository.schedules.SchedulesRepository
 import com.xquare.domain.repository.timetables.TimetablesRepository
 import com.xquare.domain.repository.notification.AlarmRepository
 import com.xquare.domain.repository.pick.PickRepository
+import com.xquare.domain.repository.picnic.PicnicRepository
 import com.xquare.domain.repository.user.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -85,4 +87,9 @@ abstract class RepositoryModule {
     abstract fun bindBugRepository(
         bugRepositoryImpl: BugRepositoryImpl
     ): BugRepository
+
+    @Binds
+    abstract fun bindPicnicRepository(
+        picnicRepositoryImpl: PicnicRepositoryImpl
+    ): PicnicRepository
 }

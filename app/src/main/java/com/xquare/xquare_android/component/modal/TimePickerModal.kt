@@ -62,18 +62,18 @@ private fun LocalTime.toMinCeil(): LocalTime {
 }
 
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TimePickerDialog(
-    defaultTime: String,
     cancelText: String = "취소하기",
     confirmText: String = "선택하기",
     onCancel: () -> Unit,
     onConfirm: (String) -> Unit,
+    startTime: String,
+    endTime: String
 ) {
-    val defaultTime = defaultTime.setDefaultTime()
+    val defaultTime = startTime.setDefaultTime()
     var hour by remember { mutableStateOf(defaultTime.toHourMin().toMinCeil().hour.toString().addZeroBack(2)) }
     var min by remember { mutableStateOf(defaultTime.toHourMin().toMinCeil().minute.toString().addZeroBack(2)) }
 
@@ -98,9 +98,10 @@ fun TimePickerDialog(
             ) {
                 PickerItem(
                     defaultValue = hour,
-                    itemList = (0..23).settingHourList(),
+                    itemList = (
+                        startTime.toInt()..endTime.toInt()).settingHourList(),
                 ) {
-                    hour = it
+                    hour = (it.toInt() + startTime.toInt()).toString()
                 }
                 Spacer(modifier = Modifier.size(24.dp))
                 MinPickerItem(
@@ -117,23 +118,26 @@ fun TimePickerDialog(
                 Spacer(Modifier.size(16.dp))
                 PrimaryModalButton(
                     Modifier.weight(1f), text = confirmText) {
-                    onConfirm("$hour:$min")
+                    onConfirm(
+                        if (hour == "00") "${startTime}:$min"
+                        else "$hour:$min"
+                    )
                 }
             }
         }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-@Preview(showBackground = true)
-fun ShowTimePickerModal() {
-    TimePickerDialog(
-        defaultTime = "34:32",
-        onCancel = {
-        },
-    ) {
-        Log.d("TAG", "Time: $it")
-    }
-
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Composable
+//@Preview(showBackground = true)
+//fun ShowTimePickerModal() {
+//    TimePickerDialog(
+//        defaultTime = "34:32",
+//        onCancel = {
+//        }
+//    ) {
+//        Log.d("TAG", "Time: $it")
+//    }
+//
+//}

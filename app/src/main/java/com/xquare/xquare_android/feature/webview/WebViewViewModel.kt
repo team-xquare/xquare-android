@@ -1,5 +1,7 @@
 package com.xquare.xquare_android.feature.webview
 
+import com.xquare.domain.entity.picnic.PicnicTimeEntity
+import com.xquare.domain.usecase.picnic.FetchPicnicTimeUseCase
 import com.xquare.domain.usecase.webview.FetchAuthorizationHeadersUseCase
 import com.xquare.domain.usecase.webview.RefreshAuthorizationHeadersUseCase
 import com.xquare.xquare_android.base.BaseViewModel
@@ -10,6 +12,7 @@ import javax.inject.Inject
 class WebViewViewModel @Inject constructor(
     private val fetchAuthorizationHeadersUseCase: FetchAuthorizationHeadersUseCase,
     private val refreshAuthorizationHeadersUseCase: RefreshAuthorizationHeadersUseCase,
+    private val fetchPicnicTimeUseCase: FetchPicnicTimeUseCase,
 ) : BaseViewModel<WebViewViewModel.Event>() {
 
     fun fetchAuthorizationHeader() =
@@ -26,9 +29,17 @@ class WebViewViewModel @Inject constructor(
             onFailure = { emitEvent(Event.NeedToLogin) }
         )
 
+    fun fetchPicnicTime() =
+        execute(
+            job = { fetchPicnicTimeUseCase.execute(Unit) },
+            onSuccess = { emitEvent(Event.FetchPicnicSuccess(it)) },
+            onFailure = { emitEvent(Event.NeedToLogin) }
+        )
+
     sealed class Event {
         data class FetchSuccess(val data: Map<String, String>) : Event()
         data class RefreshSuccess(val data: Map<String, String>) : Event()
+        data class FetchPicnicSuccess(val data: PicnicTimeEntity): Event()
         object NeedToLogin : Event()
     }
 }

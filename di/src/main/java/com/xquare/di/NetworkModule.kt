@@ -108,4 +108,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): BugApi =
         retrofit.create(BugApi::class.java)
+
+    @Provides
+    fun providePicnicApi(
+        retrofit: Retrofit
+    ): PicnicApi =
+        retrofit.create(PicnicApi::class.java)
 }
