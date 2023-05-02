@@ -13,6 +13,6 @@ class PointLocalDataSourceImpl @Inject constructor(
         pointDao.fetchPoint().toEntity(pointType = pointType)
 
     override suspend fun savePoint(pointHistoriesEntity: PointHistoriesEntity) =
-        pointDao.insertPoint(pointRoomEntity = pointHistoriesEntity.toRoomEntity())
+        pointDao.updatePoint(repo = pointHistoriesEntity.toRoomEntity())
 
 }
