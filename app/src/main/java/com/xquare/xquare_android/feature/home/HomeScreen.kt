@@ -177,7 +177,7 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
                 color = gray900
             )
             Body2(
-                text = "상점 ${userData.goodPoint}점 벌점 ${userData.badPoint}",
+                text = "상점 ${userData.goodPoint}점 벌점 ${userData.badPoint}점",
                 color = gray700
             )
         }
