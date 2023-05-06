@@ -11,7 +11,7 @@ data class AlarmResponse(
         @SerializedName("id") val id: String,
         @SerializedName("title") val title: String,
         @SerializedName("content") val content: String,
-        @SerializedName("send_at") val send_at: String,
+        @SerializedName("sent_at") val send_at: String,
         @SerializedName("is_read") val is_read: Boolean,
         @SerializedName("user_id") val user_id: String,
        //  @SerializedName("category_name") val category_name: String,
