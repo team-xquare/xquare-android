@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.alarm
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -49,6 +50,7 @@ import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 import org.openjdk.tools.javac.parser.Tokens.Token
 import org.openjdk.tools.javac.parser.Tokens.tokensKey
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun AlarmScreen(
@@ -109,10 +111,22 @@ fun Alarm(
         }
     }
 }
+@SuppressLint("NewApi")
 @Composable
 fun AlarmItem(
     alarmList: AlarmEntity.AlarmDataEntity
 ) {
+    val today = java.time.LocalDateTime.now()
+    val sendAt = java.time.LocalDateTime.parse(alarmList.send_at)
+
+    val daysDifference = ChronoUnit.DAYS.between(sendAt.toLocalDate(), today.toLocalDate())
+    val hoursDifference = ChronoUnit.HOURS.between(sendAt.toLocalTime(), today.toLocalTime())+12%24
+
+    val time: String = when {
+        daysDifference > 0 -> "${daysDifference}일 전"
+        else -> "${hoursDifference}시간 전"
+    }
+
     val backgroundColor = if (alarmList.is_read) white else gray50
     Column(
         modifier = Modifier
@@ -133,7 +147,7 @@ fun AlarmItem(
             Spacer(modifier = Modifier.width(4.dp))
             Body3(text = alarmList.title, color = Color(0xFF616161))
             Body3(
-                text = alarmList.send_at,
+                text = time,
                 color = Color(0xFF616161),
                 modifier = Modifier
                     .fillMaxWidth()
