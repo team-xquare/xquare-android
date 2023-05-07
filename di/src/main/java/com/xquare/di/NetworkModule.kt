@@ -17,7 +17,7 @@ import retrofit2.create
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://stag-api.xquare.app/"
+    private const val BASE_URL = "https://api.xquare.app/"
 
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
