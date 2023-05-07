@@ -34,8 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.Body3
@@ -122,18 +124,27 @@ fun AlarmItem(
     val sendAt = java.time.LocalDateTime.parse(alarmList.send_at)
 
     val daysDifference = ChronoUnit.DAYS.between(sendAt.toLocalDate(), today.toLocalDate())
-    val hoursDifference = ChronoUnit.HOURS.between(sendAt.toLocalTime(), today.toLocalTime())+12%24
+    val hoursDifference = ChronoUnit.HOURS.between(sendAt.toLocalTime(), today.toLocalTime())
+    val minsDifference = ChronoUnit.MINUTES.between(sendAt.toLocalTime(),today.toLocalTime())
 
     val time: String = when {
         daysDifference > 0 -> "${daysDifference}일 전"
+        hoursDifference <= 0 ->"${minsDifference}분 전"
         else -> "${hoursDifference}시간 전"
     }
 
     val tint = if (alarmList.is_read) black else purple300
 
     val painter: Int = when (alarmList.topic) {
-        "APPLICATION_WEEKEND_MEAL" -> R.drawable.ic_apply
-        "ALL_BAD_POINT","ALL_GOOD_POINT","ALL_PENALTY_LEVEL" -> R.drawable.ic_all
+        "APPLICATION_WEEKEND_MEAL",
+        "APPLICATION_STAY",
+        "APPLICATION_MOVE_CLASSROOM",
+        "APPLICATION_PICNIC",
+        "APPLICATION_PICNIC_PASS",
+        "APPLICATION_WEEKEND_PICNIC",
+        "APPLICATION_WEEKEND_PICNIC_RESERVATION" -> R.drawable.ic_apply
+        "ALL_BAD_POINT","ALL_PENALTY_LEVEL"->R.drawable.img_bad
+        "ALL_GOOD_POINT"->R.drawable.img_good
         "FEED_NOTICE","FEED_COMMENT","FEED_LIKE" -> R.drawable.ic_feed
         "SCHEDULE_LOCAL","SCHEDULE_SOCIAL" -> R.drawable.ic_schedule
         else -> R.drawable.ic_alarm
@@ -170,10 +181,10 @@ fun AlarmItem(
         Box(
             modifier = Modifier.padding(start = 44.dp, end = 16.dp)
         ) {
-            Subtitle4(
+            Text(
                 text = alarmList.content,
                 color = Color(0xFF212121),
-                lineHeight = 20,
+                fontSize = 14.sp
             )
         }
         Spacer(modifier = Modifier.height(17.dp))
