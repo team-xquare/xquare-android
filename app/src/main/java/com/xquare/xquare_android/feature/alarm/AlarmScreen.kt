@@ -40,7 +40,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
+import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.purple.purple300
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.auth.TokenEntity
 import com.xquare.domain.entity.notification.AlarmEntity
@@ -127,6 +129,15 @@ fun AlarmItem(
         else -> "${hoursDifference}시간 전"
     }
 
+    val tint = if (alarmList.is_read) black else purple300
+
+    val painter: Int = when (alarmList.topic) {
+        "APPLICATION_WEEKEND_MEAL" -> R.drawable.ic_apply
+        "ALL_BAD_POINT","ALL_GOOD_POINT","ALL_PENALTY_LEVEL" -> R.drawable.ic_all
+        "FEED_NOTICE","FEED_COMMENT","FEED_LIKE" -> R.drawable.ic_feed
+        "SCHEDULE_LOCAL","SCHEDULE_SOCIAL" -> R.drawable.ic_schedule
+        else -> R.drawable.ic_alarm
+    }
     val backgroundColor = if (alarmList.is_read) white else gray50
     Column(
         modifier = Modifier
@@ -140,8 +151,9 @@ fun AlarmItem(
         ) {
             Spacer(modifier = Modifier.size(19.dp))
             Icon(
-                imageVector = Icons.Default.Check,
+                painter = painterResource(id = painter),
                 contentDescription = null,
+                tint = tint,
                 modifier = Modifier.size(20.dp),
             )
             Spacer(modifier = Modifier.width(4.dp))
