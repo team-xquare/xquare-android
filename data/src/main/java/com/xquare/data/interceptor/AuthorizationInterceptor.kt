@@ -38,7 +38,7 @@ class AuthorizationInterceptor @Inject constructor(
             val refreshToken = runBlocking { authPreference.fetchRefreshToken() }
 
             val tokenRefreshRequest = Request.Builder()
-                .url("https://stag-api.xquare.app/users/login")
+                .url("https://api.xquare.app/users/login")
                 .put("".toRequestBody("application/json".toMediaTypeOrNull()))
                 .addHeader("Refresh-Token", "Bearer $refreshToken")
                 .build()
