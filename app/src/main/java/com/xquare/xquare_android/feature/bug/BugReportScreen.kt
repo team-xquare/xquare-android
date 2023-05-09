@@ -2,6 +2,7 @@ package com.xquare.xquare_android.feature.bug
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ClipDescription
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
@@ -101,7 +102,10 @@ fun BugReportScreen(
     LaunchedEffect(Unit){
         bugViewModel.eventFlow.collect{
             when (it){
-                is BugViewModel.Event.Success -> Toast.makeText(context,"버그 제보 성공",Toast.LENGTH_SHORT).show()
+                is BugViewModel.Event.Success -> {
+                    Toast.makeText(context,"버그 제보 성공",Toast.LENGTH_SHORT).show()
+                    photo = ""
+                }
                 is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
                 is BugViewModel.Event.UploadFileSuccess -> {
                     image = it.data as ArrayList<String>
@@ -199,7 +203,12 @@ private fun BugreportContent(
                 ),
                 modifier = Modifier.size(150.dp)
             ) {
-                Image(painter = rememberImagePainter(data = photo), contentDescription = "image")
+                if (photo != ""){
+                    Image(
+                       painter = rememberAsyncImagePainter(model = photo),
+                       contentDescription = "bugPhoto",
+                    )
+                }
             }
             Spacer(modifier = Modifier.size(16.dp))
             BugreportGuideText(text = "버그에 대해 요약해서 설명해주세요.")
