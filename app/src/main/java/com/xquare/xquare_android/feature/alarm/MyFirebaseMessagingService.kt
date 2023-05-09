@@ -14,6 +14,8 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.xquare.xquare_android.MainActivity
@@ -26,6 +28,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     // 토큰 생성
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful){
+                Log.w(TAG, "getInstanceId failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            val token = task.result
+            Log.d(TAG, "Token: $token")
+        })
     }
 
     // 메시지 수신되면 호출
@@ -56,6 +68,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
     }
+
 
     private fun handleNow() {
         Log.d(TAG, "Short lived task is done.")
@@ -143,6 +156,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setSmallIcon(R.mipmap.ic_launcher)     // 아이콘 설정
             .setContentTitle(title)     // 제목
             .setContentText(body)     // 메시지 내용
+            .setChannelId(channelId)
             .setAutoCancel(true)
             .setSound(soundUri)     // 알림 소리
             .setContentIntent(pendingIntent)       // 알림 실행 시 Intent
