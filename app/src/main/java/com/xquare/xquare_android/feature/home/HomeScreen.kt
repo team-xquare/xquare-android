@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.home
 
+import android.util.Log
 import android.view.WindowManager
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -99,7 +100,7 @@ fun HomeContent(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        HomeAppBar(/*onAlarmClick = onAlarmClick*/)
+        HomeAppBar(onAlarmClick = onAlarmClick)
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
@@ -113,7 +114,7 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeAppBar(/*onAlarmClick: () -> Unit*/) {
+fun HomeAppBar(onAlarmClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,7 +122,7 @@ fun HomeAppBar(/*onAlarmClick: () -> Unit*/) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Subtitle4(text = "홈", fontWeight = FontWeight.Bold)
-       /* Icon(
+        Icon(
             painter = painterResource(id = R.drawable.ic_alarm),
             contentDescription = "alarm",
             tint = gray500,
@@ -135,7 +136,7 @@ fun HomeAppBar(/*onAlarmClick: () -> Unit*/) {
                 ) {
                     onAlarmClick()
                 }
-        )*/
+        )
     }
 }
 

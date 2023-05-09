@@ -9,10 +9,11 @@ data class AlarmEntity(
         val id: String,
         val title: String,
         val content: String,
-        val dateTime: LocalDateTime,
+        val send_at: String,
         val is_read: Boolean,
         val user_id: String,
-        val name: String,
-        val destination: String,
+        //val category_name: String,
+        //val destination: String,
+        val topic: String,
     )
 }
