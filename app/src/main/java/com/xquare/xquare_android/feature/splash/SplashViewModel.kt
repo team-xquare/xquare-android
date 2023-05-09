@@ -1,5 +1,7 @@
 package com.xquare.xquare_android.feature.splash
 
+import android.util.Log
+import com.google.firebase.messaging.FirebaseMessaging
 import com.xquare.domain.usecase.auth.AutoSignInUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

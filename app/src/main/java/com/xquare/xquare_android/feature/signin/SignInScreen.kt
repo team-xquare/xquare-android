@@ -1,7 +1,9 @@
 package com.xquare.xquare_android.feature.signin
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +30,9 @@ import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.TextField
+import com.xquare.xquare_android.getToken
 import com.xquare.xquare_android.navigation.AppNavigationItem
+import com.xquare.xquare_android.saveDeviceToken
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 
@@ -75,6 +79,7 @@ private fun SignIn(
     onSignInClick: (SignInEntity) -> Unit,
     onFindAccountClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     var accountId by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val isSignInEnabled = accountId.isNotEmpty() && password.isNotEmpty()
@@ -117,7 +122,7 @@ private fun SignIn(
             }
             Spacer(Modifier.size(16.dp))
             ColoredLargeButton(text = "로그인", isEnabled = isSignInEnabled) {
-                onSignInClick(SignInEntity(accountId, password))
+                onSignInClick(SignInEntity(accountId, password, getToken(context).toString() ))
             }
             Spacer(Modifier.size(16.dp))
             Body2(

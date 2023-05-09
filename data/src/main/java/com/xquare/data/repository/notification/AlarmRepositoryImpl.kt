@@ -10,13 +10,14 @@ import javax.inject.Inject
 
 class AlarmRepositoryImpl @Inject constructor(
     private val alarmRemoteDataSource: AlarmRemoteDataSource,
-    private val alarmLocalDataSource: AlarmLocalDataSource,
+//    private val alarmLocalDataSource: AlarmLocalDataSource,
 ): AlarmRepository {
-    override suspend fun fetchAlarm(): Flow<AlarmEntity> =
-        fetchDataWithOfflineCache(
-            fetchLocalData = { alarmLocalDataSource.fetchAlarm() },
-            fetchRemoteData = { alarmRemoteDataSource.fetchAlarm() },
-            refreshLocalData = { alarmLocalDataSource.saveAlarm(it) },
-            offlineOnly = true,
-        )
+    override suspend fun fetchAlarmHistory(): AlarmEntity =
+        alarmRemoteDataSource.fetchAlarm()
+//        fetchDataWithOfflineCache(
+//            fetchLocalData = { alarmLocalDataSource.fetchAlarm() },
+//            fetchRemoteData = { alarmRemoteDataSource.fetchAlarm() },
+//            refreshLocalData = { alarmLocalDataSource.saveAlarm(it) },
+//            offlineOnly = false,
+//        )
 }
