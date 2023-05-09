@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,7 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -50,9 +51,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -62,16 +63,11 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.system.red.red400
 import com.semicolon.design.notoSansFamily
-import com.xquare.domain.entity.attachment.FileEntity
 import com.xquare.domain.entity.bug.BugEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
-import com.xquare.xquare_android.feature.point_history.PointHistoryViewModel
 import com.xquare.xquare_android.util.DevicePaddings
-import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.toFile
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import java.io.File
 
 // TODO Body4
@@ -100,6 +96,7 @@ fun BugReportScreen(
     val bugViewModel: BugViewModel = hiltViewModel()
     val context = LocalContext.current
     var image by remember { mutableStateOf(ArrayList<String>()) }
+    var photo by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit){
         bugViewModel.eventFlow.collect{
@@ -108,7 +105,7 @@ fun BugReportScreen(
                 is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
                 is BugViewModel.Event.UploadFileSuccess -> {
                     image = it.data as ArrayList<String>
-                    Log.d("image", image.toString())
+                    photo = it.data[0]
                 }
             }
         }
@@ -122,7 +119,8 @@ fun BugReportScreen(
         sendImage = {
             bugViewModel.uploadFile(it)
         },
-        image = image
+        image = image,
+        photo = photo
     )
 
 
@@ -134,7 +132,8 @@ private fun BugreportContent(
     onIconClick: () -> Unit,
     onBtnClick: (BugEntity) -> Unit,
     sendImage: (File) -> Unit,
-    image: ArrayList<String>
+    image: ArrayList<String>,
+    photo:String
 ) {
     var where by remember { mutableStateOf("홈") }
     var explanationText by remember { mutableStateOf("") }
@@ -162,7 +161,6 @@ private fun BugreportContent(
     if (galleryState) {
         openWebViewGallery.launch(openGalleryLauncher)
     }
-    Log.d("image", image.toString())
     Scaffold(
         modifier = Modifier.padding(
             top = DevicePaddings.statusBarHeightDp.dp,
@@ -201,11 +199,7 @@ private fun BugreportContent(
                 ),
                 modifier = Modifier.size(150.dp)
             ) {
-                Icon(
-                    modifier = Modifier.fillMaxSize(),
-                    painter = rememberAsyncImagePainter(model = image,placeholder = ColorPainter(gray50)),
-                    contentDescription = "bugImage"
-                )
+                Image(painter = rememberImagePainter(data = photo), contentDescription = "image")
             }
             Spacer(modifier = Modifier.size(16.dp))
             BugreportGuideText(text = "버그에 대해 요약해서 설명해주세요.")
