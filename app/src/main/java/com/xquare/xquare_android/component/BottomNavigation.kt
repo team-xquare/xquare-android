@@ -19,6 +19,7 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray300
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
+import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 
 @Composable
@@ -38,7 +39,7 @@ fun BottomNavigation(
                 Modifier
                     .height(56.dp)
                     .weight(1f)
-                    .background(color = gray50)
+                    .background(color = white)
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = rememberRipple(
