@@ -238,18 +238,32 @@ fun Main(mainNavController: NavController) {
     }
 }
 
-private fun saveDeviceToken(context: Context) {
+fun saveDeviceToken(context: Context) {
     try {
         FirebaseApp.initializeApp(context);
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             val token = task.result
             Log.d("TAG", "saveDeviceToken: $token")
+            val pref = context.getSharedPreferences("token", Context.MODE_PRIVATE)
+            val editor = pref.edit()
+            editor.putString("token",token).apply()
+            editor.commit()
+
+            Log.d("TAG", "Save Token Successfully")
         }
     } catch (e: IllegalStateException) {
         Log.d("TAG", "saveDeviceToken: $e")
     }
 
 }
+
+fun getToken(context: Context): String? {
+    val pref = context.getSharedPreferences("token", Context.MODE_PRIVATE)
+    val token = pref.getString("token", null)
+    Log.d("TAG", "FCM token retrieved: $token")
+    return token
+}
+
 
 fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
