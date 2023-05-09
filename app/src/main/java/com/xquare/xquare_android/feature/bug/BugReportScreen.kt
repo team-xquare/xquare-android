@@ -1,7 +1,12 @@
 package com.xquare.xquare_android.feature.bug
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -12,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,15 +28,20 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +50,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -49,14 +62,21 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.system.red.red400
 import com.semicolon.design.notoSansFamily
+import com.xquare.domain.entity.attachment.FileEntity
 import com.xquare.domain.entity.bug.BugEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
+import com.xquare.xquare_android.feature.point_history.PointHistoryViewModel
 import com.xquare.xquare_android.util.DevicePaddings
+import com.xquare.xquare_android.util.makeToast
+import com.xquare.xquare_android.util.toFile
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import java.io.File
 
 // TODO Body4
 internal object MenuItem {
-    const val HOME = "홈 "
+    const val HOME = "홈"
     const val SCHEDULE = "일정"
     const val FEED = "피드"
     const val APPLY = "신청"
@@ -77,24 +97,72 @@ private fun String.toEntityWhere() =
 fun BugReportScreen(
     navController: NavController,
 ) {
-    BugreportContent(
-        onIconClick = { navController.popBackStack() }
-    ) { where, text ->
-        Log.d("TAG", "SendBugReportWhere: ${where.toEntityWhere()}")
-        Log.d("TAG", "SendBugReportText: $text")
+    val bugViewModel: BugViewModel = hiltViewModel()
+    val context = LocalContext.current
+    var image by remember { mutableStateOf(ArrayList<String>()) }
+
+    LaunchedEffect(Unit){
+        bugViewModel.eventFlow.collect{
+            when (it){
+                is BugViewModel.Event.Success -> Toast.makeText(context,"버그 제보 성공",Toast.LENGTH_SHORT).show()
+                is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
+                is BugViewModel.Event.UploadFileSuccess -> {
+                    image = it.data as ArrayList<String>
+                    Log.d("image", image.toString())
+                }
+            }
+        }
     }
+
+    BugreportContent(
+        onIconClick = { navController.popBackStack() },
+        onBtnClick = {
+            bugViewModel.uploadBug(it)
+        },
+        sendImage = {
+            bugViewModel.uploadFile(it)
+        },
+        image = image
+    )
+
+
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "ResourceType")
 @Composable
 private fun BugreportContent(
     onIconClick: () -> Unit,
-    onBtnClick: (String, String) -> Unit
+    onBtnClick: (BugEntity) -> Unit,
+    sendImage: (File) -> Unit,
+    image: ArrayList<String>
 ) {
-    var where by remember { mutableStateOf("홈 ") }
+    var where by remember { mutableStateOf("홈") }
     var explanationText by remember { mutableStateOf("") }
     val headerBtnEnabled = explanationText.isNotEmpty()
+    val context = LocalContext.current
+    var galleryState by remember { mutableStateOf(false) }
+    val openWebViewGallery =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                result.data!!.data?.run {
+                    sendImage(toFile(context,this))
+                    Toast.makeText(context,"사진 추가 성공",Toast.LENGTH_SHORT).show()
+                }
+            }
+            galleryState = false
+        }
 
+    val openGalleryLauncher =
+        Intent(Intent.ACTION_PICK).apply {
+            this.type = "image/*"
+            this.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+        }
+    if (galleryState) {
+        openWebViewGallery.launch(openGalleryLauncher)
+    }
+    Log.d("image", image.toString())
     Scaffold(
         modifier = Modifier.padding(
             top = DevicePaddings.statusBarHeightDp.dp,
@@ -108,9 +176,8 @@ private fun BugreportContent(
                 btnEnabled = headerBtnEnabled,
                 onIconClick = onIconClick,
                 onBtnClick = {
-                    onBtnClick(where, explanationText)
+                    onBtnClick(BugEntity(explanationText, where.toEntityWhere(), image_urls = image))
                     explanationText = ""
-                    BugEntity(reason = explanationText, category = where, image_urls = arrayListOf())
                 },
             )
         }
@@ -124,6 +191,22 @@ private fun BugreportContent(
             BugreportGuideText(text = "어디서 버그가 발생했나요?")
             Spacer(modifier = Modifier.size(8.dp))
             BugreportWhereMenu(text = where, checkWhere = { where = it })
+            Spacer(modifier = Modifier.size(30.dp))
+            Text(text = "사진을 첨부해 주세요")
+            Spacer(modifier = Modifier.size(10.dp))
+            Button(
+                onClick = { galleryState = true },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = gray50,
+                ),
+                modifier = Modifier.size(150.dp)
+            ) {
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = rememberAsyncImagePainter(model = image,placeholder = ColorPainter(gray50)),
+                    contentDescription = "bugImage"
+                )
+            }
             Spacer(modifier = Modifier.size(16.dp))
             BugreportGuideText(text = "버그에 대해 요약해서 설명해주세요.")
             Spacer(modifier = Modifier.size(8.dp))
