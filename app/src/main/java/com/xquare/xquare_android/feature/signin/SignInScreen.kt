@@ -117,7 +117,7 @@ private fun SignIn(
             }
             Spacer(Modifier.size(16.dp))
             ColoredLargeButton(text = "로그인", isEnabled = isSignInEnabled) {
-                onSignInClick(SignInEntity(accountId, password))
+                onSignInClick(SignInEntity(accountId, password, ""))
             }
             Spacer(Modifier.size(16.dp))
             Body2(

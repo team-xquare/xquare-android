@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -22,6 +23,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.schedules.SchedulesEntity
@@ -59,6 +62,8 @@ class MainActivity : ComponentActivity() {
         DevicePaddings.statusBarHeightDp = getStatusBarHeightDp()
         DevicePaddings.navigationBarHeightDp = getNavigationBarHeightDp()
         super.onCreate(savedInstanceState)
+        saveDeviceToken(this)
+
         setContent {
             Thread.setDefaultUncaughtExceptionHandler(
                 XquareExceptionHandler(
@@ -231,6 +236,19 @@ fun Main(mainNavController: NavController) {
             }
         }
     }
+}
+
+private fun saveDeviceToken(context: Context) {
+    try {
+        FirebaseApp.initializeApp(context);
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            val token = task.result
+            Log.d("TAG", "saveDeviceToken: $token")
+        }
+    } catch (e: IllegalStateException) {
+        Log.d("TAG", "saveDeviceToken: $e")
+    }
+
 }
 
 fun Context.getActivity(): ComponentActivity? = when (this) {
