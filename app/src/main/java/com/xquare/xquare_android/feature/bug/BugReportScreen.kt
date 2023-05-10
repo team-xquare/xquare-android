@@ -205,6 +205,7 @@ private fun BugreportContent(
             ) {
                 if (photo != ""){
                     Image(
+                        modifier = Modifier.size(150.dp),
                        painter = rememberAsyncImagePainter(model = photo),
                        contentDescription = "bugPhoto",
                     )
