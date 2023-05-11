@@ -7,9 +7,12 @@ import com.xquare.data.remote.response.auth.toEntity
 import com.xquare.domain.AppCookieManager
 import com.xquare.domain.exception.NeedLoginException
 import kotlinx.coroutines.runBlocking
-import okhttp3.*
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import javax.inject.Inject
@@ -57,10 +60,8 @@ class AuthorizationInterceptor @Inject constructor(
                         authPreference.saveRefreshToken(token.refreshToken)
                         authPreference.saveExpirationAt(LocalDateTime.parse(token.expirationAt))
                     }
-                }
-                else throw NeedLoginException()
-            }
-            catch (e: NeedLoginException){
+                } else throw NeedLoginException()
+            } catch (e: NeedLoginException) {
                 runBlocking {
                     authPreference.saveAccessToken("")
                     authPreference.saveRefreshToken("")
@@ -68,8 +69,6 @@ class AuthorizationInterceptor @Inject constructor(
                 }
             }
         }
-
-
 
 
         val accessToken = runBlocking { authPreference.fetchAccessToken() }
