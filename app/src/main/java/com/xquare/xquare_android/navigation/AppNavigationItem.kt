@@ -32,6 +32,8 @@ sealed class AppNavigationItem(val route: String) {
 
     object Bug : AppNavigationItem("Bug")
 
+    object Setting : AppNavigationItem("setting")
+
     object Pass : AppNavigationItem("Pass")
 
     object TodayTeacher: AppNavigationItem("TodayTeacher")

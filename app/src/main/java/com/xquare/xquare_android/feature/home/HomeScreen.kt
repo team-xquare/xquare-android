@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -77,7 +79,8 @@ fun HomeScreen(navController: NavController) {
         onAlarmClick = { navController.navigate(AppNavigationItem.Alarm.route) },
         onUserCardClick = { navController.navigate(AppNavigationItem.PointHistory.route) },
         onClassClick = { viewModel.backToClassRoom() },
-        onPassClick = { navController.navigate(AppNavigationItem.Pass.route) }
+        onPassClick = { navController.navigate(AppNavigationItem.Pass.route) },
+        onSettingClick = { navController.navigate(AppNavigationItem.Setting.route) }
     )
 }
 
@@ -92,6 +95,7 @@ fun HomeContent(
     onAlarmClick: () -> Unit,
     onClassClick: () -> Unit,
     onPassClick: () -> Unit,
+    onSettingClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -100,7 +104,7 @@ fun HomeContent(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        HomeAppBar(onAlarmClick = onAlarmClick)
+        HomeAppBar(onAlarmClick = onAlarmClick, onSettingClick = onSettingClick)
         HomeUserCard(userData = userData, onClick = onUserCardClick)
         Spacer(Modifier.size(16.dp))
         HomeMealCard(meal = meal, onAllMealClick = onAllMealClick)
@@ -114,7 +118,10 @@ fun HomeContent(
 }
 
 @Composable
-fun HomeAppBar(onAlarmClick: () -> Unit) {
+fun HomeAppBar(
+    onAlarmClick: () -> Unit,
+    onSettingClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -122,21 +129,39 @@ fun HomeAppBar(onAlarmClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Subtitle4(text = "홈", fontWeight = FontWeight.Bold)
-        Icon(
-            painter = painterResource(id = R.drawable.ic_alarm),
-            contentDescription = "alarm",
-            tint = gray500,
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(align = Alignment.End)
-                .size(24.dp)
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = null,
-                ) {
-                    onAlarmClick()
-                }
-        )
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_alarm),
+                contentDescription = "alarm",
+                tint = gray500,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                    ) {
+                        onAlarmClick()
+                    }
+            )
+            Spacer(modifier = Modifier.size(10.dp))
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "setting",
+                tint = gray500,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                    ) {
+                        onSettingClick()
+                    }
+            )
+        }
     }
 }
 
@@ -227,8 +252,10 @@ fun HomeMealCard(
                 tint = Color.Unspecified
             )
         }
-        Spacer(Modifier.size(12.dp)
-            .padding(horizontal = 12.dp))
+        Spacer(
+            Modifier
+                .size(12.dp)
+                .padding(horizontal = 12.dp))
         CompositionLocalProvider {
             Row(
                 Modifier
