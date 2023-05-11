@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,6 +49,7 @@ import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 import com.xquare.xquare_android.util.*
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -262,6 +262,17 @@ fun getToken(context: Context): String? {
     val token = pref.getString("token", null)
     Log.d("TAG", "FCM token retrieved: $token")
     return token
+}
+
+// 캐시 메모리 삭제
+fun clearCache(context: Context) {
+    val cacheDir = context.cacheDir
+    if (cacheDir.isDirectory) {
+        val children = cacheDir.list()
+        for (i in children!!.indices) {
+            File(cacheDir, children[i]).delete()
+        }
+    }
 }
 
 
