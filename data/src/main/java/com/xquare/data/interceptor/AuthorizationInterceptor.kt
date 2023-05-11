@@ -42,21 +42,35 @@ class AuthorizationInterceptor @Inject constructor(
                 .put("".toRequestBody("application/json".toMediaTypeOrNull()))
                 .addHeader("Refresh-Token", "Bearer $refreshToken")
                 .build()
-            val response = client.newCall(tokenRefreshRequest).execute()
 
-            if (response.isSuccessful) {
-                val token = Gson().fromJson(
-                    response.body!!.string(),
-                    TokenResponse::class.java
-                )
-                appCookieManager.writeToken(token.toEntity())
-                runBlocking {
-                    authPreference.saveAccessToken(token.accessToken)
-                    authPreference.saveRefreshToken(token.refreshToken)
-                    authPreference.saveExpirationAt(LocalDateTime.parse(token.expirationAt))
+            try {
+                val response = client.newCall(tokenRefreshRequest).execute()
+
+                if (response.isSuccessful) {
+                    val token = Gson().fromJson(
+                        response.body!!.string(),
+                        TokenResponse::class.java
+                    )
+                    appCookieManager.writeToken(token.toEntity())
+                    runBlocking {
+                        authPreference.saveAccessToken(token.accessToken)
+                        authPreference.saveRefreshToken(token.refreshToken)
+                        authPreference.saveExpirationAt(LocalDateTime.parse(token.expirationAt))
+                    }
                 }
-            } else throw NeedLoginException()
+                else throw NeedLoginException()
+            }
+            catch (e: NeedLoginException){
+                runBlocking {
+                    authPreference.saveAccessToken("")
+                    authPreference.saveRefreshToken("")
+                    authPreference.saveExpirationAt(LocalDateTime.MIN)
+                }
+            }
         }
+
+
+
 
         val accessToken = runBlocking { authPreference.fetchAccessToken() }
         return chain.proceed(
