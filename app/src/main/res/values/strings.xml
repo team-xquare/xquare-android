@@ -3,4 +3,14 @@
 
     <string name="firebase_notification_channel_id"
             translatable="false">fcm_default_channel</string>
+    
+    <string name="feed_alarm">피드 알림</string>
+    <string name="apply_alarm">신청 알림</string>
+    <string name="point_alarm">상벌점 알림</string>
+    <string name="schedule_alarm">일정 알림</string>
+
+    <string name="feed_alarm_content">피드의 댓글과 좋아요 등의 알림을 설정해요</string>
+    <string name="apply_alarm_content">급식과 외출 신청 등의 알림을 설정해요</string>
+    <string name="point_alarm_content">상벌점 등의 알림을 설정해요</string>
+    <string name="schedule_alarm_content">일정의 알림을 설정해요</string>
 </resources>
