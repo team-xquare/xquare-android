@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.WindowManager
 import androidx.compose.foundation.*
@@ -31,7 +32,9 @@ import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
+import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.purple.purple200
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.semicolon.design.notoSansFamily
@@ -43,6 +46,7 @@ import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
+import java.time.LocalDateTime
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -186,6 +190,7 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
 }
 
 
+@SuppressLint("NewApi")
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @Composable
 fun HomeMealCard(
@@ -193,6 +198,10 @@ fun HomeMealCard(
     onAllMealClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val now = LocalDateTime.now().hour
+    val morningBorderColor = if (now < 9) purple200 else gray50
+    val launchBorderColor = if (now in 9..13) purple200 else gray50
+    val dinerBorderColor = if (now > 13) purple200 else gray50
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -239,19 +248,22 @@ fun HomeMealCard(
                 HomeMealItem(
                     title = "아침",
                     menus = meal.breakfast,
-                    calorie = meal.caloriesOfBreakfast
+                    calorie = meal.caloriesOfBreakfast,
+                    borderColor = morningBorderColor
                 )
                 Spacer(Modifier.size(8.dp))
                 HomeMealItem(
                     title = "점심",
                     menus = meal.lunch,
-                    calorie = meal.caloriesOfLunch
+                    calorie = meal.caloriesOfLunch,
+                    borderColor = launchBorderColor
                 )
                 Spacer(Modifier.size(8.dp))
                 HomeMealItem(
                     title = "저녁",
                     menus = meal.dinner,
-                    calorie = meal.caloriesOfDinner
+                    calorie = meal.caloriesOfDinner,
+                    borderColor = dinerBorderColor
                 )
                 Spacer(Modifier.size(4.dp))
             }
@@ -260,10 +272,16 @@ fun HomeMealCard(
 }
 
 @Composable
-fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
+fun HomeMealItem(title: String, menus: List<String>, calorie: String,borderColor:Color) {
     val scrollState = rememberScrollState()
+    var borderColor = borderColor
     Column(
         modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(8.dp)
+            )
             .size(150.dp, 210.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(gray50)
@@ -271,7 +289,14 @@ fun HomeMealItem(title: String, menus: List<String>, calorie: String) {
             .verticalScroll(scrollState)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Body1(text = title, color = gray800)
+            if (borderColor == gray50) {
+                borderColor = black
+            }
+            Body1(
+                text = title,
+                color = borderColor,
+                fontWeight = FontWeight.Bold
+            )
             Body2(
                 text = calorie,
                 color = gray800,
