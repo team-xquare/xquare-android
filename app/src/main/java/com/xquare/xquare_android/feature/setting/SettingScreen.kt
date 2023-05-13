@@ -60,15 +60,15 @@ fun Setting(
             title = "설정",
             onIconClick = onBackPress
         )
-        Spacer(modifier = Modifier.size(28.dp))
+        Spacer(modifier = Modifier.size(10.dp))
         Text(
             text = "선택한 알림을 보내드릴게요.\n" +
-                    "공지사항 알림은 꺼도 받을수 있어요",
+                    "공지 사항 알림은 꺼도 받을수 있어요",
             color = Color.LightGray,
             fontSize = 16.sp,
             modifier = Modifier.padding(start = 12.dp)
         )
-        Spacer(modifier = Modifier.size(20.dp))
+        Spacer(modifier = Modifier.size(44.dp))
         SettingContent(
             topic = stringResource(id = R.string.feed_alarm),
             content = stringResource(id = R.string.feed_alarm_content),
@@ -120,7 +120,7 @@ fun SettingContent(
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun PreviewSwitch() {
     SettingContent(
         topic = "알림",
