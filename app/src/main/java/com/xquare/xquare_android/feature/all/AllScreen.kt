@@ -46,7 +46,7 @@ import com.xquare.xquare_android.util.DevicePaddings
 fun AllScreen(navController: NavController) {
     val schoolMenuList = listOf("오늘의 자습감독 선생님")//"동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
     val dormitoryMenuList = listOf("봉사 지원하기", "청소판 확인하기")
-    val userMenuList = listOf("로그아웃")
+    val userMenuList = listOf("로그아웃","업데이트 사항")
 
     val allViewModel: AllViewModel = hiltViewModel()
     LaunchedEffect(Unit) {
@@ -123,12 +123,13 @@ fun AllScreen(navController: NavController) {
             }
 
             Spacer(modifier = Modifier.size(30.dp))
-            Body1(text = "사용자", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
+            Body1(text = "앱", color = gray900, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
             userMenuList.forEachIndexed { index, title ->
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {
                     when (index) {
                         0 -> logoutDialogState = true
+                        1 -> navController.navigate(AppNavigationItem.ReleaseNote.route)
                     }
                 }
             }
