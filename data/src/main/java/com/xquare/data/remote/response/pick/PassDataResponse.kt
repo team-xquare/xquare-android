@@ -2,6 +2,7 @@ package com.xquare.data.remote.response.pick
 
 import com.google.gson.annotations.SerializedName
 import com.xquare.domain.entity.pick.PassDataEntity
+import java.time.LocalDate
 
 data class PassDataResponse(
     @SerializedName("profile_file_name") val profile_file_name: String,
@@ -10,7 +11,8 @@ data class PassDataResponse(
     @SerializedName("start_time") val start_time: String,
     @SerializedName("end_time") val end_time: String,
     @SerializedName("reason") val reason: String,
-    @SerializedName("teacher_name") val teacher_name: String
+    @SerializedName("teacher_name") val teacher_name: String,
+    @SerializedName("picnic_date") val picnic_date: LocalDate
 )
 
 fun PassDataResponse.toEntity() =
@@ -21,7 +23,8 @@ fun PassDataResponse.toEntity() =
         start_time = start_time.substring(0..4),
         end_time = end_time.substring(0..4),
         reason = reason,
-        teacher_name = teacher_name
+        teacher_name = teacher_name,
+        picnic_date = picnic_date
     )
 
 
