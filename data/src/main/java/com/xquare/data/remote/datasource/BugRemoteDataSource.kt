@@ -1,6 +1,6 @@
 package com.xquare.data.remote.datasource
 
-import com.xquare.domain.entity.bug.BugEntity
+import com.xquare.domain.entity.reports.BugEntity
 
 interface BugRemoteDataSource {
 

@@ -11,7 +11,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -103,9 +102,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): PickApi =
         retrofit.create(PickApi::class.java)
+
     @Provides
-    fun provideBugApi(
+    fun provideReportsApi(
         retrofit: Retrofit
-    ): BugApi =
-        retrofit.create(BugApi::class.java)
+    ): ReportsApi =
+        retrofit.create(ReportsApi::class.java)
 }
