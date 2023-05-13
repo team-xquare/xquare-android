@@ -88,6 +88,7 @@ fun Alarm(
     Column(
         modifier = Modifier
             .background(white)
+            .fillMaxSize()
             .padding(
                 top = DevicePaddings.statusBarHeightDp.dp,
                 bottom = DevicePaddings.navigationBarHeightDp.dp
