@@ -1,10 +1,9 @@
 package com.xquare.xquare_android.feature.bug
 
-import com.xquare.domain.entity.bug.BugEntity
+import com.xquare.domain.entity.reports.BugEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
-import com.xquare.domain.usecase.bug.UploadBugUseCase
+import com.xquare.domain.usecase.release.UploadBugUseCase
 import com.xquare.xquare_android.base.BaseViewModel
-import com.xquare.xquare_android.feature.profile.ProfileViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
 import javax.inject.Inject

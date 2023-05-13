@@ -1,7 +1,7 @@
-package com.xquare.domain.usecase.bug
+package com.xquare.domain.usecase.release
 
-import com.xquare.domain.entity.bug.BugEntity
-import com.xquare.domain.repository.bug.BugRepository
+import com.xquare.domain.entity.reports.BugEntity
+import com.xquare.domain.repository.reports.BugRepository
 import com.xquare.domain.usecase.UseCase
 import javax.inject.Inject
 
