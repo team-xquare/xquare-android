@@ -1,3 +1,4 @@
+import androidx.compose.animation.AnimatedContentScope.SlideDirection.Companion.End
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -60,29 +62,45 @@ fun MealDetail(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "아침", color = gray800)
                 Spacer(Modifier.size(8.dp))
-                Body2(text = mealWithDateEntity.caloriesOfBreakfast, color = gray700)
+                Body2(
+                    text = mealWithDateEntity.caloriesOfBreakfast,
+                    color = gray700,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(3.dp)
+                        .wrapContentWidth(align = Alignment.End)
+                )
             }
-            Spacer(Modifier.size(4.dp))
             Body2(text = breakfast, color = gray900)
         }
         if (lunch.isNotEmpty()) {
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "점심", color = gray800)
-                Spacer(Modifier.size(8.dp))
-                Body2(text = mealWithDateEntity.caloriesOfLunch, color = gray700)
+                Body2(
+                    text = mealWithDateEntity.caloriesOfLunch,
+                    color = gray700,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(3.dp)
+                        .wrapContentWidth(align = Alignment.End)
+                )
             }
-            Spacer(Modifier.size(4.dp))
             Body2(text = lunch, color = gray900)
         }
         if (dinner.isNotEmpty()) {
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "저녁", color = gray800)
-                Spacer(Modifier.size(8.dp))
-                Body2(text = mealWithDateEntity.caloriesOfDinner, color = gray700)
+                Body2(
+                    text = mealWithDateEntity.caloriesOfDinner,
+                    color = gray700,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(3.dp)
+                        .wrapContentWidth(align = Alignment.End)
+                )
             }
-            Spacer(Modifier.size(4.dp))
             Body2(text = dinner, color = gray900)
         }
     }
