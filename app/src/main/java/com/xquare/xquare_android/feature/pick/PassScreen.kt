@@ -113,7 +113,7 @@ fun PassScreen(
                 PassInfoText(title = "외출 날짜", content = passData.picnic_date)
                 Spacer(modifier = Modifier.size(18.dp))
                 PassInfoText(
-                    title = "외출시간",
+                    title = "외출 시간",
                     content = buildAnnotatedString {
                         append(passData.start_time)
                         append(" ~ ")

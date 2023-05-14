@@ -24,7 +24,9 @@ fun PassDataResponse.toEntity() =
         end_time = end_time.substring(0..4),
         reason = reason,
         teacher_name = teacher_name,
-        picnic_date = picnic_date
+        picnic_date = picnic_date.substring(0,4)+"년 "
+                +picnic_date.substring(5,7)+"월 "
+                +picnic_date.substring(8,10)+"일"
     )
 
 
