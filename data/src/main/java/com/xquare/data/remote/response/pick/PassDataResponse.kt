@@ -12,7 +12,7 @@ data class PassDataResponse(
     @SerializedName("end_time") val end_time: String,
     @SerializedName("reason") val reason: String,
     @SerializedName("teacher_name") val teacher_name: String,
-    @SerializedName("picnic_date") val picnic_date: LocalDate
+    @SerializedName("picnic_date") val picnic_date: String
 )
 
 fun PassDataResponse.toEntity() =
@@ -24,7 +24,9 @@ fun PassDataResponse.toEntity() =
         end_time = end_time.substring(0..4),
         reason = reason,
         teacher_name = teacher_name,
-        picnic_date = picnic_date
+        picnic_date = picnic_date.substring(0,4)+"년 "
+                +picnic_date.substring(5,7)+"월 "
+                +picnic_date.substring(8,10)+"일"
     )
 
 

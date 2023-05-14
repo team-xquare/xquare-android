@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
+import com.semicolon.design.Subtitle2
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray300
@@ -51,7 +52,6 @@ import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PassScreen(
     navController: NavController,
@@ -108,14 +108,13 @@ fun PassScreen(
                         contentDescription = null,
                     )
                     Spacer(modifier = Modifier.size(16.dp))
-                    Subtitle4(text = passData.student_number, Modifier.size(30.dp))
-                    Subtitle4(text = passData.student_name, Modifier.size(30.dp))
+                    Subtitle2(text = passData.student_number+" "+passData.student_name)
                 }
                 Spacer(modifier = Modifier.size(20.dp))
-                PassInfoText(title = "외출 날짜", content = passData.picnic_date.toString())
+                PassInfoText(title = "외출 날짜", content = passData.picnic_date)
                 Spacer(modifier = Modifier.size(18.dp))
                 PassInfoText(
-                    title = "외출시간",
+                    title = "외출 시간",
                     content = buildAnnotatedString {
                         append(passData.start_time)
                         append(" ~ ")
@@ -125,7 +124,7 @@ fun PassScreen(
                 Spacer(modifier = Modifier.size(17.dp))
                 PassInfoText(title = "사유", content = passData.reason,)
                 Spacer(modifier = Modifier.size(20.dp))
-                PassInfoText(title = "확인교사", content = passData.teacher_name)
+                PassInfoText(title = "확인교사", content = passData.teacher_name+" 선생님")
                 Spacer(modifier = Modifier.size(75.dp))
                 PreventCaptureText()
             }
@@ -155,7 +154,7 @@ private fun PassInfoText(
                 color = gray800,
                 modifier = Modifier
                     .scale(1.1f)
-                    .padding(start = 2.dp, bottom = 2.dp),
+                    .padding(start = 6.dp, bottom = 2.dp),
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Medium
             )
