@@ -51,7 +51,6 @@ import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PassScreen(
     navController: NavController,
@@ -108,11 +107,10 @@ fun PassScreen(
                         contentDescription = null,
                     )
                     Spacer(modifier = Modifier.size(16.dp))
-                    Subtitle4(text = passData.student_number, Modifier.size(30.dp))
-                    Subtitle4(text = passData.student_name, Modifier.size(30.dp))
+                    Subtitle4(text = passData.student_number+" "+passData.student_name)
                 }
                 Spacer(modifier = Modifier.size(20.dp))
-                PassInfoText(title = "외출 날짜", content = passData.picnic_date.toString())
+                PassInfoText(title = "외출 날짜", content = passData.picnic_date)
                 Spacer(modifier = Modifier.size(18.dp))
                 PassInfoText(
                     title = "외출시간",
@@ -125,7 +123,7 @@ fun PassScreen(
                 Spacer(modifier = Modifier.size(17.dp))
                 PassInfoText(title = "사유", content = passData.reason,)
                 Spacer(modifier = Modifier.size(20.dp))
-                PassInfoText(title = "확인교사", content = passData.teacher_name)
+                PassInfoText(title = "확인교사", content = passData.teacher_name+" 선생님")
                 Spacer(modifier = Modifier.size(75.dp))
                 PreventCaptureText()
             }

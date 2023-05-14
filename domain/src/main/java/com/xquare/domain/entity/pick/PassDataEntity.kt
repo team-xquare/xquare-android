@@ -10,5 +10,5 @@ data class PassDataEntity(
     val end_time: String,
     val reason: String,
     val teacher_name: String,
-    val picnic_date: LocalDate
+    val picnic_date: String
 )

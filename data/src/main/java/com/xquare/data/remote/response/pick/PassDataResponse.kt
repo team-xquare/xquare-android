@@ -12,7 +12,7 @@ data class PassDataResponse(
     @SerializedName("end_time") val end_time: String,
     @SerializedName("reason") val reason: String,
     @SerializedName("teacher_name") val teacher_name: String,
-    @SerializedName("picnic_date") val picnic_date: LocalDate
+    @SerializedName("picnic_date") val picnic_date: String
 )
 
 fun PassDataResponse.toEntity() =

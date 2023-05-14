@@ -18,16 +18,13 @@ class PassViewModel @Inject constructor(
 ): BaseViewModel<PassViewModel.Event>() {
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private val _passData = MutableStateFlow(
         PassDataEntity(
-            "","","","","","","", picnic_date = LocalDate.now()
+            "","","","","","","", picnic_date = ""
         )
     )
-    @RequiresApi(Build.VERSION_CODES.O)
     val passData: StateFlow<PassDataEntity> = _passData
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun fetchPassData() {
         execute(
             job = { fetchPassDataUseCase.execute(Unit) },
