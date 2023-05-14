@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
+import com.semicolon.design.Subtitle2
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray300
@@ -107,7 +108,7 @@ fun PassScreen(
                         contentDescription = null,
                     )
                     Spacer(modifier = Modifier.size(16.dp))
-                    Subtitle4(text = passData.student_number+" "+passData.student_name)
+                    Subtitle2(text = passData.student_number+" "+passData.student_name)
                 }
                 Spacer(modifier = Modifier.size(20.dp))
                 PassInfoText(title = "외출 날짜", content = passData.picnic_date)
@@ -153,7 +154,7 @@ private fun PassInfoText(
                 color = gray800,
                 modifier = Modifier
                     .scale(1.1f)
-                    .padding(start = 2.dp, bottom = 2.dp),
+                    .padding(start = 6.dp, bottom = 2.dp),
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Medium
             )
