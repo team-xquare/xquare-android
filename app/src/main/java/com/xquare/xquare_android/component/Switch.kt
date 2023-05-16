@@ -23,7 +23,7 @@ fun CustomSwitchButton(
     buttonWidth: Dp,
     buttonHeight: Dp,
     value: Boolean,
-    state: (Boolean) -> Unit
+    state: (Boolean) -> Unit,
 ) {
 
     val switchSize by remember {
@@ -47,9 +47,9 @@ fun CustomSwitchButton(
     val animateSize by animateDpAsState(
         targetValue = if (switchClicked) padding else 0.dp,
         tween(
-            durationMillis = 700,
+            durationMillis = 150,
             delayMillis = 0,
-            easing = LinearOutSlowInEasing
+            easing = LinearOutSlowInEasing,
         )
     )
 
@@ -68,7 +68,7 @@ fun CustomSwitchButton(
                 .background(if (switchClicked) purple400 else Color.LightGray)
                 .clickable(
                     interactionSource = interactionSource,
-                    indication = null
+                    indication = null,
                 ) {
                     switchClicked = !switchClicked
                     state(switchClicked)
