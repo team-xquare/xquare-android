@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.setting
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,19 +33,52 @@ import com.xquare.xquare_android.util.DevicePaddings
 fun SettingScreen(
     navController: NavController,
 ) {
-    Setting(onBackPress = { navController.popBackStack() })
+    var feedState by remember { mutableStateOf(true) }
+    var applicationState by remember { mutableStateOf(true) }
+    var pointState by remember { mutableStateOf(true) }
+    var scheduleState by remember { mutableStateOf(true) }
+
+    val onFeedStateChange: (Boolean) -> Unit by remember {
+        mutableStateOf(
+            { value: Boolean -> feedState = value }
+        )
+    }
+
+    val onApplicationStateChange: (Boolean) -> Unit by remember {
+        mutableStateOf(
+            { value: Boolean -> applicationState = value }
+        )
+    }
+
+    val onPointStateChange: (Boolean) -> Unit by remember {
+        mutableStateOf(
+            { value: Boolean -> pointState = value }
+        )
+    }
+
+    val onScheduleStateChange: (Boolean) -> Unit by remember {
+        mutableStateOf(
+            { value: Boolean -> scheduleState = value }
+        )
+    }
+
+    Setting(
+        onBackPress = { navController.popBackStack() },
+        onFeedClick = onFeedStateChange,
+        onApplicationClick = onApplicationStateChange,
+        onPointClick = onPointStateChange,
+        onScheduleClick = onScheduleStateChange
+    )
 }
 
 @Composable
 fun Setting(
     onBackPress: () -> Unit,
+    onFeedClick: (Boolean) -> Unit,
+    onApplicationClick: (Boolean) -> Unit,
+    onPointClick: (Boolean) -> Unit,
+    onScheduleClick: (Boolean) -> Unit,
 ) {
-    var feedState by remember { mutableStateOf(false) }
-    var applicationState by remember { mutableStateOf(false) }
-    var pointState by remember { mutableStateOf(false) }
-    var scheduleState by remember { mutableStateOf(false) }
-
-
     Column(
         modifier = Modifier
             .background(white)
@@ -72,23 +106,22 @@ fun Setting(
         SettingContent(
             topic = stringResource(id = R.string.feed_alarm),
             content = stringResource(id = R.string.feed_alarm_content),
-            state = { feedState = it }
+            state = { onFeedClick(it) }
         )
         SettingContent(
             topic = stringResource(id = R.string.apply_alarm),
             content = stringResource(id = R.string.apply_alarm_content),
-            state = { applicationState = it }
+            state = { onApplicationClick(it) }
         )
         SettingContent(
             topic = stringResource(id = R.string.point_alarm),
             content = stringResource(id = R.string.point_alarm_content),
-            state = { pointState = it }
+            state = { onPointClick(it) }
         )
-        SettingContent(
-            topic = stringResource(id = R.string.schedule_alarm),
+        SettingContent(topic = stringResource(id = R.string.schedule_alarm),
             content = stringResource(id = R.string.schedule_alarm_content),
-            state = { scheduleState = it }
-            )
+            state = { onScheduleClick(it) }
+        )
     }
 }
 
@@ -100,7 +133,10 @@ fun SettingContent(
 ) {
     Row(
         modifier = Modifier
-            .padding(start = 12.dp, end = 12.dp)
+            .padding(
+                start = 12.dp,
+                end = 12.dp,
+            )
     ) {
         Row {
             Column {
@@ -109,14 +145,18 @@ fun SettingContent(
             }
             CustomSwitchButton(
                 switchPadding = 2.dp,
-                buttonWidth = 58.dp,
-                buttonHeight = 28.dp,
-                value = false,
-                state = state
+                buttonWidth = 52.dp,
+                buttonHeight = 26.dp,
+                value = true,
+                state = state,
             )
         }
     }
-    Spacer(modifier = Modifier.size(26.dp))
+    Spacer(
+        modifier = Modifier.size(
+            size = 26.dp,
+        ),
+    )
 }
 
 @Composable
