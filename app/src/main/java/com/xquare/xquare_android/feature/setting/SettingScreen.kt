@@ -33,51 +33,73 @@ import com.xquare.xquare_android.util.DevicePaddings
 fun SettingScreen(
     navController: NavController,
 ) {
-    var feedState by remember { mutableStateOf(true) }
-    var applicationState by remember { mutableStateOf(true) }
-    var pointState by remember { mutableStateOf(true) }
-    var scheduleState by remember { mutableStateOf(true) }
+    val viewModel: SettingViewModel = hiltViewModel()
+    var alarmCategoriesEntity: AlarmCategoriesEntity? by remember { mutableStateOf(null) }
 
-    val onFeedStateChange: (Boolean) -> Unit by remember {
+    LaunchedEffect(Unit) {
+        viewModel.fetchAlarmCategories()
+        viewModel.eventFlow.collect { event ->
+            if (event is SettingViewModel.Event.FetchSuccess) {
+                alarmCategoriesEntity = event.data
+            }
+        }
+    }
+
+    val category = alarmCategoriesEntity?.categories?.associateBy { it.topic }
+
+    val pointState by remember { mutableStateOf(category?.get("ALL")?.isActivate ?: true) }
+    val scheduleState by remember { mutableStateOf(category?.get("SCHEDULE")?.isActivate ?: true) }
+    val applicationState by remember { mutableStateOf(category?.get("APPLY")?.isActivate ?: true) }
+    val feedState by remember { mutableStateOf(category?.get("FEED")?.isActivate ?: true) }
+
+    val onFeedStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf(
-            { value: Boolean -> feedState = value }
+            { value: ActivateAlarmEntity -> viewModel.activateAlarm(value) }
         )
     }
 
-    val onApplicationStateChange: (Boolean) -> Unit by remember {
+    val onApplicationStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf(
-            { value: Boolean -> applicationState = value }
+            { value: ActivateAlarmEntity -> viewModel.activateAlarm(value) }
         )
     }
 
-    val onPointStateChange: (Boolean) -> Unit by remember {
+    val onPointStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf(
-            { value: Boolean -> pointState = value }
+            { value: ActivateAlarmEntity -> viewModel.activateAlarm(value) }
         )
     }
 
-    val onScheduleStateChange: (Boolean) -> Unit by remember {
+    val onScheduleStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf(
-            { value: Boolean -> scheduleState = value }
+            { value: ActivateAlarmEntity -> viewModel.activateAlarm(value) }
         )
     }
 
-    Setting(
+    SettingContent(
         onBackPress = { navController.popBackStack() },
+        feedState = feedState,
         onFeedClick = onFeedStateChange,
+        applicationState = applicationState,
         onApplicationClick = onApplicationStateChange,
+        pointState = pointState,
         onPointClick = onPointStateChange,
-        onScheduleClick = onScheduleStateChange
+        scheduleState = scheduleState,
+        onScheduleClick = onScheduleStateChange,
     )
 }
 
 @Composable
-fun Setting(
+fun SettingContent(
     onBackPress: () -> Unit,
-    onFeedClick: (Boolean) -> Unit,
-    onApplicationClick: (Boolean) -> Unit,
-    onPointClick: (Boolean) -> Unit,
-    onScheduleClick: (Boolean) -> Unit,
+    feedState: Boolean,
+    onFeedClick: (ActivateAlarmEntity) -> Unit,
+    applicationState: Boolean,
+    onApplicationClick: (ActivateAlarmEntity) -> Unit,
+    pointState: Boolean,
+    onPointClick: (ActivateAlarmEntity) -> Unit,
+    scheduleState: Boolean,
+    onScheduleClick: (ActivateAlarmEntity) -> Unit,
 ) {
     Column(
         modifier = Modifier

@@ -13,4 +13,8 @@
     <string name="apply_alarm_content">급식과 외출 신청 등의 알림을 설정해요</string>
     <string name="point_alarm_content">상벌점 등의 알림을 설정해요</string>
     <string name="schedule_alarm_content">일정의 알림을 설정해요</string>
+
+    <string name="header_setting">설정</string>
+
+    <string name="setting_screen_text">선택한 알림을 보내드릴게요.\n공지 사항 알림은 꺼도 받을수 있어요</string>
 </resources>
