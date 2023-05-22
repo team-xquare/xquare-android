@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.setting
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,9 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.white.white
+import com.xquare.domain.entity.notification.ActivateAlarmEntity
+import com.xquare.domain.entity.notification.AlarmCategoriesEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CustomSwitchButton
 import com.xquare.xquare_android.component.Header
@@ -113,45 +116,49 @@ fun SettingContent(
     ) {
         Header(
             painter = painterResource(id = R.drawable.ic_back),
-            title = "설정",
+            title = stringResource(id = R.string.header_setting),
             onIconClick = onBackPress
         )
         Spacer(modifier = Modifier.size(10.dp))
         Text(
-            text = "선택한 알림을 보내드릴게요.\n" +
-                    "공지 사항 알림은 꺼도 받을수 있어요",
+            text = stringResource(id = R.string.setting_screen_text),
             color = Color.LightGray,
             fontSize = 16.sp,
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(modifier = Modifier.size(44.dp))
-        SettingContent(
+        SettingItem(
             topic = stringResource(id = R.string.feed_alarm),
             content = stringResource(id = R.string.feed_alarm_content),
-            state = { onFeedClick(it) }
+            state = feedState,
+            onState = { onFeedClick(ActivateAlarmEntity(isActivated = it, topic = "FEED")) }
         )
-        SettingContent(
+        SettingItem(
             topic = stringResource(id = R.string.apply_alarm),
             content = stringResource(id = R.string.apply_alarm_content),
-            state = { onApplicationClick(it) }
+            state = applicationState,
+            onState = { onApplicationClick(ActivateAlarmEntity(isActivated = it, topic = "APPLY")) }
         )
-        SettingContent(
+        SettingItem(
             topic = stringResource(id = R.string.point_alarm),
             content = stringResource(id = R.string.point_alarm_content),
-            state = { onPointClick(it) }
+            state = pointState,
+            onState = { onPointClick(ActivateAlarmEntity(isActivated = it, topic = "ALL")) }
         )
-        SettingContent(topic = stringResource(id = R.string.schedule_alarm),
+        SettingItem(topic = stringResource(id = R.string.schedule_alarm),
             content = stringResource(id = R.string.schedule_alarm_content),
-            state = { onScheduleClick(it) }
+            state = scheduleState,
+            onState = { onScheduleClick(ActivateAlarmEntity(isActivated = it, topic = "SCHEDULE")) }
         )
     }
 }
 
 @Composable
-fun SettingContent(
+fun SettingItem(
     topic: String,
     content: String,
-    state: (Boolean) -> Unit,
+    state: Boolean,
+    onState: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -169,24 +176,25 @@ fun SettingContent(
                 switchPadding = 2.dp,
                 buttonWidth = 52.dp,
                 buttonHeight = 26.dp,
-                value = true,
-                state = state,
+                value = state,
+                state = onState,
             )
         }
     }
     Spacer(
         modifier = Modifier.size(
             size = 26.dp,
-        ),
+        )
     )
 }
 
 @Composable
 @Preview(showBackground = true)
 fun PreviewSwitch() {
-    SettingContent(
+    SettingItem(
         topic = "알림",
-        content = "신기한 알림",
-        state = {}
+        content = "벌점 1점",
+        state = false,
+        onState = {},
     )
 }
