@@ -4,25 +4,23 @@ import com.xquare.data.repository.AuthRepositoryImpl
 import com.xquare.data.repository.PointRepositoryImpl
 import com.xquare.data.repository.WebViewRepositoryImpl
 import com.xquare.data.repository.attachment.AttachmentRepositoryImpl
-import com.xquare.data.repository.reports.BugRepositoryImpl
 import com.xquare.data.repository.meal.MealRepositoryImpl
 import com.xquare.data.repository.schedules.SchedulesRepositoryImpl
 import com.xquare.data.repository.timetables.TimetablesRepositoryImpl
 import com.xquare.data.repository.notification.AlarmRepositoryImpl
 import com.xquare.data.repository.pick.PickRepositoryImpl
-import com.xquare.data.repository.reports.ReleaseRepositoryImpl
+import com.xquare.data.repository.reports.ReportRepositoryImpl
 import com.xquare.data.repository.user.UserRepositoryImpl
 import com.xquare.domain.repository.AuthRepository
 import com.xquare.domain.repository.PointRepository
 import com.xquare.domain.repository.WebViewRepository
 import com.xquare.domain.repository.attachment.AttachmentRepository
-import com.xquare.domain.repository.reports.BugRepository
 import com.xquare.domain.repository.meal.MealRepository
 import com.xquare.domain.repository.schedules.SchedulesRepository
 import com.xquare.domain.repository.timetables.TimetablesRepository
 import com.xquare.domain.repository.notification.AlarmRepository
 import com.xquare.domain.repository.pick.PickRepository
-import com.xquare.domain.repository.reports.ReleaseRepository
+import com.xquare.domain.repository.reports.ReportRepository
 import com.xquare.domain.repository.user.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -84,12 +82,7 @@ abstract class RepositoryModule {
     ): PickRepository
 
     @Binds
-    abstract fun bindBugRepository(
-        bugRepositoryImpl: BugRepositoryImpl
-    ): BugRepository
-
-    @Binds
-    abstract fun bindReleaseRepository(
-        releaseRepositoryImpl: ReleaseRepositoryImpl
-    ): ReleaseRepository
+    abstract fun bindReportsRepository(
+        reportRepositoryImpl: ReportRepositoryImpl,
+    ): ReportRepository
 }

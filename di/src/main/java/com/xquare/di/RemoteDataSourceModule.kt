@@ -1,7 +1,6 @@
 package com.xquare.di
 
 import com.xquare.data.remote.datasource.*
-import com.xquare.data.repository.reports.ReleaseRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -62,12 +61,7 @@ abstract class RemoteDataSourceModule {
     ): PickRemoteDataSource
 
     @Binds
-    abstract fun bindBugRemoteDataSource(
-        bugRemoteDataSourceImpl: BugRemoteDataSourceImpl
-    ): BugRemoteDataSource
-
-    @Binds
-    abstract fun bindReleaseRemoteDataSource(
-        releaseRemoteDataSourceImpl: ReleaseRemoteDataSourceImpl
-    ): ReleaseRemoteDataSource
+    abstract fun bindReportsRemoteDataSource(
+        reportRemoteDataSourceImpl: ReportRemoteDataSourceImpl
+    ): ReportRemoteDataSource
 }
