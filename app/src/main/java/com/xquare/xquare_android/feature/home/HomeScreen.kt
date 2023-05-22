@@ -1,7 +1,5 @@
 package com.xquare.xquare_android.feature.home
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.WindowManager
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -46,7 +45,7 @@ import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
-import java.time.LocalDateTime
+import org.threeten.bp.LocalDateTime
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -190,18 +189,22 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
 }
 
 
-@SuppressLint("NewApi")
-@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @Composable
 fun HomeMealCard(
     meal: MealEntity,
     onAllMealClick: () -> Unit,
 ) {
-    val scrollState = rememberScrollState()
+    val localDensity = LocalDensity.current
+    val scrollState = rememberScrollState(initial = 0)
     val now = LocalDateTime.now().hour
     val morningBorderColor = if (now < 9) purple200 else gray50
     val launchBorderColor = if (now in 9..13) purple200 else gray50
     val dinerBorderColor = if (now > 13) purple200 else gray50
+    val focusedIndex = when {
+        now < 9 -> 0
+        now in 9..13 -> 1
+        else -> 2
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -236,9 +239,12 @@ fun HomeMealCard(
                 tint = Color.Unspecified
             )
         }
-        Spacer(Modifier.size(12.dp)
-            .padding(horizontal = 12.dp))
-        CompositionLocalProvider {
+        Spacer(
+            Modifier
+                .size(12.dp)
+                .padding(horizontal = 12.dp)
+        )
+        CompositionLocalProvider(LocalDensity provides LocalDensity.current) {
             Row(
                 Modifier
                     .horizontalScroll(scrollState)
@@ -249,7 +255,7 @@ fun HomeMealCard(
                     title = "아침",
                     menus = meal.breakfast,
                     calorie = meal.caloriesOfBreakfast,
-                    borderColor = morningBorderColor
+                    borderColor = morningBorderColor,
                 )
                 Spacer(Modifier.size(8.dp))
                 HomeMealItem(
@@ -265,16 +271,33 @@ fun HomeMealCard(
                     calorie = meal.caloriesOfDinner,
                     borderColor = dinerBorderColor
                 )
-                Spacer(Modifier.size(4.dp))
             }
+            Spacer(Modifier.size(4.dp))
+        }
+        LaunchedEffect(Unit) {
+
+            val targetScrollPosition = when (focusedIndex) {
+                0 -> 0
+                1 -> 0
+                else -> with(localDensity) {
+                    4.dp.roundToPx() + 8.dp.roundToPx() + 150.dp.roundToPx() + 8.dp.roundToPx() + 150.dp.roundToPx() + 8.dp.roundToPx()
+                }
+            }
+            scrollState.animateScrollTo(targetScrollPosition)
         }
     }
 }
 
+
+
 @Composable
-fun HomeMealItem(title: String, menus: List<String>, calorie: String,borderColor:Color) {
+fun HomeMealItem(
+    title: String, menus: List<String>, calorie: String,
+    borderColor:Color,
+) {
     val scrollState = rememberScrollState()
     var borderColor = borderColor
+
     Column(
         modifier = Modifier
             .border(
@@ -292,6 +315,7 @@ fun HomeMealItem(title: String, menus: List<String>, calorie: String,borderColor
             if (borderColor == gray50) {
                 borderColor = black
             }
+
             Body1(
                 text = title,
                 color = borderColor,
