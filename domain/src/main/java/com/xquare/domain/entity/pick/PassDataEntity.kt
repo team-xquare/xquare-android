@@ -3,7 +3,7 @@ package com.xquare.domain.entity.pick
 import java.time.LocalDate
 
 data class PassDataEntity(
-    val profile_file_name: String,
+    val profile_file_name: String?,
     val student_number: String,
     val student_name: String,
     val start_time: String,

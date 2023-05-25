@@ -5,7 +5,7 @@ import com.xquare.domain.entity.pick.PassDataEntity
 import java.time.LocalDate
 
 data class PassDataResponse(
-    @SerializedName("profile_file_name") val profile_file_name: String,
+    @SerializedName("profile_file_name") val profile_file_name: String?,
     @SerializedName("student_number") val student_number: String,
     @SerializedName("student_name") val student_name: String,
     @SerializedName("start_time") val start_time: String,
