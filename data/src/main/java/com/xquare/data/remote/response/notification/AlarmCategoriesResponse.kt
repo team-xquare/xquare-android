@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.xquare.domain.entity.notification.AlarmCategoriesEntity
 
 data class AlarmCategoriesResponse(
-    @SerializedName("categories") val categories: List<AlarmCategoryResponse>
+    @SerializedName("settings") val categories: List<AlarmCategoryResponse>
 ){
     data class AlarmCategoryResponse(
         @SerializedName("topic") val topic: String,

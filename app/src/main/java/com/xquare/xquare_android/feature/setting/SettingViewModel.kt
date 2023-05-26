@@ -18,14 +18,14 @@ class SettingViewModel @Inject constructor(
         execute(
             job = { activateAlarmUseCase.execute(activateAlarmEntity) },
             onSuccess = { emitEvent(Event.Success) },
-            onFailure = { emitEvent(Event.Failure("알림을 끄는데 실패했습니다.")) }
+            onFailure = { emitEvent(Event.Failure) }
         )
 
     fun fetchAlarmCategories() =
         execute(
             job = { fetchAlarmCategoriesUseCase.execute(Unit) },
-            onSuccess = { emitEvent(Event.FetchSuccess(data = it))},
-            onFailure = { emitEvent(Event.Failure("정보를 불러오지 못했습니다."))}
+            onSuccess = { emitEvent(Event.FetchSuccess(it)) },
+            onFailure = { emitEvent(Event.Failure) }
         )
 
     sealed class Event{
@@ -33,6 +33,6 @@ class SettingViewModel @Inject constructor(
 
         data class FetchSuccess(val data: AlarmCategoriesEntity) : Event()
 
-        data class Failure(val message: String) : Event()
+        object Failure : Event()
     }
 }

@@ -10,9 +10,9 @@ interface NotificationApi {
     @GET("notifications/list")
     suspend fun fetchAlarm(): AlarmResponse
 
-    @PATCH("notifications/tags?is-activated=&topic=")
+    @PATCH("notifications/tags")
     suspend fun activateAlarm(
-        @Query("is_activate") isActivate: Boolean,
+        @Query("is-activated") isActivate: Boolean,
         @Query("topic") topic: String,
     )
 
