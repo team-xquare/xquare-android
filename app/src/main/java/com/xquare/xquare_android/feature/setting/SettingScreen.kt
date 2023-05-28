@@ -70,7 +70,7 @@ fun SettingScreen(
         when (key) {
             "ALL" -> pointState.value = value.isActivate
             "SCHEDULE" -> scheduleState.value = value.isActivate
-            "APPLY" -> applicationState.value = value.isActivate
+            "APPLICATION" -> applicationState.value = value.isActivate
             "FEED" -> feedState.value = value.isActivate
         }
     }
