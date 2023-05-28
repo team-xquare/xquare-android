@@ -1,4 +1,4 @@
-package com.xquare.domain.entity.bug
+package com.xquare.domain.entity.reports
 
 data class BugEntity(
     val reason: String,

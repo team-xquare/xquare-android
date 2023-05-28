@@ -1,7 +1,7 @@
-package com.xquare.data.remote.request.bug
+package com.xquare.data.remote.request.reports
 
 import com.google.gson.annotations.SerializedName
-import com.xquare.domain.entity.bug.BugEntity
+import com.xquare.domain.entity.reports.BugEntity
 
 data class BugRequest(
     @SerializedName("reason") val reason: String,
