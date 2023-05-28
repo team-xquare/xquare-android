@@ -1,11 +1,9 @@
 package com.xquare.xquare_android.feature.alarm
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +15,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,19 +28,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.Body3
-import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.purple.purple300
 import com.semicolon.design.color.primary.white.white
-import com.xquare.domain.entity.auth.TokenEntity
 import com.xquare.domain.entity.notification.AlarmEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
@@ -126,11 +117,11 @@ fun AlarmItem(
 
     val daysDifference = ChronoUnit.DAYS.between(sendAt.toLocalDate(), today.toLocalDate())
     val hoursDifference = ChronoUnit.HOURS.between(sendAt.toLocalTime(), today.toLocalTime())
-    val minsDifference = ChronoUnit.MINUTES.between(sendAt.toLocalTime(),today.toLocalTime())
+    val minutesDifference = ChronoUnit.MINUTES.between(sendAt.toLocalTime(),today.toLocalTime())
 
     val time: String = when {
         daysDifference > 0 -> "${daysDifference}일 전"
-        hoursDifference <= 0 ->"${minsDifference}분 전"
+        hoursDifference <= 0 ->"${minutesDifference}분 전"
         else -> "${hoursDifference}시간 전"
     }
 

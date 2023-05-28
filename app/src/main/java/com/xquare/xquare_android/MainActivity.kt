@@ -41,6 +41,7 @@ import com.xquare.xquare_android.feature.profile.ProfileScreen
 import com.xquare.xquare_android.feature.release.ReleaseScreen
 import com.xquare.xquare_android.feature.schedule.ScheduleScreen
 import com.xquare.xquare_android.feature.schedule.WriteScheduleScreen
+import com.xquare.xquare_android.feature.setting.SettingScreen
 import com.xquare.xquare_android.feature.signin.SignInScreen
 import com.xquare.xquare_android.feature.signup.SignUpScreen
 import com.xquare.xquare_android.feature.splash.SplashScreen
@@ -133,8 +134,12 @@ fun BaseApp() {
         composable(AppNavigationItem.TodayTeacher.route){
             TodayTeacherScreen(navController)
         }
+        composable(AppNavigationItem.Setting.route) {
+            SettingScreen(navController)
+            
         composable(AppNavigationItem.ReleaseNote.route){
             ReleaseScreen(navController)
+            
         }
         composable(AppNavigationItem.WriteSchedule.route) {
             val schedulesData = it.arguments?.get("schedulesData").toString()

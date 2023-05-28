@@ -1,12 +1,21 @@
 package com.xquare.data.remote.api
 
-import com.xquare.data.remote.response.auth.TokenResponse
+import com.xquare.data.remote.response.notification.AlarmCategoriesResponse
 import com.xquare.data.remote.response.notification.AlarmResponse
-import com.xquare.domain.entity.auth.TokenEntity
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.PATCH
+import retrofit2.http.Query
 
 interface NotificationApi {
     @GET("notifications/list")
     suspend fun fetchAlarm(): AlarmResponse
+
+    @PATCH("notifications/tags")
+    suspend fun activateAlarm(
+        @Query("is-activated") isActivate: Boolean,
+        @Query("topic") topic: String,
+    )
+
+    @GET("notifications/tags")
+    suspend fun fetchAlarmCategories(): AlarmCategoriesResponse
 }
