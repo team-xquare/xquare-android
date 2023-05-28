@@ -264,8 +264,12 @@ fun HomeMealCard(
                 tint = Color.Unspecified
             )
         }
-        Spacer(Modifier.size(12.dp)
-        CompositionLocalProvider(LocalDensity provides LocalDensity.current) {
+        Spacer(
+            Modifier
+                .size(12.dp)
+                .padding(horizontal = 12.dp)
+        )
+        CompositionLocalProvider{
             Row(
                 Modifier
                     .horizontalScroll(scrollState)
