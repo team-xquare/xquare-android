@@ -2,9 +2,7 @@ package com.xquare.xquare_android.feature.bug
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipDescription
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -54,7 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -64,7 +60,7 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.system.red.red400
 import com.semicolon.design.notoSansFamily
-import com.xquare.domain.entity.bug.BugEntity
+import com.xquare.domain.entity.reports.BugEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
@@ -205,6 +201,7 @@ private fun BugreportContent(
             ) {
                 if (photo != ""){
                     Image(
+                       modifier = Modifier.fillMaxSize(),
                        painter = rememberAsyncImagePainter(model = photo),
                        contentDescription = "bugPhoto",
                     )

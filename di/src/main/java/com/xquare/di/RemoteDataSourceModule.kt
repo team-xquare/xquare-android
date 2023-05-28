@@ -61,7 +61,7 @@ abstract class RemoteDataSourceModule {
     ): PickRemoteDataSource
 
     @Binds
-    abstract fun bindBugRemoteDataSource(
-        bugRemoteDataSourceImpl: BugRemoteDataSourceImpl
-    ): BugRemoteDataSource
+    abstract fun bindReportsRemoteDataSource(
+        reportRemoteDataSourceImpl: ReportRemoteDataSourceImpl
+    ): ReportRemoteDataSource
 }

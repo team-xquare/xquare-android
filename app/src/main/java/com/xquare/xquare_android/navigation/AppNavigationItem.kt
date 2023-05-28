@@ -38,6 +38,8 @@ sealed class AppNavigationItem(val route: String) {
 
     object TodayTeacher: AppNavigationItem("TodayTeacher")
 
+    object ReleaseNote: AppNavigationItem("ReleaseNote")
+
     object WriteSchedule : AppNavigationItem("writeSchedule/{schedulesData}") {
         fun createRoute(schedulesData: SchedulesEntity.SchedulesDataEntity?): String {
             return if (schedulesData == null) "writeSchedule/null" else "writeSchedule/${

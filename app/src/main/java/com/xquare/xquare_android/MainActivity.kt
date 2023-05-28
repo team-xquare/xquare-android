@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +38,7 @@ import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.pick.PassScreen
 import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
 import com.xquare.xquare_android.feature.profile.ProfileScreen
+import com.xquare.xquare_android.feature.release.ReleaseScreen
 import com.xquare.xquare_android.feature.schedule.ScheduleScreen
 import com.xquare.xquare_android.feature.schedule.WriteScheduleScreen
 import com.xquare.xquare_android.feature.setting.SettingScreen
@@ -51,6 +51,7 @@ import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 import com.xquare.xquare_android.util.*
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -135,6 +136,10 @@ fun BaseApp() {
         }
         composable(AppNavigationItem.Setting.route) {
             SettingScreen(navController)
+            
+        composable(AppNavigationItem.ReleaseNote.route){
+            ReleaseScreen(navController)
+            
         }
         composable(AppNavigationItem.WriteSchedule.route) {
             val schedulesData = it.arguments?.get("schedulesData").toString()
@@ -266,6 +271,17 @@ fun getToken(context: Context): String? {
     val token = pref.getString("token", null)
     Log.d("TAG", "FCM token retrieved: $token")
     return token
+}
+
+// 캐시 메모리 삭제
+fun clearCache(context: Context) {
+    val cacheDir = context.cacheDir
+    if (cacheDir.isDirectory) {
+        val children = cacheDir.list()
+        for (i in children!!.indices) {
+            File(cacheDir, children[i]).delete()
+        }
+    }
 }
 
 
