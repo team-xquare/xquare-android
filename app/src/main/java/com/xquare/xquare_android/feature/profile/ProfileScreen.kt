@@ -2,7 +2,6 @@ package com.xquare.xquare_android.feature.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -13,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +29,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
+import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.profile.ProfileEntity
@@ -117,49 +119,66 @@ private fun Profile(
                 bottom = DevicePaddings.navigationBarHeightDp.dp
             ),
         topBar = {
-            CenterAppBar(
-                painter = painterResource(R.drawable.ic_back),
-                text = "마이페이지",
-                onIconClick = onBackPress
-            )
+            Box(modifier = Modifier.padding(bottom = 25.dp)) {
+                CenterAppBar(
+                    painter = painterResource(R.drawable.ic_back),
+                    text = "마이페이지",
+                    onIconClick = onBackPress
+                )
+            }
         }
     ) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding()),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(top = it.calculateTopPadding()),
+            horizontalAlignment = Alignment.Start
         ) {
-            Spacer(Modifier.size(20.dp))
-            Image(
-                modifier = Modifier
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val profileImageModifier = Modifier
                     .size(60.dp)
-                    .clip(RoundedCornerShape(30.dp)),
-                painter = rememberAsyncImagePainter(
-                    model = profile?.profileFileName,
-                    placeholder = ColorPainter(gray200),
-                    error = painterResource(id = R.drawable.ic_profile_default),
-                ),
-                contentScale = ContentScale.Crop,
-                contentDescription = null
-            )
-            Spacer(Modifier.size(6.dp))
-            Body2(
-                text = "변경하기",
-                color = gray900,
-                modifier = Modifier
+                    .clip(RoundedCornerShape(30.dp))
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = null,
                     ) {
                         galleryState = true
                     }
-            )
-            Spacer(Modifier.size(6.dp))
+
+                Box{
+                    Image(
+                        modifier = profileImageModifier,
+                        painter = rememberAsyncImagePainter(
+                            model = profile?.profileFileName,
+                            placeholder = ColorPainter(gray200),
+                            error = painterResource(id = R.drawable.ic_profile_default),
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null
+                    )
+                    Image(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .align(Alignment.BottomEnd),
+                        painter = painterResource(R.drawable.ic_camera),
+                        contentDescription = null
+                    )
+                }
+                Spacer(Modifier.size(16.dp))
+                Column {
+                    Subtitle4(text = profile?.name ?: "")
+                    Text(
+                        text = "${profile?.grade ?: ""}학년 ${profile?.classNum ?: ""}반 ${profile?.num ?: ""}번",
+                        fontWeight = FontWeight.Normal,
+                    )
+                }
+
+            }
+            Spacer(Modifier.size(20.dp))
             Column {
-                Body2(text = "이름", color = gray900)
+                Body2(text = "아이디", color = gray900)
                 Spacer(Modifier.size(8.dp))
-                ProfileInfoText(text = profile?.name ?: "")
+                ProfileInfoText(text = profile?.accountId ?: "")
             }
             Spacer(Modifier.size(20.dp))
             Column {
@@ -167,18 +186,6 @@ private fun Profile(
                 Spacer(Modifier.size(8.dp))
                 ProfileInfoText(text = profile?.birthday?.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
                     ?: "")
-            }
-            Spacer(Modifier.size(20.dp))
-            Column {
-                Body2(text = "학년 반 번호", color = gray900)
-                Spacer(Modifier.size(8.dp))
-                ProfileInfoText(text = "${profile?.grade ?: ""}학년 ${profile?.classNum ?: ""}반 ${profile?.num ?: ""}번")
-            }
-            Spacer(Modifier.size(20.dp))
-            Column {
-                Body2(text = "아이디", color = gray900)
-                Spacer(Modifier.size(8.dp))
-                ProfileInfoText(text = profile?.accountId ?: "")
             }
         }
     }
@@ -191,7 +198,7 @@ private fun ProfileInfoText(text: String) {
             .fillMaxWidth()
             .border(1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
             .background(color = gray50)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+            .padding(start = 16.dp, bottom = 10.dp, top = 5.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         Body1(text = text, color = gray800)
@@ -210,6 +217,5 @@ private fun ProfilePreview() {
         null),
         onBackPress = {}
     ) {
-
     }
 }
