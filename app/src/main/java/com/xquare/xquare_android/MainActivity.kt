@@ -136,7 +136,7 @@ fun BaseApp() {
         }
         composable(AppNavigationItem.Setting.route) {
             SettingScreen(navController)
-            
+        }
         composable(AppNavigationItem.ReleaseNote.route){
             ReleaseScreen(navController)
             
