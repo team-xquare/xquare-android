@@ -37,6 +37,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -81,7 +82,7 @@ private fun String.toEntityWhere() =
         MenuItem.HOME -> "HOME"
         MenuItem.SCHEDULE -> "SCHEDULE"
         MenuItem.FEED -> "FEED"
-        MenuItem.APPLY -> "APPLY"
+        MenuItem.APPLY -> "APPLICATION"
         MenuItem.ALL -> "ALL"
         else -> "HOME"
     }
@@ -192,12 +193,11 @@ private fun BugreportContent(
             Spacer(modifier = Modifier.size(30.dp))
             Text(text = "사진을 첨부해 주세요")
             Spacer(modifier = Modifier.size(10.dp))
-            Button(
-                onClick = { galleryState = true },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = gray50,
-                ),
-                modifier = Modifier.size(150.dp)
+            Column(
+                modifier = Modifier
+                    .clickable { galleryState = true }
+                    .size(150.dp)
+                    .background(gray50),
             ) {
                 if (photo != ""){
                     Image(
@@ -353,6 +353,7 @@ private fun BugreportExplanationText(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
+            .clip(RoundedCornerShape(8.dp))
             .background(gray50)
             .border(width = 1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp, vertical = 12.dp)
