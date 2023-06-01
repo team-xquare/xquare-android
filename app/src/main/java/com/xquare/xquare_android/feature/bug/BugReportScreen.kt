@@ -105,7 +105,7 @@ fun BugReportScreen(
                 }
                 is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
                 is BugViewModel.Event.UploadFileSuccess -> {
-                    image = it.data as ArrayList<String>
+                    image.add(it.data[0])
                     photo = it.data[0]
                 }
             }
