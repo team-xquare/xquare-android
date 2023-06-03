@@ -204,8 +204,7 @@ private fun Profile(
                 Row(modifier = Modifier.padding(12.dp)) {
                     Body3(text = "생년월일 : ", color = gray900)
                     Body3(
-                        text = profile?.birthday?.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-                            ?: ""
+                        text = profile?.birthday.toString()
                     )
                 }
             }
