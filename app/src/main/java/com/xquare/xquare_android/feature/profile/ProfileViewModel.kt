@@ -4,6 +4,7 @@ import android.util.Log
 
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
+import com.xquare.domain.usecase.auth.LogoutUseCase
 import com.xquare.domain.usecase.user.FetchProfileUseCase
 import com.xquare.domain.usecase.user.FixProfileImageUseCase
 import com.xquare.xquare_android.base.BaseViewModel
@@ -16,6 +17,7 @@ class ProfileViewModel @Inject constructor(
     private val fetchProfileUseCase: FetchProfileUseCase,
     private val fixProfileImageUseCase: FixProfileImageUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
+    private val logoutUseCase: LogoutUseCase,
 ) : BaseViewModel<ProfileViewModel.Event>() {
 
     fun fetchProfile() =
@@ -44,7 +46,16 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    fun logout() =
+        execute(
+            job = { logoutUseCase.execute(Unit) },
+            onSuccess = { emitEvent(Event.LogoutSuccess) },
+            onFailure = {  }
+        )
+
     sealed class Event {
+
+        object LogoutSuccess : Event()
         data class Success(val data: ProfileEntity) : Event()
         object Failure : Event()
 
