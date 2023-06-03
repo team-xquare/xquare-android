@@ -150,7 +150,7 @@ private fun SignUp(
             Spacer(Modifier.size(8.dp))
             TextField(
                 text = accountId,
-                placeholder = "영문, 숫지 6~20자",
+                placeholder = "영문, 숫자 6~20자",
                 onTextChange = { text ->
                     accountId = text
                 }
