@@ -17,13 +17,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -32,10 +30,8 @@ import com.semicolon.design.Body1
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.*
-import com.semicolon.design.color.primary.purple.purple200
-import com.semicolon.design.color.primary.purple.purple300
-import com.semicolon.design.color.primary.purple.purple50
 import com.semicolon.design.color.primary.white.white
+import com.semicolon.design.color.system.red.red500
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CenterAppBar
@@ -104,15 +100,16 @@ private fun Profile(
     val context = LocalContext.current
     var galleryState by remember { mutableStateOf(false) }
     var logoutDialogState by remember { mutableStateOf(false) }
+    val gitMenuList = listOf("계정 연동")
 //    var gitState by remember { mutableStateOf(false) }
-
+    val accountMenuList = listOf("로그아웃","회원탈퇴")
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data!!.data?.run {
-                    sendImage(toFile(context,this))
+                    sendImage(toFile(context, this))
                 }
             }
             galleryState = false
@@ -228,28 +225,41 @@ private fun Profile(
                     modifier = Modifier
                         .padding(start = 4.dp)
                 )
-                ColumnMenu(text = "로그아웃") {
-                    logoutDialogState = true
+                accountMenuList.forEachIndexed { index, text ->
+                    ColumnMenu(text = text) {
+                        when (index) {
+                            0, 1 -> logoutDialogState = true
+                        }
+                    }
                 }
+                Spacer(modifier = Modifier.size(12.dp))
+                /*
+                Column {
+                    Body1(
+                        text = "계정 연동",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                    )
+                    gitMenuList.forEachIndexed { index, text ->
+                        ButtonColumnMenu(text = text) {
+                            when(index) {
+                                0 -> TODO()
+                            }
+                        }
+                    }
+                }
+                */
             }
-//            Spacer(modifier = Modifier.size(12.dp))
-//            Column {
-//                Body1(
-//                    text = "계정 연동",
-//                    fontWeight = FontWeight.Bold,
-//                    modifier = Modifier
-//                        .padding(start = 4.dp)
-//                )
-//                ButtonColumnMenu(text = "Github") {
-//
-//                }
-//            }
         }
     }
 }
 
+
+
 @Composable
 private fun ColumnMenu(text: String, onClick: () -> Unit) {
+    val textColor = if(text == "로그아웃") gray900 else red500
     Box(
         modifier = Modifier
             .padding(start = 12.dp, end = 16.dp, top = 12.dp)
@@ -265,16 +275,18 @@ private fun ColumnMenu(text: String, onClick: () -> Unit) {
     ) {
         Body1(
             text = text,
-            color = gray900,
+            color = textColor,
             modifier = Modifier.padding(start = 4.dp)
         )
     }
 }
 
+/*
 @Composable
 private fun ButtonColumnMenu(
-    text: String,
-    onClick: () -> Unit,
+text: String,
+onClick: () -> Unit,
+gitState: Boolean,
 ) {
     //val textColor = if (gitState) white else purple200
     //val buttonColor = if (gitState) purple300 else purple50
@@ -315,3 +327,4 @@ private fun ButtonColumnMenu(
         }
     }
 }
+*/
