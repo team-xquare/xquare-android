@@ -46,24 +46,8 @@ import com.xquare.xquare_android.util.DevicePaddings
 fun AllScreen(navController: NavController) {
     val schoolMenuList = listOf("오늘의 자습감독 선생님")//"동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
     val dormitoryMenuList = listOf("봉사 지원하기", "청소판 확인하기")
-    val userMenuList = listOf("로그아웃","업데이트 사항")
+    val userMenuList = listOf("업데이트 사항")
 
-    val allViewModel: AllViewModel = hiltViewModel()
-    LaunchedEffect(Unit) {
-        allViewModel.eventFlow.collect {
-            when (it) {
-                AllViewModel.Event.LogoutSuccess -> {
-                    navController.navigate(AppNavigationItem.Onboard.route) {
-                        popUpTo(0) {
-                            inclusive = true
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    var logoutDialogState by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -76,16 +60,6 @@ fun AllScreen(navController: NavController) {
             ),
         topBar = { AppBar(text = "전체") }
     ) {
-        if (logoutDialogState) {
-            ConfirmModal(
-                message = "정말 로그아웃 하시겠습니까?",
-                confirmText = "예",
-                cancelText = "아니요",
-                onConfirm = { allViewModel.logout() }
-            ) {
-                logoutDialogState = false
-            }
-        }
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -128,8 +102,7 @@ fun AllScreen(navController: NavController) {
                 Spacer(modifier = Modifier.size(12.dp))
                 ColumnMenuItem(title) {
                     when (index) {
-                        0 -> logoutDialogState = true
-                        1 -> navController.navigate(AppNavigationItem.ReleaseNote.route)
+                        0 -> navController.navigate(AppNavigationItem.ReleaseNote.route)
                     }
                 }
             }
