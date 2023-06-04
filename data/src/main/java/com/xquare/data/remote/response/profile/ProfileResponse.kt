@@ -18,9 +18,18 @@ fun ProfileResponse.toEntity() =
     ProfileEntity(
         accountId = accountId,
         name = name,
-        birthday = LocalDate.parse(birthday),
+        birthday =
+        if (birthday.substring(5,7).toInt() < 10) {
+            birthday.substring(0,4)+"년 "+
+                    birthday.substring(6,7)+"월 "+
+                    birthday.substring(8,10)+"일"
+        } else {
+            birthday.substring(0,4)+"년 "+
+                    birthday.substring(5,7)+"월 "+
+                    birthday.substring(8,10)+"일"
+        },
         grade = grade,
         classNum = classNum,
         num = num,
-        profileFileName = profileFileName
+        profileFileName = profileFileName,
     )
