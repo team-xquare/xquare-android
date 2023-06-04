@@ -235,12 +235,17 @@ fun HomeMealCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
-            .padding(vertical = 16.dp)
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                bottom = 16.dp,
+                top = 16.dp,
+            )
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp),
+                .padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -273,9 +278,7 @@ fun HomeMealCard(
             Row(
                 Modifier
                     .horizontalScroll(scrollState)
-                    .padding(horizontal = 12.dp)
             ) {
-                Spacer(Modifier.size(4.dp))
                 HomeMealItem(
                     title = "아침",
                     menus = meal.breakfast,
@@ -297,7 +300,6 @@ fun HomeMealCard(
                     borderColor = dinerBorderColor
                 )
             }
-            Spacer(Modifier.size(4.dp))
         }
         LaunchedEffect(Unit) {
 
