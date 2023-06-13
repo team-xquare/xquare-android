@@ -1,5 +1,7 @@
 package com.xquare.xquare_android.component
 
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -8,6 +10,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,6 +34,7 @@ fun BottomNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    var isClickable by remember { mutableStateOf(true) }
 
     Row(Modifier.fillMaxWidth()) {
         items.forEach { screen ->
@@ -41,13 +47,19 @@ fun BottomNavigation(
                     .weight(1f)
                     .background(color = white)
                     .clickable(
-                        interactionSource = MutableInteractionSource(),
+                        interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(
                             radius = 28.dp
                         ),
                         enabled = !selected
                     ) {
-                        navController.navigate(screen.route) { popUpTo(0) }
+                        if (isClickable) {
+                            isClickable = false
+                            navController.navigate(screen.route) { popUpTo(0) }
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                isClickable = true
+                            }, 500)
+                        }
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
