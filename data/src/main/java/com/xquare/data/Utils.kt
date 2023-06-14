@@ -1,7 +1,10 @@
 package com.xquare.data
 
 import com.xquare.domain.exception.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -12,6 +15,8 @@ import java.io.File
 import java.lang.NullPointerException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 fun File.toMultipart(): MultipartBody.Part =
     MultipartBody.Part.createFormData(
@@ -19,7 +24,14 @@ fun File.toMultipart(): MultipartBody.Part =
         this.name,
         this.asRequestBody("image/*".toMediaTypeOrNull())
     )
+fun cancelAllApiCalls() {
+    for (job in apiJobMap.values) {
+        job.cancel()
+    }
+    apiJobMap.clear()
+}
 
+val apiJobMap: MutableMap<CoroutineContext.Element, Job> = mutableMapOf()
 suspend fun <T> sendHttpRequest(
     httpRequest: suspend () -> T,
     onBadRequest: (message: String) -> Throwable = { BadRequestException() },
@@ -29,9 +41,15 @@ suspend fun <T> sendHttpRequest(
     onConflict: (message: String) -> Throwable = { ConflictException() },
     onServerError: (code: Int) -> Throwable = { ServerException() },
     onOtherHttpStatusCode: (code: Int, message: String) -> Throwable = { _, _ -> UnknownException() }
-): T =
-    try {
-        httpRequest()
+): T {
+    val coroutineContext = coroutineContext
+    val apiJob = Job(coroutineContext[Job])
+    apiJobMap[coroutineContext[Job]!!] = apiJob
+
+    return try {
+        withContext(coroutineContext + apiJob) {
+            httpRequest()
+        }
     } catch (e: HttpException) {
         val code = e.code()
         val message = e.message()
@@ -50,9 +68,17 @@ suspend fun <T> sendHttpRequest(
         throw TimeoutException()
     } catch (e: NeedLoginException) {
         throw e
+    } catch (e: CancellationException) {
+        throw CancellationException()
+    } catch (e: UnknownException) {
+        cancelAllApiCalls()
+        throw e
     } catch (e: Throwable) {
         throw UnknownException()
+    } finally {
+        apiJobMap.remove(coroutineContext[Job]!!)
     }
+}
 
 fun <T> fetchDataWithOfflineCache(
     fetchLocalData: suspend () -> T,
