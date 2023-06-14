@@ -1,7 +1,5 @@
 package com.xquare.xquare_android.component
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,12 +19,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.semicolon.design.Body3
-import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray300
 import com.semicolon.design.color.primary.gray.gray800
-import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.white.white
 import com.xquare.xquare_android.navigation.BottomNavigationItem
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun BottomNavigation(
@@ -35,6 +34,7 @@ fun BottomNavigation(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     var isClickable by remember { mutableStateOf(true) }
+    val coroutineScope = rememberCoroutineScope()
 
     Row(Modifier.fillMaxWidth()) {
         items.forEach { screen ->
@@ -48,17 +48,14 @@ fun BottomNavigation(
                     .background(color = white)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(
-                            radius = 28.dp
-                        ),
-                        enabled = !selected
+                        indication = rememberRipple(radius = 28.dp),
+                        enabled = !selected && isClickable
                     ) {
-                        if (isClickable) {
-                            isClickable = false
-                            navController.navigate(screen.route) { popUpTo(0) }
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                isClickable = true
-                            }, 500)
+                        isClickable = false
+                        navController.navigate(screen.route) { popUpTo(0) }
+                        coroutineScope.launch {
+                            delay(100)
+                            isClickable = true
                         }
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
