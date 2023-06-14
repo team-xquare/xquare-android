@@ -31,8 +31,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -209,7 +207,7 @@ private fun BugreportContent(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(20.dp),
-                            painter = rememberAsyncImagePainter(model = R.drawable.img_insert_photo),
+                            painter = rememberAsyncImagePainter(model = R.drawable.ic_add_photo),
                             contentDescription = "insertBugPhoto",
                         )
                     }
