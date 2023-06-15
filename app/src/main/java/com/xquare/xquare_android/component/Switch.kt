@@ -15,7 +15,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.semicolon.design.color.primary.purple.purple400
+import com.semicolon.design.color.primary.gray.gray300
+import com.semicolon.design.color.primary.purple.purple300
 
 @Composable
 fun CustomSwitchButton(
@@ -65,7 +66,7 @@ fun CustomSwitchButton(
                 .width(buttonWidth)
                 .height(buttonHeight)
                 .clip(CircleShape)
-                .background(if (switchClicked) purple400 else Color.LightGray)
+                .background(if (switchClicked) purple300 else gray300)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,

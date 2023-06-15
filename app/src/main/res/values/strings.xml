@@ -4,17 +4,17 @@
     <string name="firebase_notification_channel_id"
             translatable="false">fcm_default_channel</string>
     
-    <string name="feed_alarm">피드 알림</string>
-    <string name="apply_alarm">신청 알림</string>
-    <string name="point_alarm">상벌점 알림</string>
-    <string name="schedule_alarm">일정 알림</string>
+    <string name="feed_alarm">피드</string>
+    <string name="apply_alarm">신청</string>
+    <string name="point_alarm">상벌점</string>
+    <string name="schedule_alarm">일정</string>
 
-    <string name="feed_alarm_content">피드의 댓글과 좋아요 등의 알림을 설정해요</string>
-    <string name="apply_alarm_content">급식과 외출 신청 등의 알림을 설정해요</string>
-    <string name="point_alarm_content">상벌점 등의 알림을 설정해요</string>
-    <string name="schedule_alarm_content">일정의 알림을 설정해요</string>
+    <string name="feed_alarm_content">댓글 또는 좋아요가 달렸을 때 보내요.</string>
+    <string name="apply_alarm_content">급식, 외출 신청 등의 알림이에요.</string>
+    <string name="point_alarm_content">상점 또는 벌점에 변화가 있을 때 보내요.</string>
+    <string name="schedule_alarm_content">일정이 생길 때 보내요.</string>
 
     <string name="header_setting">설정</string>
 
-    <string name="setting_screen_text">선택한 알림을 보내드릴게요.\n공지 사항 알림은 꺼도 받을수 있어요</string>
+    <string name="setting_screen_text">공지사항 알림을 제외한 알림을 끌 수 있어요.</string>
 </resources>
