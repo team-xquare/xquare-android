@@ -123,7 +123,7 @@ fun AlarmItem(
         daysDifference > 0 -> "${daysDifference}일 전"
         hoursDifference <= 0 ->"${minutesDifference}분 전"
         else -> "${hoursDifference}시간 전"
-    }
+    }.let { if (it == "0분 전") "방금전" else it }
 
     val tint = if (alarmList.is_read) black else purple300
 
