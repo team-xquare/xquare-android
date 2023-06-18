@@ -90,14 +90,16 @@ fun WriteScheduleContent(
 ) {
     var name by remember { mutableStateOf(schedulesData?.name ?: "") }
     var date by remember { mutableStateOf(schedulesData?.date?:"") }
+    val title by remember { mutableStateOf(if (schedulesData == null) "일정 작성" else "일정 수정") }
+    val btnText by remember { mutableStateOf(if (schedulesData == null) "등록" else "수정") }
     var timerModalState by remember { mutableStateOf(false) }
     val btnEnabled = name.length > 1 && date.isNotEmpty()
 
     Column(modifier = Modifier.padding(top = DevicePaddings.statusBarHeightDp.dp)) {
         Header(
             painter = painterResource(id = R.drawable.ic_back),
-            title = "일정 작성",
-            btnText = "등록",
+            title = title,
+            btnText = btnText,
             btnEnabled = btnEnabled,
             onIconClick = onIconClick,
             onBtnClick = { onBtnClick(name, date) }
