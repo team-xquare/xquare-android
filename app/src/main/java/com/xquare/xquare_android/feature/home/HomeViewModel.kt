@@ -27,6 +27,10 @@ class HomeViewModel @Inject constructor(
     private val _userSimpleData = MutableStateFlow(HomeUserEntity("", "", 0, 0))
     val userSimpleData: StateFlow<HomeUserEntity> = _userSimpleData
 
+    init {
+        fetchTodayMeal()
+        fetchUserSimpleData()
+        }
     private val _todayMeal = MutableStateFlow(
         MealEntity(
             emptyList(),
@@ -36,7 +40,7 @@ class HomeViewModel @Inject constructor(
         ))
     val todayMeal: StateFlow<MealEntity> = _todayMeal
 
-    fun fetchUserSimpleData() {
+    private fun fetchUserSimpleData() {
         execute(
             job = { fetchUserSimpleDataUseCase.execute(Unit) },
             onSuccess = { it.collect { userSimpleData -> _userSimpleData.tryEmit(userSimpleData)} },
@@ -44,7 +48,7 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun fetchTodayMeal() {
+    private fun fetchTodayMeal() {
         execute(
             job = {
                 fetchTodayMealUseCase.execute(Unit)

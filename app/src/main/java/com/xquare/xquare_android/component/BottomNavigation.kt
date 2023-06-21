@@ -3,7 +3,12 @@ package com.xquare.xquare_android.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
@@ -33,8 +38,6 @@ fun BottomNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    var isClickable by remember { mutableStateOf(true) }
-    val coroutineScope = rememberCoroutineScope()
 
     Row(Modifier.fillMaxWidth()) {
         items.forEach { screen ->
@@ -49,13 +52,13 @@ fun BottomNavigation(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(radius = 28.dp),
-                        enabled = !selected && isClickable
                     ) {
-                        isClickable = false
-                        navController.navigate(screen.route) { popUpTo(0) }
-                        coroutineScope.launch {
-                            delay(100)
-                            isClickable = true
+                        navController.navigate(screen.route) {
+                            popUpTo(0) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
                     },
                 horizontalAlignment = Alignment.CenterHorizontally,
