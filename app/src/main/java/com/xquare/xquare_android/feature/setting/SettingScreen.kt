@@ -81,14 +81,12 @@ fun SettingScreen(
 
     val pointState = remember { mutableStateOf(true) }
     val scheduleState = remember { mutableStateOf(true) }
-    val applicationState = remember { mutableStateOf(true) }
     val feedState = remember { mutableStateOf(true) }
 
     category?.forEach { (key, value) ->
         when (key) {
             "ALL" -> pointState.value = value.isActivate
             "SCHEDULE" -> scheduleState.value = value.isActivate
-            "APPLICATION" -> applicationState.value = value.isActivate
             "FEED" -> feedState.value = value.isActivate
         }
     }
@@ -96,15 +94,9 @@ fun SettingScreen(
     val onFeedStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf({ value: ActivateAlarmEntity -> viewModel.activateAlarm(value) })
     }
-
-    val onApplicationStateChange: (ActivateAlarmEntity) -> Unit by remember {
-        mutableStateOf({ value: ActivateAlarmEntity -> viewModel.activateAlarm(value) })
-    }
-
     val onPointStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf({ value: ActivateAlarmEntity -> viewModel.activateAlarm(value) })
     }
-
     val onScheduleStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf({ value: ActivateAlarmEntity -> viewModel.activateAlarm(value) })
     }
@@ -113,8 +105,6 @@ fun SettingScreen(
             onBackPress = { navController.popBackStack() },
             feedState = feedState,
             onFeedClick = onFeedStateChange,
-            applicationState = applicationState,
-            onApplicationClick = onApplicationStateChange,
             pointState = pointState,
             onPointClick = onPointStateChange,
             scheduleState = scheduleState,
@@ -129,8 +119,6 @@ fun SettingContent(
     onBackPress: () -> Unit,
     feedState: MutableState<Boolean>,
     onFeedClick: (ActivateAlarmEntity) -> Unit,
-    applicationState: MutableState<Boolean>,
-    onApplicationClick: (ActivateAlarmEntity) -> Unit,
     pointState: MutableState<Boolean>,
     onPointClick: (ActivateAlarmEntity) -> Unit,
     scheduleState: MutableState<Boolean>,
@@ -155,8 +143,6 @@ fun SettingContent(
             NotificationContent(
                 feedState = feedState,
                 onFeedClick = { onFeedClick(it) },
-                applicationState = applicationState,
-                onApplicationClick = { onApplicationClick(it) },
                 pointState = pointState,
                 onPointClick = { onPointClick(it) },
                 scheduleState = scheduleState,
@@ -202,6 +188,7 @@ fun AccountContent(viewModel: SettingViewModel) {
             Row {
                 Column {
                     Body1(text = "회원탈퇴", color = red500)
+                    Spacer(modifier = Modifier.size(4.dp))
                     Text(
                         text = "XQUARE에서 계정이 영구적으로 삭제되어요.",
                         color = Color.DarkGray,
@@ -217,8 +204,6 @@ fun AccountContent(viewModel: SettingViewModel) {
 fun NotificationContent(
     feedState: MutableState<Boolean>,
     onFeedClick: (ActivateAlarmEntity) -> Unit,
-    applicationState: MutableState<Boolean>,
-    onApplicationClick: (ActivateAlarmEntity) -> Unit,
     pointState: MutableState<Boolean>,
     onPointClick: (ActivateAlarmEntity) -> Unit,
     scheduleState: MutableState<Boolean>,
@@ -241,16 +226,6 @@ fun NotificationContent(
                 onFeedClick(
                     ActivateAlarmEntity(
                         isActivated = it, topic = "FEED"
-                    )
-                )
-            })
-        NotificationItem(topic = stringResource(id = R.string.apply_alarm),
-            content = stringResource(id = R.string.apply_alarm_content),
-            state = applicationState.value,
-            onState = {
-                onApplicationClick(
-                    ActivateAlarmEntity(
-                        isActivated = it, topic = "APPLICATION"
                     )
                 )
             })
@@ -294,6 +269,7 @@ fun NotificationItem(
         Row {
             Column {
                 Body1(text = topic)
+                Spacer(modifier = Modifier.size(4.dp))
                 Text(
                     text = content,
                     color = Color.DarkGray,
