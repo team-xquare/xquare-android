@@ -8,29 +8,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.semicolon.design.Body1
-import com.semicolon.design.Body2
-import com.semicolon.design.color.primary.gray.gray50
-import com.semicolon.design.color.primary.gray.gray700
-import com.semicolon.design.color.primary.gray.gray800
-import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
-import com.xquare.xquare_android.util.makeToast
-import com.xquare.xquare_android.util.toKorean
 import org.threeten.bp.LocalDate
 
 
@@ -39,21 +28,10 @@ import org.threeten.bp.LocalDate
 fun TodayTeacherScreen(
     navController: NavController
 ) {
-    val context = LocalContext.current
     val viewModel: TodayTeacherViewModel = hiltViewModel()
-    var todayTeacher: TodaySelfStudyTeacherEntity? by remember { mutableStateOf(null) }
+    val todayTeacher = viewModel.todayTeacher.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
-        viewModel.TodaySelfStudyTeacher()
-        viewModel.eventFlow.collect() {
-            when (it) {
-                is TodayTeacherViewModel.Event.Success -> {
-                    todayTeacher = it.data
-                }
-                is TodayTeacherViewModel.Event.Failure -> {
-                    makeToast(context, "자습감독선생님을 불러오지 못했습니다.")
-                }
-            }
-        }
+        viewModel.todaySelfStudyTeacher()
     }
     TodayTeacher(
         todayTeacher = todayTeacher,

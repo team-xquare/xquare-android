@@ -12,7 +12,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
@@ -55,10 +55,10 @@ fun HomeScreen(navController: NavController) {
     val mainActivity = context as MainActivity
 
     val viewModel: HomeViewModel = hiltViewModel()
-    val userData = viewModel.userSimpleData.collectAsState().value
-    val meal = viewModel.todayMeal.collectAsState().value
-    val classPosition = viewModel.classPosition.collectAsState().value
-    val passCheck = viewModel.passCheck.collectAsState().value
+    val userData = viewModel.userSimpleData.collectAsStateWithLifecycle().value
+    val meal = viewModel.todayMeal.collectAsStateWithLifecycle().value
+    val classPosition = viewModel.classPosition.collectAsStateWithLifecycle().value
+    val passCheck = viewModel.passCheck.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
         mainActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         viewModel.run {
@@ -323,7 +323,7 @@ fun HomeMealItem(
     borderColor:Color,
 ) {
     val scrollState = rememberScrollState()
-    var borderColor = borderColor
+    var borderColor1 = borderColor
 
     Column(
         modifier = Modifier
@@ -339,8 +339,8 @@ fun HomeMealItem(
             .verticalScroll(scrollState)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            if (borderColor == gray50) {
-                borderColor = black
+            if (borderColor1 == gray50) {
+                borderColor1 = black
             }
 
             Body1(

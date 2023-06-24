@@ -1,15 +1,11 @@
 package com.xquare.xquare_android.feature.pick
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.xquare.domain.entity.pick.PassDataEntity
 import com.xquare.domain.usecase.pick.FetchPassDataUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel

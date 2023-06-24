@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
-import com.semicolon.design.color.primary.black.black
 import com.semicolon.design.color.primary.gray.gray50
 import com.xquare.domain.entity.point.PointHistoriesEntity
 import org.threeten.bp.LocalDate

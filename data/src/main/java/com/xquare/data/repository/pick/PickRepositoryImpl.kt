@@ -9,6 +9,7 @@ import com.xquare.domain.entity.pick.PassTimeEntity
 import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
 import com.xquare.domain.repository.pick.PickRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class PickRepositoryImpl @Inject constructor(
@@ -29,6 +30,6 @@ class PickRepositoryImpl @Inject constructor(
 
     val date = today()
     val month = date.monthValue
-    override suspend fun fetchTodaySelfStudyTeacher(): TodaySelfStudyTeacherEntity =
-        pickRemoteDataSource.fetchTodaySelfStudyTeacher(month=month.toString())
+    override suspend fun fetchTodaySelfStudyTeacher(): Flow<TodaySelfStudyTeacherEntity> =
+        flow { emit(pickRemoteDataSource.fetchTodaySelfStudyTeacher(month=month.toString())) }
 }

@@ -6,9 +6,9 @@ import com.xquare.domain.entity.notification.AlarmEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AlarmRepository {
-    suspend fun fetchAlarmHistory(): AlarmEntity
+    suspend fun fetchAlarmHistory(): Flow<AlarmEntity>
 
     suspend fun activateAlarm(isActivate: Boolean, topic: String)
 
-    suspend fun fetchAlarmCategories(): AlarmCategoriesEntity
+    suspend fun fetchAlarmCategories(): Flow<AlarmCategoriesEntity>
 }

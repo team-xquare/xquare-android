@@ -9,10 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.dark.dark50
@@ -25,25 +25,13 @@ import com.xquare.domain.entity.point.PointHistoriesEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.util.DevicePaddings
-import com.xquare.xquare_android.util.makeToast
 
 @Composable
 fun PointHistoryScreen(navController: NavController) {
-    val context = LocalContext.current
     val viewModel: PointHistoryViewModel = hiltViewModel()
-    var pointHistories: PointHistoriesEntity? by remember { mutableStateOf(null) }
+    val pointHistories = viewModel.pointHistory.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
         viewModel.fetchGoodPointHistories(offlineOnly = false)
-        viewModel.eventFlow.collect {
-            when (it) {
-                is PointHistoryViewModel.Event.Success -> {
-                    pointHistories = it.data
-                }
-                is PointHistoryViewModel.Event.Failure -> {
-                    makeToast(context, "상벌점을 불러오는 데 실패했습니다")
-                }
-            }
-        }
     }
     PointHistory(
         pointHistoriesEntity = pointHistories,

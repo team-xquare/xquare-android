@@ -1,7 +1,6 @@
 package com.xquare.xquare_android.feature.allmeal
 
 import MealDetail
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,9 +9,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.meal.AllMealEntity
@@ -28,14 +27,11 @@ fun AllMealScreen(
 ) {
     val context = LocalContext.current
     val viewModel: AllMealViewModel = hiltViewModel()
-    var allMeal: AllMealEntity? by remember { mutableStateOf(null) }
+    var allMeal = viewModel.allMeal.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
         viewModel.fetchAllMeal()
         viewModel.eventFlow.collect {
             when (it) {
-                is AllMealViewModel.Event.Success -> {
-                    allMeal = it.data
-                }
                 is AllMealViewModel.Event.Failure -> {
                     makeToast(context, "급식을 불러오는 데 실패했습니다")
                 }

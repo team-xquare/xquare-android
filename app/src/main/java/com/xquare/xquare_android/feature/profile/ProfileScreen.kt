@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.profile
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
@@ -38,37 +40,23 @@ import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.component.modal.ConfirmModal
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
-import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.toFile
-import org.threeten.bp.format.DateTimeFormatter
 import java.io.File
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ProfileScreen(navController: NavController) {
-    val context = LocalContext.current
     val viewModel: ProfileViewModel = hiltViewModel()
-    var profile: ProfileEntity? by remember { mutableStateOf(null) }
+    val profile = viewModel.profile.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
         viewModel.eventFlow.collect {
             when (it) {
-                is ProfileViewModel.Event.Success -> {
-                    profile = it.data
-                }
-                is ProfileViewModel.Event.Failure -> {
-                    makeToast(context, "프로필을 불러오지 못했습니다")
-                }
                 is ProfileViewModel.Event.UploadFileSuccess -> {
                     viewModel.fixProfileImage(it.data[0])
                 }
-                is ProfileViewModel.Event.UploadFileFailure -> {
-                    makeToast(context, "이미지를 불러오지 못했습니다")
-                }
                 is ProfileViewModel.Event.ImageChangeSuccess -> {
                     viewModel.fetchProfile()
-                }
-                is ProfileViewModel.Event.ImageChangeFailure -> {
-                    makeToast(context, "이미지를 변경하지 못했습니다")
                 }
                 is ProfileViewModel.Event.LogoutSuccess -> {
                     navController.navigate(AppNavigationItem.Onboard.route) {

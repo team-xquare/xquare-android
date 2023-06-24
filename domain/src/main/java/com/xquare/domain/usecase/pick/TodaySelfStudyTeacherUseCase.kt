@@ -8,9 +8,9 @@ import javax.inject.Inject
 
 class TodaySelfStudyTeacherUseCase @Inject constructor(
     private val pickRepository: PickRepository
-) : UseCase<Unit, TodaySelfStudyTeacherEntity>(){
+) : UseCase<Unit, Flow<TodaySelfStudyTeacherEntity>>(){
 
-    override suspend fun execute(data: Unit): TodaySelfStudyTeacherEntity =
+    override suspend fun execute(data: Unit): Flow<TodaySelfStudyTeacherEntity> =
         pickRepository.fetchTodaySelfStudyTeacher()
 
 }

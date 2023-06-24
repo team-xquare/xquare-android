@@ -5,6 +5,8 @@ import com.xquare.domain.usecase.point.FetchBadPointHistoriesUseCase
 import com.xquare.domain.usecase.point.FetchGoodPointHistoriesUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,10 +15,18 @@ class PointHistoryViewModel @Inject constructor(
     private val fetchBadPointHistoriesUseCase: FetchBadPointHistoriesUseCase,
 ) : BaseViewModel<PointHistoryViewModel.Event>() {
 
+    private val _pointHistory = MutableStateFlow(
+        PointHistoriesEntity(
+            goodPoint = 0,
+            badPoint = 0,
+            pointHistories = listOf(),
+        )
+    )
+    val pointHistory: StateFlow<PointHistoriesEntity> = _pointHistory
     fun fetchGoodPointHistories(offlineOnly: Boolean = true) {
         execute(
             job = { fetchGoodPointHistoriesUseCase.execute(offlineOnly) },
-            onSuccess = { it.collect { pointHistory -> emitEvent(Event.Success(pointHistory)) } },
+            onSuccess = { it.collect { pointHistory -> _pointHistory.tryEmit(pointHistory)} },
             onFailure = { emitEvent(Event.Failure) }
         )
     }
@@ -24,13 +34,12 @@ class PointHistoryViewModel @Inject constructor(
     fun fetchBadPointHistories(offlineOnly: Boolean = true) {
         execute(
             job = { fetchBadPointHistoriesUseCase.execute(offlineOnly) },
-            onSuccess = { it.collect { pointHistory -> emitEvent(Event.Success(pointHistory)) } },
+            onSuccess = { it.collect { pointHistory -> _pointHistory.tryEmit(pointHistory)} },
             onFailure = { emitEvent(Event.Failure) }
         )
     }
 
     sealed class Event {
-        data class Success(val data: PointHistoriesEntity) : Event()
         object Failure : Event()
     }
 }

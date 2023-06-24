@@ -1,4 +1,3 @@
-import androidx.compose.animation.AnimatedContentScope.SlideDirection.Companion.End
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -23,8 +22,6 @@ import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
-import com.semicolon.design.color.primary.purple.purple400
-import com.semicolon.design.color.system.green.green100
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.util.toKorean
 
