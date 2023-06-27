@@ -27,7 +27,7 @@ fun AllMealScreen(
 ) {
     val context = LocalContext.current
     val viewModel: AllMealViewModel = hiltViewModel()
-    var allMeal = viewModel.allMeal.collectAsStateWithLifecycle().value
+    var allMeal: AllMealEntity? by remember { mutableStateOf(null) }
     LaunchedEffect(Unit) {
         viewModel.fetchAllMeal()
         viewModel.eventFlow.collect {
@@ -35,6 +35,7 @@ fun AllMealScreen(
                 is AllMealViewModel.Event.Failure -> {
                     makeToast(context, "급식을 불러오는 데 실패했습니다")
                 }
+                is AllMealViewModel.Event.Success -> allMeal = it.data
             }
         }
     }

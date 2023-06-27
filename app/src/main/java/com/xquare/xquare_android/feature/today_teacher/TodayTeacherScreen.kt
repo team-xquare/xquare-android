@@ -29,9 +29,14 @@ fun TodayTeacherScreen(
     navController: NavController
 ) {
     val viewModel: TodayTeacherViewModel = hiltViewModel()
-    val todayTeacher = viewModel.todayTeacher.collectAsStateWithLifecycle().value
+    var todayTeacher: TodaySelfStudyTeacherEntity? by remember { mutableStateOf(null) }
     LaunchedEffect(Unit) {
         viewModel.todaySelfStudyTeacher()
+        viewModel.eventFlow.collect{
+            when(it) {
+                is TodayTeacherViewModel.Event.Success -> todayTeacher = it.data
+            }
+        }
     }
     TodayTeacher(
         todayTeacher = todayTeacher,

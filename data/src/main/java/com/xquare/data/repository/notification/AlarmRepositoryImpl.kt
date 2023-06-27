@@ -13,7 +13,7 @@ class AlarmRepositoryImpl @Inject constructor(
 //    private val alarmLocalDataSource: AlarmLocalDataSource,
 ): AlarmRepository {
     override suspend fun fetchAlarmHistory(): Flow<AlarmEntity> =
-        flow { alarmRemoteDataSource.fetchAlarm() }
+        flow { emit(alarmRemoteDataSource.fetchAlarm()) }
 //        fetchDataWithOfflineCache(
 //            fetchLocalData = { alarmLocalDataSource.fetchAlarm() },
 //            fetchRemoteData = { alarmRemoteDataSource.fetchAlarm() },

@@ -13,12 +13,10 @@ class TodayTeacherViewModel @Inject constructor(
     private val todaySelfStudyTeacherUseCase: TodaySelfStudyTeacherUseCase
 ): BaseViewModel<TodayTeacherViewModel.Event>(){
 
-    private val _todayTeacher = MutableStateFlow(TodaySelfStudyTeacherEntity(listOf()))
-    val todayTeacher: StateFlow<TodaySelfStudyTeacherEntity> = _todayTeacher
 
     fun todaySelfStudyTeacher() = execute(
         job = { todaySelfStudyTeacherUseCase.execute(Unit)},
-        onSuccess = { it.collect{ todayTeacher -> _todayTeacher.tryEmit(todayTeacher) } },
+        onSuccess = { it.collect{ teacher -> emitEvent(Event.Success(teacher))}  },
         onFailure = {  }
     )
 
