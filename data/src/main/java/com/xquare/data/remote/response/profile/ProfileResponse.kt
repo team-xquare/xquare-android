@@ -20,13 +20,13 @@ fun ProfileResponse.toEntity() =
         name = name,
         birthday =
         if (birthday.substring(5,7).toInt() < 10) {
-            birthday.substring(0,4)+"년 "+
-                    birthday.substring(6,7)+"월 "+
-                    birthday.substring(8,10)+"일"
+            birthday.substring(0,4)+"."+
+                    birthday.substring(6,7)+"."+
+                    birthday.substring(8,10)+""
         } else {
-            birthday.substring(0,4)+"년 "+
-                    birthday.substring(5,7)+"월 "+
-                    birthday.substring(8,10)+"일"
+            birthday.substring(0,4)+"."+
+                    birthday.substring(5,7)+"."+
+                    birthday.substring(8,10)+""
         },
         grade = grade,
         classNum = classNum,
