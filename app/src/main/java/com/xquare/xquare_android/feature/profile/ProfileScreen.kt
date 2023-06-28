@@ -168,7 +168,7 @@ private fun Profile(
                         modifier = Modifier
                             .size(20.dp)
                             .align(Alignment.BottomEnd),
-                        painter = painterResource(R.drawable.ic_camera),
+                        painter = painterResource(R.drawable.ic_add_gallery),
                         contentDescription = null
                     )
                 }
