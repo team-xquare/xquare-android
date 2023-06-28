@@ -123,18 +123,16 @@ fun AlarmItem(
         daysDifference > 0 -> "${daysDifference}일 전"
         hoursDifference <= 0 ->"${minutesDifference}분 전"
         else -> "${hoursDifference}시간 전"
-    }
+    }.let { if (it == "0분 전") "방금전" else it }
 
     val tint = if (alarmList.is_read) black else purple300
 
     val painter: Int = when (alarmList.topic) {
-        "APPLICATION_WEEKEND_MEAL", "APPLICATION_STAY",
-        "APPLICATION_MOVE_CLASSROOM", "APPLICATION_PICNIC",
-        "APPLICATION_PICNIC_PASS", "APPLICATION_WEEKEND_PICNIC",
+        "APPLICATION_WEEKEND_PICNIC",
         "APPLICATION_WEEKEND_PICNIC_RESERVATION" -> R.drawable.ic_apply
         "ALL_BAD_POINT","ALL_PENALTY_LEVEL"->R.drawable.img_bad
-        "ALL_GOOD_POINT", "FEED_NOTICE_LIKE", "FEED_BAMBOO_LIKE"->R.drawable.img_good
-        "FEED_NOTICE","FEED_NOTICE_COMMENT", "FEED_BAMBOO_COMMENT" -> R.drawable.ic_feed
+        "ALL_GOOD_POINT", "FEED_NOTICE_LIKE", "FEED_BAMBOO_LIKE" ->R.drawable.img_good
+        "FEED_NOTICE","FEED_NOTICE_COMMENT", "FEED_BAMBOO_COMMENT", -> R.drawable.ic_feed
         "SCHEDULE_LOCAL","SCHEDULE_SOCIAL" -> R.drawable.ic_schedule
         else -> R.drawable.ic_alarm
     }
