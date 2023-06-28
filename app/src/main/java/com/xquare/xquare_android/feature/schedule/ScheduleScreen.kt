@@ -70,12 +70,6 @@ fun ScheduleScreen(navController: NavController) {
     var isLoadingSchedule by remember { mutableStateOf(false) }
     var loadingMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
 
-    LaunchedEffect(Unit){
-        timetableViewModel.run {
-            fetchWeekTimetables()
-        }
-    }
-
     LaunchedEffect(Unit) {
         scheduleViewModel.fetchSchedules(loadingMonth)
         scheduleViewModel.eventFlow.collect {

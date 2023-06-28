@@ -13,13 +13,16 @@ import javax.inject.Inject
 class TimetableViewModel @Inject constructor(
     private val fetchWeekTimetablesUseCase: FetchWeekTimetablesUseCase,
 ): BaseViewModel<TimetableViewModel.Event>() {
+    init {
+        fetchWeekTimetables()
+    }
 
     private val _timetable = MutableStateFlow(
         TimetableEntity(
             emptyList()
         ))
     val timetable: MutableStateFlow<TimetableEntity> = _timetable
-    fun fetchWeekTimetables() {
+    private fun fetchWeekTimetables() {
         execute(
             job = { fetchWeekTimetablesUseCase.execute(Unit) },
             onSuccess = { it.collect { timetable -> _timetable.tryEmit(timetable) } },
