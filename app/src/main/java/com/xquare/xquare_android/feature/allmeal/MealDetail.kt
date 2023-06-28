@@ -1,4 +1,3 @@
-import androidx.compose.animation.AnimatedContentScope.SlideDirection.Companion.End
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -18,13 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
+import com.semicolon.design.Body3
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
-import com.semicolon.design.color.primary.purple.purple400
-import com.semicolon.design.color.system.green.green100
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.xquare_android.util.toKorean
 
@@ -62,7 +60,7 @@ fun MealDetail(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "아침", color = gray800)
                 Spacer(Modifier.size(8.dp))
-                Body2(
+                Body3(
                     text = mealWithDateEntity.caloriesOfBreakfast,
                     color = gray700,
                     modifier = Modifier
@@ -77,7 +75,7 @@ fun MealDetail(
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "점심", color = gray800)
-                Body2(
+                Body3(
                     text = mealWithDateEntity.caloriesOfLunch,
                     color = gray700,
                     modifier = Modifier
@@ -92,13 +90,13 @@ fun MealDetail(
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "저녁", color = gray800)
-                Body2(
+                Body3(
                     text = mealWithDateEntity.caloriesOfDinner,
                     color = gray700,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(3.dp)
-                        .wrapContentWidth(align = Alignment.End)
+                        .wrapContentWidth(align = Alignment.End),
                 )
             }
             Body2(text = dinner, color = gray900)
