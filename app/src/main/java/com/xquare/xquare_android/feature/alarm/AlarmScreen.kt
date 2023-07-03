@@ -128,11 +128,6 @@ fun AlarmItem(
     val tint = if (alarmList.is_read) black else purple300
 
     val painter: Int = when (alarmList.topic) {
-        "APPLICATION_WEEKEND_MEAL",
-        "APPLICATION_STAY",
-        "APPLICATION_MOVE_CLASSROOM",
-        "APPLICATION_PICNIC",
-        "APPLICATION_PICNIC_PASS",
         "APPLICATION_WEEKEND_PICNIC",
         "APPLICATION_WEEKEND_PICNIC_RESERVATION" -> R.drawable.ic_apply
         "ALL_BAD_POINT","ALL_PENALTY_LEVEL"->R.drawable.ic_thums_down
