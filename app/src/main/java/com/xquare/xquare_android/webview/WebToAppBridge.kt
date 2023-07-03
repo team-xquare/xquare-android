@@ -11,11 +11,13 @@ import com.xquare.xquare_android.webview.data.TimePickerInfo
 import com.xquare.xquare_android.webview.data.PhotoPickerInfo
 import com.xquare.xquare_android.webview.data.RightButtonEnabled
 import com.xquare.xquare_android.webview.data.WebViewError
+import com.xquare.xquare_android.webview.data.WebViewSuccess
 
 class WebToAppBridge(
     val onNavigate: (NavigateInfo) -> Unit = {},
     val onImageDetail: (ImageInfo) -> Unit = {},
     val onConfirmModal: (ModalInfo) -> Unit = {},
+    val onSuccess: (WebViewSuccess) -> Unit = {},
     val onBack: () -> Unit = {},
     val onError: (WebViewError) -> Unit = {},
     val onTimePicker: (TimePickerInfo) -> Unit = {},
@@ -45,6 +47,10 @@ class WebToAppBridge(
     @JavascriptInterface
     fun error(error: String) =
         onError(gson.fromJson(error, WebViewError::class.java))
+
+    @JavascriptInterface
+    fun success(success: String) =
+        onSuccess(gson.fromJson(success, WebViewSuccess::class.java))
 
     @JavascriptInterface
     fun timePicker(data: String) =
