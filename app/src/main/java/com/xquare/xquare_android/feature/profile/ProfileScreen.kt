@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -29,11 +28,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
+import com.semicolon.design.Body2
 import com.semicolon.design.Body3
-import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.gray.*
 import com.semicolon.design.color.primary.white.white
-import com.semicolon.design.color.system.red.red500
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CenterAppBar
@@ -77,7 +75,6 @@ fun ProfileScreen(navController: NavController) {
         viewModel = viewModel
     )
 }
-
 @Composable
 private fun Profile(
     profile: ProfileEntity?,
@@ -90,7 +87,7 @@ private fun Profile(
     var logoutDialogState by remember { mutableStateOf(false) }
     val gitMenuList = listOf("계정 연동")
 //    var gitState by remember { mutableStateOf(false) }
-    val accountMenuList = listOf("로그아웃","회원탈퇴")
+    val accountMenuList = listOf("로그아웃")
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -111,7 +108,6 @@ private fun Profile(
     if (galleryState) {
         openWebViewGallery.launch(openGalleryLauncher)
     }
-
     Scaffold(
         modifier = Modifier
             .background(white)
@@ -129,71 +125,94 @@ private fun Profile(
             }
         }
     ) {
-        Column {
-            Column(
-                modifier = Modifier
-                    .padding(top = it.calculateTopPadding(), start = 12.dp, end = 12.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(gray50)
-                    .border(width = 2.dp, color = gray200, shape = RoundedCornerShape(8.dp)),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(12.dp)
-                ) {
-                    val profileImageModifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(30.dp))
-                        .clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = null,
-                        ) {
-                            galleryState = true
-                        }
+        Column(
+            modifier = Modifier
+                .padding(top = it.calculateTopPadding()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val profileImageModifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(30.dp))
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                    ) {
+                        galleryState = true
+                    }
 
-                    Box {
-                        Image(
-                            modifier = profileImageModifier,
-                            painter = rememberAsyncImagePainter(
-                                model = profile?.profileFileName,
-                                placeholder = ColorPainter(gray200),
-                                error = painterResource(id = R.drawable.ic_profile_default),
-                            ),
-                            contentScale = ContentScale.Crop,
-                            contentDescription = null
-                        )
-                        Image(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .align(Alignment.BottomEnd),
-                            painter = painterResource(R.drawable.ic_camera),
-                            contentDescription = null
-                        )
-                    }
-                    Spacer(Modifier.size(16.dp))
-                    Column {
-                        Subtitle4(text = profile?.name ?: "")
-                        Text(
-                            text = "${profile?.grade ?: ""}학년 ${profile?.classNum ?: ""}반 ${profile?.num ?: ""}번",
-                            fontWeight = FontWeight.Normal,
-                        )
-                    }
-                }
-                Row(modifier = Modifier.padding(start = 12.dp)) {
-                    Body3(text = "아이디 : ", color = gray900)
-                    Body3(text = profile?.accountId ?: "")
-                }
-                Row(modifier = Modifier.padding(12.dp)) {
-                    Body3(text = "생년월일 : ", color = gray900)
-                    Body3(
-                        text = profile?.birthday.toString()
+                Box {
+                    Image(
+                        modifier = profileImageModifier,
+                        painter = rememberAsyncImagePainter(
+                            model = profile?.profileFileName,
+                            placeholder = ColorPainter(gray200),
+                            error = painterResource(id = R.drawable.ic_profile_default),
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null
+                    )
+                    Image(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .align(Alignment.BottomEnd),
+                        painter = painterResource(R.drawable.ic_add_gallery),
+                        contentDescription = null
                     )
                 }
             }
+            Spacer(Modifier.size(4.dp))
+            Body2(
+                text = "변경하기",
+                color = gray900,
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                    ) {
+                        galleryState = true
+                    }
+            )
+            Spacer(Modifier.size(30.dp))
+            Row(Modifier.padding(horizontal = 16.dp)
+            ) {
+                Body1(text = "이름", color = gray900)
+                Spacer(modifier = Modifier.weight(1f))
+                Body1(text = profile?.name ?: "", fontWeight = FontWeight.Medium)
+            }
 
+            Spacer(Modifier.size(20.dp))
+            Row(Modifier.padding(horizontal = 16.dp)){
+                Body1(text = "생년월일", color = gray900)
+                Spacer(modifier = Modifier.weight(1f))
+                Body1(
+                    text = profile?.birthday?.format(DateTimeFormatter.ofPattern("yyyy.MM.dd")) ?: "",
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(Modifier.size(20.dp))
+            Row(Modifier.padding(horizontal = 16.dp)) {
+                Body1(text = "학번", color = gray900)
+                Spacer(modifier = Modifier.weight(1f))
+                Body1(
+                    text = "${profile?.grade ?: ""}학년 ${profile?.classNum ?: ""}반 ${profile?.num ?: ""}번",
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(Modifier.size(20.dp))
+            Row(Modifier.padding(horizontal = 16.dp)) {
+                Body1(text = "아이디", color = gray900)
+                Spacer(modifier = Modifier.weight(1f))
+                Body1(text = profile?.accountId ?: "", fontWeight = FontWeight.Medium)
+            }
+            Spacer(modifier = Modifier.size(24.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp)
+                    .background(gray50)
+            )
+            Spacer(modifier = Modifier.size(12.dp))
             if (logoutDialogState) {
                 ConfirmModal(
                     message = "정말 로그아웃 하시겠습니까?",
@@ -204,15 +223,15 @@ private fun Profile(
                     logoutDialogState = false
                 }
             }
-
-            Spacer(modifier = Modifier.size(12.dp))
-            Column {
+            Column(Modifier.padding(horizontal = 16.dp)) {
                 Body1(
                     text = "계정 설정",
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(start = 4.dp)
+
                 )
+                Spacer(Modifier.size(4.dp))
+                Body3(text = "기기내 계정에서 로그아웃 할 수 있어요.", color = gray700)
+                Spacer(Modifier.size(4.dp))
                 accountMenuList.forEachIndexed { index, text ->
                     ColumnMenu(text = text) {
                         when (index) {
@@ -220,7 +239,6 @@ private fun Profile(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.size(12.dp))
                 /*
                 Column {
                     Body1(
@@ -242,33 +260,28 @@ private fun Profile(
         }
     }
 }
-
-
-
 @Composable
 private fun ColumnMenu(text: String, onClick: () -> Unit) {
-    val textColor = if(text == "로그아웃") gray900 else red500
     Box(
         modifier = Modifier
-            .padding(start = 12.dp, end = 16.dp, top = 12.dp)
+            .padding(top = 12.dp)
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = null,
                 enabled = true
             ) { onClick() }
             .fillMaxWidth()
-            .height(58.dp)
+            .height(50.dp)
             .background(gray50, RoundedCornerShape(12.dp)),
         contentAlignment = Alignment.CenterStart
     ) {
-        Body1(
+        Body2(
             text = text,
-            color = textColor,
-            modifier = Modifier.padding(start = 4.dp)
+            color = gray900,
+            modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
         )
     }
 }
-
 /*
 @Composable
 private fun ButtonColumnMenu(

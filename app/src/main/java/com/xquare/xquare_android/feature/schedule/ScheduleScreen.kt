@@ -71,12 +71,6 @@ fun ScheduleScreen(navController: NavController) {
     var isLoadingSchedule by remember { mutableStateOf(false) }
     var loadingMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
 
-    LaunchedEffect(Unit){
-        timetableViewModel.run {
-            fetchWeekTimetables()
-        }
-    }
-
     LaunchedEffect(Unit) {
         scheduleViewModel.fetchSchedules(loadingMonth)
         scheduleViewModel.eventFlow.collect {
@@ -170,14 +164,17 @@ private fun Timetable(
     dayOfWeek: Int,
     timetableEntity: TimetableEntity?,
 ) {
+    var dayOfWeek = dayOfWeek
+    var date = dayOfWeek
     if (timetableEntity == null) return
     if (timetableEntity.week_timetable.isEmpty()) return
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
         val lastIndex = timetableEntity.week_timetable.lastIndex
         //val coerce = dayOfWeek.coerceIn(0, lastIndex)
-        val initPage = getTimeTablePage(dayOfWeek = dayOfWeek, lastIndex = lastIndex)
-
+        if (dayOfWeek > 4) dayOfWeek = 4
+        if (timetableEntity.week_timetable[dayOfWeek-1].week_day != dayOfWeek) date -= (5-timetableEntity.week_timetable.size)
+        val initPage = getTimeTablePage(dayOfWeek = date, lastIndex = lastIndex)
         pagerState.scrollToPage(initPage)
     }
     Scaffold(

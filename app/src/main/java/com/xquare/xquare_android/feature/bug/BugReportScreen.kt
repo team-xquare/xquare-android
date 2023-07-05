@@ -15,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,11 +26,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -68,7 +69,6 @@ import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.toFile
 import java.io.File
 
-// TODO Body4
 internal object MenuItem {
     const val HOME = "홈"
     const val SCHEDULE = "일정"
@@ -93,25 +93,25 @@ fun BugReportScreen(
 ) {
     val bugViewModel: BugViewModel = hiltViewModel()
     val context = LocalContext.current
-    var image by remember { mutableStateOf(ArrayList<String>()) }
-    var photo by remember { mutableStateOf("") }
+    val photos by remember { mutableStateOf(ArrayList<String>()) }
+    var image by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit){
         bugViewModel.eventFlow.collect{
             when (it){
                 is BugViewModel.Event.Success -> {
                     Toast.makeText(context,"버그 제보 성공",Toast.LENGTH_SHORT).show()
-                    photo = ""
+                    photos.clear()
                 }
                 is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
                 is BugViewModel.Event.UploadFileSuccess -> {
-                    image = it.data as ArrayList<String>
-                    photo = it.data[0]
+                    image = it.data[0]
                 }
             }
         }
     }
-
+    if (image != "") photos.add(image)
+    image = ""
     BugreportContent(
         onIconClick = { navController.popBackStack() },
         onBtnClick = {
@@ -120,8 +120,7 @@ fun BugReportScreen(
         sendImage = {
             bugViewModel.uploadFile(it)
         },
-        image = image,
-        photo = photo
+        photos = photos,
     )
 
 
@@ -133,8 +132,7 @@ private fun BugreportContent(
     onIconClick: () -> Unit,
     onBtnClick: (BugEntity) -> Unit,
     sendImage: (File) -> Unit,
-    image: ArrayList<String>,
-    photo:String
+    photos: ArrayList<String>,
 ) {
     var where by remember { mutableStateOf("홈") }
     var explanationText by remember { mutableStateOf("") }
@@ -146,9 +144,12 @@ private fun BugreportContent(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                result.data!!.data?.run {
-                    sendImage(toFile(context,this))
-                    Toast.makeText(context,"사진 추가 성공",Toast.LENGTH_SHORT).show()
+                result.data!!.clipData?.run {
+                    for (i in 0 until itemCount) {
+                        val listItem = getItemAt(i).uri
+                        sendImage(toFile(context, listItem))
+                    }
+                    Toast.makeText(context, "사진 추가 성공", Toast.LENGTH_SHORT).show()
                 }
             }
             galleryState = false
@@ -157,7 +158,7 @@ private fun BugreportContent(
     val openGalleryLauncher =
         Intent(Intent.ACTION_PICK).apply {
             this.type = "image/*"
-            this.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
+            this.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }
     if (galleryState) {
         openWebViewGallery.launch(openGalleryLauncher)
@@ -175,7 +176,8 @@ private fun BugreportContent(
                 btnEnabled = headerBtnEnabled,
                 onIconClick = onIconClick,
                 onBtnClick = {
-                    onBtnClick(BugEntity(explanationText, where.toEntityWhere(), image_urls = image))
+                    onBtnClick(BugEntity(explanationText, where.toEntityWhere(), image_urls = photos))
+                    photos.clear()
                     explanationText = ""
                 },
             )
@@ -193,18 +195,41 @@ private fun BugreportContent(
             Spacer(modifier = Modifier.size(30.dp))
             Text(text = "사진을 첨부해 주세요")
             Spacer(modifier = Modifier.size(10.dp))
-            Column(
-                modifier = Modifier
-                    .clickable { galleryState = true }
-                    .size(150.dp)
-                    .background(gray50),
-            ) {
-                if (photo != ""){
-                    Image(
-                       modifier = Modifier.fillMaxSize(),
-                       painter = rememberAsyncImagePainter(model = photo),
-                       contentDescription = "bugPhoto",
-                    )
+            Row {
+                if (photos.isEmpty()){
+                    Column(
+                        modifier = Modifier
+                            .clickable { galleryState = true }
+                            .size(150.dp)
+                            .background(gray50),
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(20.dp),
+                            painter = rememberAsyncImagePainter(model = R.drawable.ic_add_photo),
+                            contentDescription = "insertBugPhoto",
+                        )
+                    }
+                } else {
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 12.dp),
+                    ) {
+                        items(photos) {
+                            Column(
+                                modifier = Modifier
+                                    .size(150.dp)
+                                    .clickable { galleryState = true }
+                                    .padding(end = 4.dp),
+                            ) {
+                                Image(
+                                    modifier = Modifier.fillMaxSize(),
+                                    painter = rememberAsyncImagePainter(model = it),
+                                    contentDescription = "bugPhoto",
+                                )
+                            }
+                        }
+                    }
                 }
             }
             Spacer(modifier = Modifier.size(16.dp))

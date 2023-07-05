@@ -64,8 +64,6 @@ fun HomeScreen(navController: NavController) {
         viewModel.run {
             fetchPassTime()
             fetchClassPosition()
-            fetchUserSimpleData()
-            fetchTodayMeal()
         }
         viewModel.eventFlow.collect {
             when (it) {

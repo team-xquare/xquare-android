@@ -113,6 +113,7 @@ fun CommonWebViewScreen(
         },
         onBack = { updateUi { navController.popBackStack() } },
         onError = { makeToast(context, it.message) },
+        onSuccess = { makeToast(context, it.message) },
         onPhotoPicker = {
             makeToast(context, "사진은 10장까지 선택할 수 있습니다.")
             galleryState = it

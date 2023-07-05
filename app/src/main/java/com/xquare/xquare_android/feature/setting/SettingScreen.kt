@@ -45,7 +45,6 @@ fun SettingScreen(
     }
     val pointState = remember { mutableStateOf(true) }
     val scheduleState = remember { mutableStateOf(true) }
-    val applicationState = remember { mutableStateOf(true) }
     val feedState = remember { mutableStateOf(true) }
     var stateChange = false
 
@@ -53,19 +52,12 @@ fun SettingScreen(
         when (key) {
             "ALL" -> pointState.value = value.isActivate
             "SCHEDULE" -> scheduleState.value = value.isActivate
-            "APPLICATION" -> applicationState.value = value.isActivate
             "FEED" -> feedState.value = value.isActivate
         }
         stateChange = true
     }
 
     val onFeedStateChange: (ActivateAlarmEntity) -> Unit by remember {
-        mutableStateOf(
-            { value: ActivateAlarmEntity -> viewModel.activateAlarm(value) }
-        )
-    }
-
-    val onApplicationStateChange: (ActivateAlarmEntity) -> Unit by remember {
         mutableStateOf(
             { value: ActivateAlarmEntity -> viewModel.activateAlarm(value) }
         )
@@ -87,8 +79,6 @@ fun SettingScreen(
             onBackPress = { navController.popBackStack() },
             feedState = feedState,
             onFeedClick = onFeedStateChange,
-            applicationState = applicationState,
-            onApplicationClick = onApplicationStateChange,
             pointState = pointState,
             onPointClick = onPointStateChange,
             scheduleState = scheduleState,
@@ -102,8 +92,6 @@ fun SettingContent(
     onBackPress: () -> Unit,
     feedState: MutableState<Boolean>,
     onFeedClick: (ActivateAlarmEntity) -> Unit,
-    applicationState: MutableState<Boolean>,
-    onApplicationClick: (ActivateAlarmEntity) -> Unit,
     pointState: MutableState<Boolean>,
     onPointClick: (ActivateAlarmEntity) -> Unit,
     scheduleState: MutableState<Boolean>,
@@ -137,12 +125,6 @@ fun SettingContent(
             content = stringResource(id = R.string.feed_alarm_content),
             state = feedState.value,
             onState = { onFeedClick(ActivateAlarmEntity(isActivated = it, topic = "FEED")) }
-        )
-        SettingItem(
-            topic = stringResource(id = R.string.apply_alarm),
-            content = stringResource(id = R.string.apply_alarm_content),
-            state = applicationState.value,
-            onState = { onApplicationClick(ActivateAlarmEntity(isActivated = it, topic = "APPLICATION")) }
         )
 
         SettingItem(
