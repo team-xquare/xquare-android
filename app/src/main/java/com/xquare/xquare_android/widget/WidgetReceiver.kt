@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.AsyncTask
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import com.xquare.domain.entity.schedules.SchedulesEntity
@@ -30,24 +31,47 @@ class WidgetReceiver: GlanceAppWidgetReceiver() {
         var schedule: SchedulesEntity = SchedulesEntity(schedules = listOf())
     }
 
+    private val timer = Timer()
+
+    override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        super.onDeleted(context, appWidgetIds)
+        timer.cancel()
+    }
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        Timer().scheduleAtFixedRate(21600000,21600000) {
+        timer.scheduleAtFixedRate(21600000,21600000) {
             updateAppWidget(context = context)
         }
     }
 
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        timer.scheduleAtFixedRate(21600000,21600000) {
+            updateAppWidget(context = context)
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
     private fun updateAppWidget(context: Context) {
-        updateWidgetData()
-        val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-        val widgetComponent = ComponentName(context, WidgetReceiver::class.java)
-        val widgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(widgetComponent)
-        updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
-        context.sendBroadcast(updateIntent)
+        object : AsyncTask<Void, Void, Unit>() {
+            @Deprecated("Deprecated in Java")
+            override fun doInBackground(vararg params: Void?) {
+                updateWidgetData()
+            }
+
+            @Deprecated("Deprecated in Java")
+            override fun onPostExecute(result: Unit?) {
+                val updateIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+                val widgetComponent = ComponentName(context, WidgetReceiver::class.java)
+                val widgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(widgetComponent)
+                updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
+                context.sendBroadcast(updateIntent)
+            }
+        }.execute()
     }
 
     @SuppressLint("NewApi")
