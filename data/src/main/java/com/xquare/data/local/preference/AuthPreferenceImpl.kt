@@ -28,6 +28,22 @@ class AuthPreferenceImpl @Inject constructor(
     override suspend fun clearRefreshToken() =
         clearPreference(REFRESH_TOKEN)
 
+    override suspend fun saveAccessTokenExpireAt(expiredAt: LocalDateTime) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchAccessTokenExpireAt(): LocalDateTime {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveRefreshTokenExpireAt(expiredAt: LocalDateTime) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchRefreshTokenExpireAt(): LocalDateTime {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun saveExpirationAt(expiredAt: LocalDateTime) =
         saveLongPreference(EXPIRED_AT, expiredAt.atZone(ZoneId.systemDefault()).toEpochSecond())
 

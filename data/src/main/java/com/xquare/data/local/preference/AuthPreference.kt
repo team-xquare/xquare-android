@@ -16,6 +16,14 @@ interface AuthPreference {
 
     suspend fun clearRefreshToken()
 
+    suspend fun saveAccessTokenExpireAt(expiredAt: LocalDateTime)
+
+    suspend fun fetchAccessTokenExpireAt(): LocalDateTime
+
+    suspend fun saveRefreshTokenExpireAt(expiredAt: LocalDateTime)
+
+    suspend fun fetchRefreshTokenExpireAt(): LocalDateTime
+
     suspend fun saveExpirationAt(expiredAt: LocalDateTime)
 
     suspend fun fetchExpirationAt(): LocalDateTime
