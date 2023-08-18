@@ -42,6 +42,8 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun logout() {
         authPreference.clearAccessToken()
         authPreference.clearRefreshToken()
+        authPreference.clearAccessTokenExpireAt()
+        authPreference.clearRefreshTokenExpireAt()
         authPreference.clearExpirationAt()
         authPreference.clearUserId()
     }
