@@ -35,15 +35,7 @@ class AuthLocalDataSourceImpl @Inject constructor(
             clearAccessToken()
             clearRefreshToken()
             clearExpirationAt()
+            clearAccessTokenExpireAt()
+            clearRefreshTokenExpireAt()
         }
-
-    override fun TokenEntity(
-        accessToken: String,
-        accessTokenExpireAt: LocalDateTime,
-        refreshToken: String,
-        refreshTokenExpireAt: LocalDateTime,
-        expirationAt: LocalDateTime
-    ): TokenEntity {
-        TODO("Not yet implemented")
-    }
 }

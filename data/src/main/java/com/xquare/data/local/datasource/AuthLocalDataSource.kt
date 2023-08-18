@@ -10,11 +10,4 @@ interface AuthLocalDataSource {
     suspend fun saveToken(tokenEntity: TokenEntity)
 
     suspend fun clearToken()
-    fun TokenEntity(
-        accessToken: String,
-        accessTokenExpireAt: LocalDateTime,
-        refreshToken: String,
-        refreshTokenExpireAt: LocalDateTime,
-        expirationAt: LocalDateTime
-    ): TokenEntity
 }
