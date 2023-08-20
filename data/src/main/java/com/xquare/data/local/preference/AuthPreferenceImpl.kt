@@ -43,17 +43,20 @@ class AuthPreferenceImpl @Inject constructor(
     override suspend fun fetchRefreshTokenExpireAt(): LocalDateTime =
         Instant.ofEpochSecond(fetchLongPreference(REFRESH_TOKEN_EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
 
-    override suspend fun saveExpirationAt(expiredAt: LocalDateTime) =
-        saveLongPreference(EXPIRED_AT, expiredAt.atZone(ZoneId.systemDefault()).toEpochSecond())
-
     override suspend fun clearRefreshTokenExpireAt() =
         clearPreference(REFRESH_TOKEN_EXPIRED_AT)
 
-    override suspend fun fetchExpirationAt(): LocalDateTime =
-        Instant.ofEpochSecond(fetchLongPreference(EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
+    override suspend fun fetchRole(): String {
+        TODO("작동 안되면 다시 작성.")
+    }
 
-    override suspend fun clearExpirationAt() =
-        clearPreference(EXPIRED_AT)
+    override suspend fun saveRole(role: String) {
+        TODO("작동 안되면 다시 작성.")
+    }
+
+    override suspend fun clearRole() {
+        TODO("작동 안되면 다시 작성.")
+    }
 
     override suspend fun saveUserId(userId: String) =
         saveStringPreference(USER_ID, userId)
@@ -90,7 +93,6 @@ class AuthPreferenceImpl @Inject constructor(
         const val REFRESH_TOKEN = "REFRESH_TOKEN"
         const val ACCESS_TOKEN_EXPIRED_AT = "ACCESS_TOKEN_EXPIRED_AT"
         const val REFRESH_TOKEN_EXPIRED_AT = "REFRESH_TOKEN_EXPIRED_AT"
-        const val EXPIRED_AT = "EXPIRED_AT"
         const val USER_ID = "USER_ID"
     }
 }
