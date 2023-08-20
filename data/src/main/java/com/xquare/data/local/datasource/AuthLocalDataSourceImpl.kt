@@ -2,14 +2,13 @@ package com.xquare.data.local.datasource
 
 import com.xquare.data.local.preference.AuthPreference
 import com.xquare.domain.entity.auth.TokenEntity
-import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 class AuthLocalDataSourceImpl @Inject constructor(
     private val authPreference: AuthPreference
 ) : AuthLocalDataSource {
     override suspend fun fetchToken(): TokenEntity =
-        with((authPreference)){
+        with(authPreference){
             TokenEntity(
                 accessToken = fetchAccessToken(),
                 accessTokenExpireAt = fetchAccessTokenExpireAt(),

@@ -1,7 +1,6 @@
 package com.xquare.data.local.datasource
 
 import com.xquare.domain.entity.auth.TokenEntity
-import org.threeten.bp.LocalDateTime
 
 interface AuthLocalDataSource {
 
