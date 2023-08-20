@@ -9,13 +9,14 @@ data class TokenResponse(
     @SerializedName("access_token_expire_at") val accessTokenExpireAt: String,
     @SerializedName("refresh_token") val refreshToken: String,
     @SerializedName("refresh_token_expire_at") val refreshTokenExpireAt: String,
-    @SerializedName("expire_at") val expirationAt: String
-)
+    @SerializedName("role") val role: String
+    )
+
 
 fun TokenResponse.toEntity() = TokenEntity(
     accessToken = accessToken,
     accessTokenExpireAt = LocalDateTime.parse(accessTokenExpireAt),
     refreshToken = refreshToken,
     refreshTokenExpireAt = LocalDateTime.parse(refreshTokenExpireAt),
-    expirationAt = LocalDateTime.parse(expirationAt)
+    role = role
 )
