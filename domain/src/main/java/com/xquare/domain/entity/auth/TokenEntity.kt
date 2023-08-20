@@ -7,5 +7,5 @@ data class TokenEntity(
     val accessTokenExpireAt: LocalDateTime,
     val refreshToken: String,
     val refreshTokenExpireAt: LocalDateTime,
-    val expirationAt: LocalDateTime
+    val role: String
 )
