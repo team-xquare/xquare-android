@@ -33,7 +33,7 @@ class AuthorizationInterceptor @Inject constructor(
         else if (path == "/users" && method == "POST") return chain.proceed(request)
         else if (path.startsWith("/meal")) return chain.proceed(request)
 
-        val expiredAt = runBlocking { authPreference.fetchExpirationAt() }
+        val expiredAt = runBlocking { authPreference.fetchAccessTokenExpireAt() }
         val currentTime = LocalDateTime.now(ZoneId.systemDefault())
 
         if (expiredAt.isBefore(currentTime)) {
@@ -58,14 +58,14 @@ class AuthorizationInterceptor @Inject constructor(
                     runBlocking {
                         authPreference.saveAccessToken(token.accessToken)
                         authPreference.saveRefreshToken(token.refreshToken)
-                        authPreference.saveExpirationAt(LocalDateTime.parse(token.expirationAt))
+                        authPreference.saveAccessTokenExpireAt(LocalDateTime.parse(token.accessTokenExpireAt))
                     }
                 } else throw NeedLoginException()
             } catch (e: NeedLoginException) {
                 runBlocking {
                     authPreference.saveAccessToken("")
                     authPreference.saveRefreshToken("")
-                    authPreference.saveExpirationAt(LocalDateTime.MIN)
+                    authPreference.saveAccessTokenExpireAt(LocalDateTime.MIN)
                 }
             }
         }
