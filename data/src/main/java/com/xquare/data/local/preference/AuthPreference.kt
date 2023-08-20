@@ -28,11 +28,12 @@ interface AuthPreference {
 
     suspend fun clearRefreshTokenExpireAt()
 
-    suspend fun saveExpirationAt(expiredAt: LocalDateTime)
 
-    suspend fun fetchExpirationAt(): LocalDateTime
+    suspend fun fetchRole() : String
 
-    suspend fun clearExpirationAt()
+    suspend fun saveRole(role: String)
+
+    suspend fun clearRole()
 
     suspend fun saveUserId(userId: String)
 
