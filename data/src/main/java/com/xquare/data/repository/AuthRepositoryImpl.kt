@@ -44,7 +44,7 @@ class AuthRepositoryImpl @Inject constructor(
         authPreference.clearRefreshToken()
         authPreference.clearAccessTokenExpireAt()
         authPreference.clearRefreshTokenExpireAt()
-        authPreference.clearExpirationAt()
+        authPreference.clearRole()
         authPreference.clearUserId()
     }
 }
