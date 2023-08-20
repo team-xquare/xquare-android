@@ -15,7 +15,7 @@ class AuthLocalDataSourceImpl @Inject constructor(
                 accessTokenExpireAt = fetchAccessTokenExpireAt(),
                 refreshToken = fetchRefreshToken(),
                 refreshTokenExpireAt = fetchRefreshTokenExpireAt(),
-                expirationAt = fetchExpirationAt()
+                role = fetchRole()
             )
         }
 
@@ -27,14 +27,14 @@ class AuthLocalDataSourceImpl @Inject constructor(
             saveAccessTokenExpireAt(tokenEntity.accessTokenExpireAt)
             saveRefreshToken(tokenEntity.refreshToken)
             saveAccessTokenExpireAt(tokenEntity.refreshTokenExpireAt)
-            saveExpirationAt(tokenEntity.expirationAt)
+            saveRole(tokenEntity.role)
         }
 
     override suspend fun clearToken() =
         with(authPreference) {
             clearAccessToken()
             clearRefreshToken()
-            clearExpirationAt()
+            clearRole()
             clearAccessTokenExpireAt()
             clearRefreshTokenExpireAt()
         }
