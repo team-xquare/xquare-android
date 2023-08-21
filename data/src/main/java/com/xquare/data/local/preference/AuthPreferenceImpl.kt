@@ -46,17 +46,14 @@ class AuthPreferenceImpl @Inject constructor(
     override suspend fun clearRefreshTokenExpireAt() =
         clearPreference(REFRESH_TOKEN_EXPIRED_AT)
 
-    override suspend fun fetchRole(): String {
-        TODO("작동 안되면 다시 작성.")
-    }
+    override suspend fun fetchRole(): String =
+        fetchStringPreference(ROLE)
 
-    override suspend fun saveRole(role: String) {
-        TODO("작동 안되면 다시 작성.")
-    }
+    override suspend fun saveRole(role: String) =
+        saveStringPreference(ROLE, role)
 
-    override suspend fun clearRole() {
-        TODO("작동 안되면 다시 작성.")
-    }
+    override suspend fun clearRole() =
+        clearPreference(ROLE)
 
     override suspend fun saveUserId(userId: String) =
         saveStringPreference(USER_ID, userId)
@@ -94,5 +91,6 @@ class AuthPreferenceImpl @Inject constructor(
         const val ACCESS_TOKEN_EXPIRED_AT = "ACCESS_TOKEN_EXPIRED_AT"
         const val REFRESH_TOKEN_EXPIRED_AT = "REFRESH_TOKEN_EXPIRED_AT"
         const val USER_ID = "USER_ID"
+        const val ROLE = "ROLE"
     }
 }
