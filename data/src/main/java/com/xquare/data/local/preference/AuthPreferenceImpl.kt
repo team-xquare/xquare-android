@@ -28,14 +28,32 @@ class AuthPreferenceImpl @Inject constructor(
     override suspend fun clearRefreshToken() =
         clearPreference(REFRESH_TOKEN)
 
-    override suspend fun saveExpirationAt(expiredAt: LocalDateTime) =
-        saveLongPreference(EXPIRED_AT, expiredAt.atZone(ZoneId.systemDefault()).toEpochSecond())
+    override suspend fun saveAccessTokenExpireAt(accessTokenExpireAt: LocalDateTime) =
+        saveLongPreference(ACCESS_TOKEN_EXPIRED_AT, accessTokenExpireAt.atZone(ZoneId.systemDefault()).toEpochSecond())
 
-    override suspend fun fetchExpirationAt(): LocalDateTime =
-        Instant.ofEpochSecond(fetchLongPreference(EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
+    override suspend fun fetchAccessTokenExpireAt(): LocalDateTime =
+        Instant.ofEpochSecond(fetchLongPreference(ACCESS_TOKEN_EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
 
-    override suspend fun clearExpirationAt() =
-        clearPreference(EXPIRED_AT)
+    override suspend fun clearAccessTokenExpireAt() =
+        clearPreference(ACCESS_TOKEN_EXPIRED_AT)
+
+    override suspend fun saveRefreshTokenExpireAt(refreshTokenExpireAt: LocalDateTime) =
+        saveLongPreference(REFRESH_TOKEN_EXPIRED_AT, refreshTokenExpireAt.atZone(ZoneId.systemDefault()).toEpochSecond())
+
+    override suspend fun fetchRefreshTokenExpireAt(): LocalDateTime =
+        Instant.ofEpochSecond(fetchLongPreference(REFRESH_TOKEN_EXPIRED_AT)).atZone(ZoneId.systemDefault()).toLocalDateTime()
+
+    override suspend fun clearRefreshTokenExpireAt() =
+        clearPreference(REFRESH_TOKEN_EXPIRED_AT)
+
+    override suspend fun fetchRole(): String =
+        fetchStringPreference(ROLE)
+
+    override suspend fun saveRole(role: String) =
+        saveStringPreference(ROLE, role)
+
+    override suspend fun clearRole() =
+        clearPreference(ROLE)
 
     override suspend fun saveUserId(userId: String) =
         saveStringPreference(USER_ID, userId)
@@ -70,7 +88,9 @@ class AuthPreferenceImpl @Inject constructor(
     companion object Key {
         const val ACCESS_TOKEN = "ACCESS_TOKEN"
         const val REFRESH_TOKEN = "REFRESH_TOKEN"
-        const val EXPIRED_AT = "EXPIRED_AT"
+        const val ACCESS_TOKEN_EXPIRED_AT = "ACCESS_TOKEN_EXPIRED_AT"
+        const val REFRESH_TOKEN_EXPIRED_AT = "REFRESH_TOKEN_EXPIRED_AT"
         const val USER_ID = "USER_ID"
+        const val ROLE = "ROLE"
     }
 }

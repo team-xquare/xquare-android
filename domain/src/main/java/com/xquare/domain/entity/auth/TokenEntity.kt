@@ -4,6 +4,8 @@ import org.threeten.bp.LocalDateTime
 
 data class TokenEntity(
     val accessToken: String,
+    val accessTokenExpireAt: LocalDateTime,
     val refreshToken: String,
-    val expirationAt: LocalDateTime
+    val refreshTokenExpireAt: LocalDateTime,
+    val role: String
 )
