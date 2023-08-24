@@ -16,6 +16,6 @@ interface ProfileApi {
         @Part file: MultipartBody.Part
     ): ProfileImageResponse
 
-    @GET("/users")
+    @GET("users")
     suspend fun fetchProfile(): ProfileResponse
 }

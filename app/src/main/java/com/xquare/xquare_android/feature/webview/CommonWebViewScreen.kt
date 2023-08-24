@@ -243,7 +243,7 @@ fun CommonWebViewScreen(
             onBackClick = { navController.popBackStack() },
             onTextBtnClick = { webView?.sendResultOfRightButton() },
             keyboardCheck = { keyboardState = it },
-            onWebviewCreate = {
+            onWebViewCreate = {
                 webView = it
                 CookieManager.getInstance().apply {
                     setAcceptCookie(true)
@@ -266,12 +266,12 @@ private fun CommonWebView(
     onBackClick: () -> Unit,
     onTextBtnClick: () -> Unit,
     keyboardCheck: (Boolean) -> Unit,
-    onWebviewCreate: (WebView) -> Unit,
+    onWebViewCreate: (WebView) -> Unit,
 ) {
     val appBarUrlList = listOf(
         "https://service.xquare.app/xbridge-test",
-        "https://service.xquare.app/feed",
-        "https://service.xquare.app/apply",
+        "https://prod-server.xquare.app/feed",
+        "https://prod-server.xquare.app/apply",
     )
 
     val context = LocalContext.current
@@ -283,7 +283,7 @@ private fun CommonWebView(
             .background(color = white)
             .padding(
                 top = DevicePaddings.statusBarHeightDp.dp,
-            )
+                )
     ) {
         if (appBarUrlList.contains(url)) {
             AppBar(
@@ -307,7 +307,7 @@ private fun CommonWebView(
                 url = url,
                 bridges = bridges,
                 keyboardCheck = keyboardCheck,
-                onCreate = onWebviewCreate
+                onCreate = onWebViewCreate
             )
         } else {
             Body3(
