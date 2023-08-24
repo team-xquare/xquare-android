@@ -34,12 +34,12 @@ fun WebView(
     val view = LocalView.current
 
     val bottomPaddingFalseUrlList = listOf(
-        "https://service.xquare.app/feed",
-        "https://service.xquare.app/apply",
+        "https://prod-server.xquare.app/feed",
+        "https://prod-server.xquare.app/apply",
     )
 
     val canRefreshList = listOf(
-        "https://service.xquare.app/feed",
+        "https://prod-server.xquare.app/feed",
     )
 
     val bottomState =
