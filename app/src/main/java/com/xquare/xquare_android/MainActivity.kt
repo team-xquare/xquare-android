@@ -227,7 +227,7 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Feed.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/feed",
+                    url = "https://prod-server.xquare.app/feed",
                     title = "피드",
                     haveBackButton = false,
                 )
@@ -235,7 +235,7 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Application.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/apply",
+                    url = "https://prod-server.xquare.app/apply",
                     title = "신청",
                     haveBackButton = false,
                 )
