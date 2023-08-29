@@ -59,6 +59,7 @@ class AuthorizationInterceptor @Inject constructor(
                         authPreference.saveAccessToken(token.accessToken)
                         authPreference.saveRefreshToken(token.refreshToken)
                         authPreference.saveAccessTokenExpireAt(LocalDateTime.parse(token.accessTokenExpireAt))
+                        authPreference.saveRefreshTokenExpireAt(LocalDateTime.parse(token.refreshTokenExpireAt))
                     }
                 } else throw NeedLoginException()
             } catch (e: NeedLoginException) {
@@ -66,6 +67,7 @@ class AuthorizationInterceptor @Inject constructor(
                     authPreference.saveAccessToken("")
                     authPreference.saveRefreshToken("")
                     authPreference.saveAccessTokenExpireAt(LocalDateTime.MIN)
+                    authPreference.saveRefreshTokenExpireAt(LocalDateTime.MIN)
                 }
             }
         }
