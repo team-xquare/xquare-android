@@ -7,7 +7,6 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 
 interface AttachmentApi {
-    @Multipart
     @POST("attachment")
     suspend fun fetchPreSignedUrl(
         @Body fetchPreSignedUrlRequest: FetchPreSignedUrlRequest,
