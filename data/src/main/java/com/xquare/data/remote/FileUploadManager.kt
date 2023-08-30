@@ -14,7 +14,6 @@ import java.io.File
 
 class FileUploadManager(
     private val attachmentApi: AttachmentApi,
-    private val authPreference: AuthPreference,
 ) {
     private val httpClient by lazy { OkHttpClient() }
     private val accessToken: String

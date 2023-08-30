@@ -114,9 +114,7 @@ object NetworkModule {
     @Provides
     fun provideFileUploadManager(
         attachmentApi: AttachmentApi,
-        authPreference: AuthPreference,
     ): FileUploadManager = FileUploadManager(
         attachmentApi = attachmentApi,
-        authPreference = authPreference,
     )
 }
