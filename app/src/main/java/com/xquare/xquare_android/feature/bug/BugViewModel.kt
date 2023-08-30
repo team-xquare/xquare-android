@@ -22,7 +22,7 @@ class BugViewModel @Inject constructor(
 
     fun uploadFile(file: File) = execute(
         job = {uploadFileUseCase.execute(file)},
-        onSuccess = {emitEvent(Event.UploadFileSuccess(it.file_url))},
+        onSuccess = {emitEvent(Event.UploadFileSuccess(it.fileUrls))},
         onFailure = { emitEvent(Event.Failure)}
     )
 
