@@ -7,6 +7,8 @@ import com.xquare.data.remote.request.attachment.FetchPreSignedUrlRequest
 import com.xquare.domain.entity.attachment.FileEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -26,31 +28,32 @@ class FileUploadManager(
             .build()
     }
 
-    suspend fun uploadFile(vararg files: File): FileEntity {
+    suspend fun uploadFile(vararg files: File): Flow<FileEntity> {
         return try {
-            require(files.all { file -> file.length() < 10 * 1_000_000 })
+            flow {
+                require(files.all { file -> file.length() < 10 * 1_000_000 })
 
-            val request1 = files.toList().toRequest()
-
-            val response =
-                attachmentApi.fetchPreSignedUrl(request1).responses.onEachIndexed { index, response ->
-                    request1.requests[index].let { request ->
-                        val file = files[index]
-                        val type = file.mediaType
-                        val newRequest = Request.Builder()
-                            .url(response.preSignedUrl)
-                            .put(file.asRequestBody(type))
-                            .build()
-                        CoroutineScope(Dispatchers.IO).launch {
-                            httpClient.newCall(newRequest).execute()
-                        }
+                val request = files.toList().toRequest()
+                val response =
+                    attachmentApi.fetchPreSignedUrl(request).responses.onEachIndexed { index, response ->
+                        files[index].uploadOn(response.preSignedUrl)
                     }
-                }
 
-            FileEntity(fileUrls = response.map { it.url })
+                emit(FileEntity(response.map { it.url }))
+            }
         } catch (e: Exception) {
-            e.printStackTrace()
-            throw e
+            error("Failed to upload file(s).")
+        }
+    }
+
+    private fun File.uploadOn(url: String) {
+        val newRequest = Request.Builder()
+            .url(url)
+            .put(this.asRequestBody(this.mediaType))
+            .build()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            httpClient.newCall(newRequest).execute()
         }
     }
 }
