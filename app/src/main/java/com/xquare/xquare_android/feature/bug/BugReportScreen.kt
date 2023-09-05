@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -242,6 +243,7 @@ private fun BugreportContent(
                                     .padding(end = 4.dp),
                             ) {
                                 AsyncImage(
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize(),
                                     model = ImageRequest.Builder(LocalContext.current).data(it)
                                         .crossfade(true).build(),
