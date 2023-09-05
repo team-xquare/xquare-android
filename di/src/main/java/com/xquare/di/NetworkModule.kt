@@ -2,7 +2,6 @@ package com.xquare.di
 
 import com.xquare.data.interceptor.AuthorizationInterceptor
 import com.xquare.data.interceptor.EmptyBodyInterceptor
-import com.xquare.data.local.preference.AuthPreference
 import com.xquare.data.remote.FileUploadManager
 import com.xquare.data.remote.api.*
 import dagger.Module
@@ -114,7 +113,9 @@ object NetworkModule {
     @Provides
     fun provideFileUploadManager(
         attachmentApi: AttachmentApi,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
     ): FileUploadManager = FileUploadManager(
         attachmentApi = attachmentApi,
+        httpLoggingInterceptor = httpLoggingInterceptor,
     )
 }
