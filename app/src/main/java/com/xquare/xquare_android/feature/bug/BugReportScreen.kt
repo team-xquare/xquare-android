@@ -101,7 +101,7 @@ fun BugReportScreen(
             when (it){
                 is BugViewModel.Event.Success -> {
                     Toast.makeText(context,"버그 제보 성공",Toast.LENGTH_SHORT).show()
-                    photos.clear()
+                    navController.navigateUp()
                 }
                 is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
                 is BugViewModel.Event.UploadFileSuccess -> {
