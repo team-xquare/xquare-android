@@ -5,6 +5,7 @@ import com.xquare.domain.usecase.attachment.UploadFileUseCase
 import com.xquare.domain.usecase.release.UploadBugUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import java.io.File
 import javax.inject.Inject
 
@@ -12,18 +13,17 @@ import javax.inject.Inject
 class BugViewModel @Inject constructor(
     private val bugUseCase: UploadBugUseCase,
     private val uploadFileUseCase: UploadFileUseCase
-): BaseViewModel<BugViewModel.Event>(){
-
+) : BaseViewModel<BugViewModel.Event>() {
     fun uploadBug(bugEntity: BugEntity) = execute(
         job = { bugUseCase.execute(bugEntity) },
-        onSuccess = { emitEvent(Event.Success)},
+        onSuccess = { emitEvent(Event.Success) },
         onFailure = { emitEvent(Event.Failure) }
     )
 
     fun uploadFile(file: File) = execute(
-        job = {uploadFileUseCase.execute(file)},
-        onSuccess = {emitEvent(Event.UploadFileSuccess(it.fileUrls))},
-        onFailure = { emitEvent(Event.Failure)}
+        job = { uploadFileUseCase.execute(file) },
+        onSuccess = { emitEvent(Event.UploadFileSuccess(it.first().fileUrls)) },
+        onFailure = { emitEvent(Event.Failure) }
     )
 
     sealed class Event {
