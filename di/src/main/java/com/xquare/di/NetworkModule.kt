@@ -2,6 +2,7 @@ package com.xquare.di
 
 import com.xquare.data.interceptor.AuthorizationInterceptor
 import com.xquare.data.interceptor.EmptyBodyInterceptor
+import com.xquare.data.remote.FileUploadManager
 import com.xquare.data.remote.api.*
 import dagger.Module
 import dagger.Provides
@@ -108,4 +109,13 @@ object NetworkModule {
         retrofit: Retrofit
     ): ReportsApi =
         retrofit.create(ReportsApi::class.java)
+
+    @Provides
+    fun provideFileUploadManager(
+        attachmentApi: AttachmentApi,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): FileUploadManager = FileUploadManager(
+        attachmentApi = attachmentApi,
+        httpLoggingInterceptor = httpLoggingInterceptor,
+    )
 }

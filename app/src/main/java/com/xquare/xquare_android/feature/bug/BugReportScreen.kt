@@ -35,13 +35,19 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -52,7 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -96,14 +104,20 @@ fun BugReportScreen(
     val photos by remember { mutableStateOf(ArrayList<String>()) }
     var image by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit){
-        bugViewModel.eventFlow.collect{
-            when (it){
+    LaunchedEffect(Unit) {
+        bugViewModel.eventFlow.collect {
+            when (it) {
                 is BugViewModel.Event.Success -> {
-                    Toast.makeText(context,"버그 제보 성공",Toast.LENGTH_SHORT).show()
-                    photos.clear()
+                    Toast.makeText(context, "버그 제보 성공", Toast.LENGTH_SHORT).show()
+                    navController.navigateUp()
                 }
-                is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
+
+                is BugViewModel.Event.Failure -> Toast.makeText(
+                    context,
+                    "버그 제보 실패",
+                    Toast.LENGTH_SHORT
+                ).show()
+
                 is BugViewModel.Event.UploadFileSuccess -> {
                     image = it.data[0]
                 }
@@ -176,7 +190,13 @@ private fun BugreportContent(
                 btnEnabled = headerBtnEnabled,
                 onIconClick = onIconClick,
                 onBtnClick = {
-                    onBtnClick(BugEntity(explanationText, where.toEntityWhere(), image_urls = photos))
+                    onBtnClick(
+                        BugEntity(
+                            explanationText,
+                            where.toEntityWhere(),
+                            image_urls = photos
+                        )
+                    )
                     photos.clear()
                     explanationText = ""
                 },
@@ -196,7 +216,7 @@ private fun BugreportContent(
             Text(text = "사진을 첨부해 주세요")
             Spacer(modifier = Modifier.size(10.dp))
             Row {
-                if (photos.isEmpty()){
+                if (photos.isEmpty()) {
                     Column(
                         modifier = Modifier
                             .clickable { galleryState = true }
@@ -222,9 +242,11 @@ private fun BugreportContent(
                                     .clickable { galleryState = true }
                                     .padding(end = 4.dp),
                             ) {
-                                Image(
+                                AsyncImage(
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize(),
-                                    painter = rememberAsyncImagePainter(model = it),
+                                    model = ImageRequest.Builder(LocalContext.current).data(it)
+                                        .crossfade(true).build(),
                                     contentDescription = "bugPhoto",
                                 )
                             }

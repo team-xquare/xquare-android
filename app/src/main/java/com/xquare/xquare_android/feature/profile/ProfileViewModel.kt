@@ -9,6 +9,7 @@ import com.xquare.domain.usecase.user.FetchProfileUseCase
 import com.xquare.domain.usecase.user.FixProfileImageUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import java.io.File
 import javax.inject.Inject
 
@@ -41,7 +42,7 @@ class ProfileViewModel @Inject constructor(
     fun uploadFile(file: File) {
         execute(
             job = { uploadFileUseCase.execute(file) },
-            onSuccess = { emitEvent(Event.UploadFileSuccess(it.file_url)) },
+            onSuccess = { emitEvent(Event.UploadFileSuccess(it.first().fileUrls)) },
             onFailure = { emitEvent(Event.UploadFileFailure) }
         )
     }
@@ -50,7 +51,7 @@ class ProfileViewModel @Inject constructor(
         execute(
             job = { logoutUseCase.execute(Unit) },
             onSuccess = { emitEvent(Event.LogoutSuccess) },
-            onFailure = {  }
+            onFailure = { }
         )
 
     sealed class Event {
