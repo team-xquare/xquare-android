@@ -1,10 +1,13 @@
 package com.xquare.xquare_android.feature.profile
 
 import android.util.Log
+import com.xquare.domain.entity.github.GithubOAuthEntity
 
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
 import com.xquare.domain.usecase.auth.LogoutUseCase
+import com.xquare.domain.usecase.github.FetchGithubOAuthCheckUseCase
+import com.xquare.domain.usecase.github.FetchGithubOAuthUseCase
 import com.xquare.domain.usecase.user.FetchProfileUseCase
 import com.xquare.domain.usecase.user.FixProfileImageUseCase
 import com.xquare.xquare_android.base.BaseViewModel
@@ -18,6 +21,8 @@ class ProfileViewModel @Inject constructor(
     private val fixProfileImageUseCase: FixProfileImageUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val fetchGithubOAuthUseCase: FetchGithubOAuthUseCase,
+    private val fetchGithubOAuthCheckUseCase: FetchGithubOAuthCheckUseCase,
 ) : BaseViewModel<ProfileViewModel.Event>() {
 
     fun fetchProfile() =
@@ -46,6 +51,14 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    fun fetchOAuth(githubOAuthEntity: GithubOAuthEntity)  =
+        execute(
+            job = { fetchGithubOAuthUseCase.execute(githubOAuthEntity) },
+            onSuccess = { emitEvent(Event.OAuthSuccess(githubOAuthEntity)) },
+            onFailure = { emitEvent(Event.Failure)}
+        )
+
+
     fun logout() =
         execute(
             job = { logoutUseCase.execute(Unit) },
@@ -53,11 +66,21 @@ class ProfileViewModel @Inject constructor(
             onFailure = {  }
         )
 
+    fun fetchOAuthCheck() =
+        execute(
+            job = { fetchGithubOAuthCheckUseCase.execute(Unit) },
+            onSuccess = { emitEvent(Event.OAuthCheckSuccess) },
+            onFailure = { emitEvent(Event.Failure) }
+        )
+
     sealed class Event {
 
         object LogoutSuccess : Event()
         data class Success(val data: ProfileEntity) : Event()
         object Failure : Event()
+
+        object OAuthCheckSuccess : Event()
+        data class OAuthSuccess(val data: GithubOAuthEntity) : Event()
 
         data class UploadFileSuccess(val data: List<String>) : Event()
         object UploadFileFailure : Event()

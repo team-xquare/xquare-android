@@ -2,6 +2,7 @@ package com.xquare.xquare_android.feature.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -29,11 +30,17 @@ import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
 import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.purple.purple200
+import com.semicolon.design.color.primary.purple.purple300
+import com.semicolon.design.color.primary.purple.purple50
 import com.semicolon.design.color.primary.white.white
+import com.xquare.domain.entity.github.GithubOAuthCheckEntity
+import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.component.modal.ConfirmModal
+import com.xquare.xquare_android.getCode
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -53,21 +60,36 @@ fun ProfileScreen(navController: NavController) {
                 is ProfileViewModel.Event.Success -> {
                     profile = it.data
                 }
+
                 is ProfileViewModel.Event.Failure -> {
                     makeToast(context, "프로필을 불러오지 못했습니다")
                 }
+
                 is ProfileViewModel.Event.UploadFileSuccess -> {
                     viewModel.fixProfileImage(it.data[0])
                 }
+
                 is ProfileViewModel.Event.UploadFileFailure -> {
                     makeToast(context, "이미지를 불러오지 못했습니다")
                 }
+
                 is ProfileViewModel.Event.ImageChangeSuccess -> {
                     viewModel.fetchProfile()
                 }
+
                 is ProfileViewModel.Event.ImageChangeFailure -> {
                     makeToast(context, "이미지를 변경하지 못했습니다")
                 }
+
+                is ProfileViewModel.Event.OAuthCheckSuccess -> {
+                    viewModel.fetchOAuthCheck()
+                    makeToast(context, "Github 계정연동에 성공하셨습니다.")
+                }
+
+                is ProfileViewModel.Event.OAuthSuccess -> {
+                    navController.navigate(AppNavigationItem.Profile.route)
+                }
+
                 is ProfileViewModel.Event.LogoutSuccess -> {
                     navController.navigate(AppNavigationItem.Onboard.route) {
                         popUpTo(0) {
@@ -84,13 +106,15 @@ fun ProfileScreen(navController: NavController) {
         sendImage = {
             viewModel.uploadFile(it)
         },
-        viewModel = viewModel
+        viewModel = viewModel,
     )
 }
+
 @Composable
 private fun Profile(
     profile: ProfileEntity?,
     onBackPress: () -> Unit,
+//    onOAuthClick: (GithubOAuthEntity) -> Unit,
     sendImage: (File) -> Unit,
     viewModel: ProfileViewModel,
 ) {
@@ -98,7 +122,7 @@ private fun Profile(
     var galleryState by remember { mutableStateOf(false) }
     var logoutDialogState by remember { mutableStateOf(false) }
     val gitMenuList = listOf("계정 연동")
-//    var gitState by remember { mutableStateOf(false) }
+    var gitState: GithubOAuthCheckEntity? by remember { mutableStateOf( GithubOAuthCheckEntity(is_connected = false)) }
     val accountMenuList = listOf("로그아웃")
     val openWebViewGallery =
         rememberLauncherForActivityResult(
@@ -186,7 +210,8 @@ private fun Profile(
                     }
             )
             Spacer(Modifier.size(30.dp))
-            Row(Modifier.padding(horizontal = 16.dp)
+            Row(
+                Modifier.padding(horizontal = 16.dp)
             ) {
                 Body1(text = "이름", color = gray900)
                 Spacer(modifier = Modifier.weight(1f))
@@ -194,11 +219,12 @@ private fun Profile(
             }
 
             Spacer(Modifier.size(20.dp))
-            Row(Modifier.padding(horizontal = 16.dp)){
+            Row(Modifier.padding(horizontal = 16.dp)) {
                 Body1(text = "생년월일", color = gray900)
                 Spacer(modifier = Modifier.weight(1f))
                 Body1(
-                    text = profile?.birthday?.format(DateTimeFormatter.ofPattern("yyyy.MM.dd")) ?: "",
+                    text = profile?.birthday?.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+                        ?: "",
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -235,11 +261,33 @@ private fun Profile(
                     logoutDialogState = false
                 }
             }
+            Spacer(Modifier.size(4.dp))
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                Body1(
+                    text = "계정 연동",
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(Modifier.size(4.dp))
+                gitMenuList.forEachIndexed { index, text ->
+                    ButtonColumnMenu(
+                        text = "Github 연동",
+                        onClick =
+                        {
+                            val intent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/login/oauth/authorize?client_id=7ba1da5afd9b182e9793")
+                            )
+                            context.startActivity(intent)
+                        },
+                        is_connected = gitState!!.is_connected,
+                    )
+                }
+            }
+            Spacer(Modifier.size(4.dp))
             Column(Modifier.padding(horizontal = 16.dp)) {
                 Body1(
                     text = "계정 설정",
-                    fontWeight = FontWeight.Bold,
-
+                    fontWeight = FontWeight.Medium,
                 )
                 Spacer(Modifier.size(4.dp))
                 Body3(text = "기기내 계정에서 로그아웃 할 수 있어요.", color = gray700)
@@ -251,27 +299,13 @@ private fun Profile(
                         }
                     }
                 }
-                /*
-                Column {
-                    Body1(
-                        text = "계정 연동",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                    )
-                    gitMenuList.forEachIndexed { index, text ->
-                        ButtonColumnMenu(text = text) {
-                            when(index) {
-                                0 -> TODO()
-                            }
-                        }
-                    }
-                }
-                */
             }
+
         }
     }
 }
+
+
 @Composable
 private fun ColumnMenu(text: String, onClick: () -> Unit) {
     Box(
@@ -294,23 +328,24 @@ private fun ColumnMenu(text: String, onClick: () -> Unit) {
         )
     }
 }
-/*
+
 @Composable
 private fun ButtonColumnMenu(
-text: String,
-onClick: () -> Unit,
-gitState: Boolean,
+    text: String,
+    onClick: (GithubOAuthEntity) -> Unit,
+    is_connected: Boolean,
 ) {
-    //val textColor = if (gitState) white else purple200
-    //val buttonColor = if (gitState) purple300 else purple50
+    val textColor = if (is_connected) purple200 else white
+    val buttonColor = if (is_connected) purple50 else purple300
+    val intent:Intent = Intent()
     Box(
         modifier = Modifier
-            .padding(start = 12.dp, end = 16.dp, top = 12.dp)
+            .padding(top = 12.dp, bottom = 12.dp)
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = null,
                 enabled = true
-            ) { onClick() }
+            ) { onClick(GithubOAuthEntity(getCode(intent).toString())) }
             .fillMaxWidth()
             .height(52.dp)
             .background(gray50, RoundedCornerShape(12.dp)),
@@ -331,13 +366,19 @@ gitState: Boolean,
                 modifier = Modifier
                     .size(80.dp, 38.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(purple300),
+                    .clickable {
+                        onClick(GithubOAuthEntity(getCode(intent).toString()))
+                    }
+                    .background(buttonColor),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
-                Text(text = "연동하기", color = white)
+
+            ) {
+                if (is_connected){
+                    Text(text = "연동됨", color = textColor)
+                }
+                else Text(text = "연동하기", color = textColor )
             }
         }
     }
 }
-*/
