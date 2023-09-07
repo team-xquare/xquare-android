@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.github
 
-import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,20 +16,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
@@ -41,25 +45,50 @@ import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
 import com.semicolon.design.color.primary.white.white
+import com.xquare.domain.entity.github.GithubInformationEntity
+import com.xquare.domain.entity.github.GithubListEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.theme.Bronze
 import com.xquare.xquare_android.theme.Gold
 import com.xquare.xquare_android.theme.Silver
 import com.xquare.xquare_android.util.DevicePaddings
-import okhttp3.internal.notify
+import com.xquare.xquare_android.util.makeToast
 
 @Composable
 fun GithubScreen(
     navController: NavController,
 ) {
+    val context = LocalContext.current
+    val viewModel: GithubViewModel = hiltViewModel()
+    var information: GithubInformationEntity? by remember { mutableStateOf(null) }
+    var githubList: GithubListEntity? by remember { mutableStateOf(null) }
 
-    Github(onBack = { navController.popBackStack() })
+    LaunchedEffect(Unit){
+        viewModel.fetchInformation()
+        viewModel.eventFlow.collect(){
+            when(it){
+                is GithubViewModel.Event.InformationSuccess -> {
+                    information = it.data
+                }
+                is GithubViewModel.Event.Failure -> {
+                    makeToast(context, "Github 정보를 불러오기에 실패했습니다.")
+                }
+
+            }
+        }
+    }
+    Github(
+        githubInformation = information,
+        githubList = githubList,
+        onBack = { navController.popBackStack() })
 
 }
 
 @Composable
 fun Github(
+    githubList: GithubListEntity?,
+    githubInformation: GithubInformationEntity?,
     onBack: () -> Unit,
 ) {
     Scaffold(
@@ -101,7 +130,7 @@ fun Github(
                     id = "@yeon0821",
                     commit = "1,828커밋",
                     color = Silver,
-                    centerPadding = 16.dp,
+                    centerPadding = 15.dp,
                     tint = Silver
                 )
                 GithubItem(
@@ -112,7 +141,7 @@ fun Github(
                     id = "@junjaㅈboy",
                     commit = "18,181커밋",
                     color = Gold,
-                    centerPadding = 24.dp,
+                    centerPadding = 30.dp,
                     tint = Gold
                 )
                 GithubItem(
@@ -123,7 +152,7 @@ fun Github(
                     id = "@Tmdhoon2",
                     commit = "1,818커밋",
                     color = Bronze,
-                    centerPadding = 8.dp,
+                    centerPadding = 1.dp,
                     tint = Bronze
                 )
             }
@@ -237,8 +266,3 @@ private fun RowScope.GithubItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun GithubPreview() {
-    Github {}
-}
