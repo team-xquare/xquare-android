@@ -108,4 +108,10 @@ object NetworkModule {
         retrofit: Retrofit
     ): ReportsApi =
         retrofit.create(ReportsApi::class.java)
+
+    @Provides
+    fun provideGithubApi(
+        retrofit: Retrofit
+    ): GithubApi =
+        retrofit.create((GithubApi::class.java))
 }
