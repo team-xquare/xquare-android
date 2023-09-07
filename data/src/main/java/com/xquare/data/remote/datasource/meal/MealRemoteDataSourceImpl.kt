@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.meal
 
 import com.xquare.data.remote.api.MealApi
 import com.xquare.data.remote.response.meal.toEntity
@@ -6,7 +6,6 @@ import com.xquare.data.sendHttpRequest
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.domain.entity.meal.MealEntity
 import org.threeten.bp.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 class MealRemoteDataSourceImpl @Inject constructor(

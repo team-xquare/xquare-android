@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.meal
 
 import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.domain.entity.meal.MealEntity

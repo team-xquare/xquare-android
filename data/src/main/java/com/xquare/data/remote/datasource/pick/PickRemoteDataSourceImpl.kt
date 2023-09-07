@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.pick
 
 import com.xquare.data.remote.api.PickApi
 import com.xquare.data.remote.response.pick.toEntity
@@ -7,7 +7,6 @@ import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassDataEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
 import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PickRemoteDataSourceImpl @Inject constructor(

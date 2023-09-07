@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.report
 
 import com.xquare.domain.entity.reports.BugEntity
 import com.xquare.domain.entity.reports.ReleaseEntity

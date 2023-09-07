@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.alarm
 
 import com.xquare.domain.entity.notification.ActivateAlarmEntity
 import com.xquare.domain.entity.notification.AlarmCategoriesEntity

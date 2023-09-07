@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.timetable
 
 import com.xquare.domain.entity.timetables.DayTimetableEntity
 import com.xquare.domain.entity.timetables.TimetableEntity

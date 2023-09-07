@@ -1,10 +1,9 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.alarm
 
 import com.xquare.data.remote.api.NotificationApi
-import com.xquare.data.remote.request.notification.toRequest
+import com.xquare.data.remote.datasource.alarm.AlarmRemoteDataSource
 import com.xquare.data.remote.response.notification.toEntity
 import com.xquare.data.sendHttpRequest
-import com.xquare.domain.entity.notification.ActivateAlarmEntity
 import com.xquare.domain.entity.notification.AlarmCategoriesEntity
 import com.xquare.domain.entity.notification.AlarmEntity
 import javax.inject.Inject

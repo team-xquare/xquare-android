@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.schedules
 
 import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.schedules.CreateSchedulesEntity

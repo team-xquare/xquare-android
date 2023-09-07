@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.auth
 
 import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.domain.entity.auth.SignUpEntity

@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.report
 
 import com.xquare.data.remote.api.ReportsApi
 import com.xquare.data.remote.request.reports.toRequest
@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class ReportRemoteDataSourceImpl @Inject constructor(
     private val reportsApi: ReportsApi
-): ReportRemoteDataSource{
+): ReportRemoteDataSource {
 
     override suspend fun uploadBug(bugEntity: BugEntity) =
         sendHttpRequest(httpRequest = { reportsApi.uploadBug(bugEntity.toRequest()) })

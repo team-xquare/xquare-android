@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.user
 
 import com.xquare.data.remote.api.ProfileApi
 import com.xquare.data.remote.response.profile.toEntity

@@ -2,7 +2,7 @@ package com.xquare.data.repository.timetables
 
 import com.xquare.data.fetchDataWithOfflineCache
 import com.xquare.data.local.datasource.TimetableLocalDataSource
-import com.xquare.data.remote.datasource.TimetablesRemoteDataSource
+import com.xquare.data.remote.datasource.timetable.TimetablesRemoteDataSource
 import com.xquare.domain.entity.timetables.TimetableEntity
 import com.xquare.domain.repository.timetables.TimetablesRepository
 import kotlinx.coroutines.flow.Flow

@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.attachment
 
 import com.xquare.domain.entity.attachment.FileEntity
 import java.io.File

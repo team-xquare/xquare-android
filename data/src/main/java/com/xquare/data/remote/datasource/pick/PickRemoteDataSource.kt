@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.pick
 
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassDataEntity

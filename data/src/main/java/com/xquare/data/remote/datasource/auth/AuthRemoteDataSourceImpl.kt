@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.auth
 
 import com.xquare.data.remote.api.AuthApi
 import com.xquare.data.remote.api.ProfileApi

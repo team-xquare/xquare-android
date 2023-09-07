@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.timetable
 
 import android.os.Build
 import androidx.annotation.RequiresApi

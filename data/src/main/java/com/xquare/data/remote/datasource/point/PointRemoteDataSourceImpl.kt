@@ -1,10 +1,9 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.point
 
 import com.xquare.data.remote.api.PointApi
 import com.xquare.data.remote.response.point.toEntity
 import com.xquare.data.sendHttpRequest
 import com.xquare.domain.entity.point.PointHistoriesEntity
-import com.xquare.domain.entity.point.PointSummaryEntity
 import javax.inject.Inject
 
 class PointRemoteDataSourceImpl @Inject constructor(

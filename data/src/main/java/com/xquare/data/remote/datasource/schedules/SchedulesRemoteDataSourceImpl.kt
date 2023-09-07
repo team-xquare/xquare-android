@@ -1,4 +1,4 @@
-package com.xquare.data.remote.datasource
+package com.xquare.data.remote.datasource.schedules
 
 import com.xquare.data.remote.api.SchedulesApi
 import com.xquare.data.remote.request.schedules.toRequest
