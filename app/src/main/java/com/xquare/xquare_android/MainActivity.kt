@@ -2,6 +2,8 @@ package com.xquare.xquare_android
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +34,7 @@ import com.xquare.xquare_android.feature.alarm.AlarmScreen
 import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.bug.BugReportScreen
+import com.xquare.xquare_android.feature.github.GithubScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
@@ -54,6 +57,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import kotlin.math.log
 
 
 @AndroidEntryPoint
@@ -65,6 +69,7 @@ class MainActivity : ComponentActivity() {
         DevicePaddings.navigationBarHeightDp = getNavigationBarHeightDp()
         super.onCreate(savedInstanceState)
         saveDeviceToken(this)
+        getCode(intent)
 
         setContent {
             Thread.setDefaultUncaughtExceptionHandler(
@@ -140,6 +145,9 @@ fun BaseApp() {
         composable(AppNavigationItem.ReleaseNote.route){
             ReleaseScreen(navController)
             
+        }
+        composable(AppNavigationItem.Github.route){
+            GithubScreen(navController)
         }
         composable(AppNavigationItem.WriteSchedule.route) {
             val schedulesData = it.arguments?.get("schedulesData").toString()
@@ -289,4 +297,15 @@ fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
     is ContextWrapper -> baseContext.getActivity()
     else -> null
+}
+
+fun getCode(intent: Intent): String? {
+    val data: Uri? = intent.data
+    val action: String? = intent.action
+    Log.d("TAG", "getCode: ${data?.getQueryParameter("code")}")
+
+    if (action == Intent.ACTION_VIEW) {
+        data?.getQueryParameter("code")
+    }
+    return null
 }
