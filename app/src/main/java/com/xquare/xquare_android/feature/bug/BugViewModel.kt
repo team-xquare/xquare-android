@@ -23,7 +23,6 @@ class BugViewModel @Inject constructor(
         job = { uploadFileUseCase.execute(file) },
         onSuccess = {
             it.collect { file ->
-                println("FILEFILE ${file.fileUrls}")
                 emitEvent(Event.UploadFileSuccess(file.fileUrls))
             }
         },

@@ -2,7 +2,9 @@ package com.xquare.xquare_android.feature.bug
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -60,7 +62,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -77,7 +78,7 @@ import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.toFile
 import java.io.File
 
-internal object MenuItem {
+internal object MenuItem { 
     const val HOME = "홈"
     const val SCHEDULE = "일정"
     const val FEED = "피드"
@@ -101,8 +102,7 @@ fun BugReportScreen(
 ) {
     val bugViewModel: BugViewModel = hiltViewModel()
     val context = LocalContext.current
-    val photos by remember { mutableStateOf(ArrayList<String>()) }
-    var image by remember { mutableStateOf("") }
+    var photos by remember { mutableStateOf(ArrayList<String>()) }
 
     LaunchedEffect(Unit) {
         bugViewModel.eventFlow.collect {
@@ -119,13 +119,12 @@ fun BugReportScreen(
                 ).show()
 
                 is BugViewModel.Event.UploadFileSuccess -> {
-                    image = it.data[0]
+                    photos = (photos+it.data[0]) as ArrayList<String>
+                    Toast.makeText(context, "사진 추가 성공", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-    if (image != "") photos.add(image)
-    image = ""
     BugreportContent(
         onIconClick = { navController.popBackStack() },
         onBtnClick = {
@@ -135,6 +134,7 @@ fun BugReportScreen(
             bugViewModel.uploadFile(it)
         },
         photos = photos,
+        context = context,
     )
 
 
@@ -147,12 +147,13 @@ private fun BugreportContent(
     onBtnClick: (BugEntity) -> Unit,
     sendImage: (File) -> Unit,
     photos: ArrayList<String>,
+    context: Context,
 ) {
     var where by remember { mutableStateOf("홈") }
     var explanationText by remember { mutableStateOf("") }
     val headerBtnEnabled = explanationText.isNotEmpty()
-    val context = LocalContext.current
     var galleryState by remember { mutableStateOf(false) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -160,10 +161,9 @@ private fun BugreportContent(
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data!!.clipData?.run {
                     for (i in 0 until itemCount) {
-                        val listItem = getItemAt(i).uri
-                        sendImage(toFile(context, listItem))
+                        sendImage(toFile(context, getItemAt(i).uri))
+                        selectedImageUri = getItemAt(i).uri
                     }
-                    Toast.makeText(context, "사진 추가 성공", Toast.LENGTH_SHORT).show()
                 }
             }
             galleryState = false
@@ -245,9 +245,9 @@ private fun BugreportContent(
                                 AsyncImage(
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize(),
-                                    model = ImageRequest.Builder(LocalContext.current).data(it)
-                                        .crossfade(true).build(),
+                                    model = selectedImageUri,
                                     contentDescription = "bugPhoto",
+                                    error = painterResource(id = R.drawable.ic_add_photo)
                                 )
                             }
                         }
