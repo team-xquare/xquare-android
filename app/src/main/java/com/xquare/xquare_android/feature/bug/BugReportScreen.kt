@@ -119,7 +119,7 @@ fun BugReportScreen(
                 ).show()
 
                 is BugViewModel.Event.UploadFileSuccess -> {
-                    photos = (photos+it.data[0]) as ArrayList<String>
+                    photos = (photos + it.data[0]) as ArrayList<String>
                     Toast.makeText(context, "사진 추가 성공", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -153,7 +153,8 @@ private fun BugreportContent(
     var explanationText by remember { mutableStateOf("") }
     val headerBtnEnabled = explanationText.isNotEmpty()
     var galleryState by remember { mutableStateOf(false) }
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val images by remember { mutableStateOf(ArrayList<Uri?>()) }
+    var selectedImageUri: Uri? = null
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -163,6 +164,7 @@ private fun BugreportContent(
                     for (i in 0 until itemCount) {
                         sendImage(toFile(context, getItemAt(i).uri))
                         selectedImageUri = getItemAt(i).uri
+                        images.add(selectedImageUri)
                     }
                 }
             }
@@ -215,41 +217,39 @@ private fun BugreportContent(
             Spacer(modifier = Modifier.size(30.dp))
             Text(text = "사진을 첨부해 주세요")
             Spacer(modifier = Modifier.size(10.dp))
-            Row {
-                if (photos.isEmpty()) {
-                    Column(
+            if (images.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .clickable { galleryState = true }
+                        .size(150.dp)
+                        .background(gray50),
+                ) {
+                    Image(
                         modifier = Modifier
-                            .clickable { galleryState = true }
-                            .size(150.dp)
-                            .background(gray50),
-                    ) {
-                        Image(
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        painter = rememberAsyncImagePainter(model = R.drawable.ic_add_photo),
+                        contentDescription = "insertBugPhoto",
+                    )
+                }
+            } else {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 12.dp),
+                ) {
+                    items(images) {
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(20.dp),
-                            painter = rememberAsyncImagePainter(model = R.drawable.ic_add_photo),
-                            contentDescription = "insertBugPhoto",
-                        )
-                    }
-                } else {
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 12.dp),
-                    ) {
-                        items(photos) {
-                            Column(
-                                modifier = Modifier
-                                    .size(150.dp)
-                                    .clickable { galleryState = true }
-                                    .padding(end = 4.dp),
-                            ) {
-                                AsyncImage(
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.fillMaxSize(),
-                                    model = selectedImageUri,
-                                    contentDescription = "bugPhoto",
-                                    error = painterResource(id = R.drawable.ic_add_photo)
-                                )
-                            }
+                                .size(150.dp)
+                                .clickable { galleryState = true }
+                                .padding(end = 4.dp),
+                        ) {
+                            AsyncImage(
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                                model = it,
+                                contentDescription = "bugPhoto",
+                                error = rememberAsyncImagePainter(model = selectedImageUri),
+                            )
                         }
                     }
                 }
