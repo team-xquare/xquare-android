@@ -2,7 +2,6 @@ package com.xquare.xquare_android.feature.bug
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -78,7 +77,7 @@ import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.toFile
 import java.io.File
 
-internal object MenuItem { 
+internal object MenuItem {
     const val HOME = "홈"
     const val SCHEDULE = "일정"
     const val FEED = "피드"
@@ -102,7 +101,7 @@ fun BugReportScreen(
 ) {
     val bugViewModel: BugViewModel = hiltViewModel()
     val context = LocalContext.current
-    var photos by remember { mutableStateOf(ArrayList<String>()) }
+    var photos by remember { mutableStateOf(emptyList<String>()) }
 
     LaunchedEffect(Unit) {
         bugViewModel.eventFlow.collect {
@@ -119,7 +118,7 @@ fun BugReportScreen(
                 ).show()
 
                 is BugViewModel.Event.UploadFileSuccess -> {
-                    photos = (photos + it.data[0]) as ArrayList<String>
+                    photos += it.data[0]
                     Toast.makeText(context, "사진 추가 성공", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -134,7 +133,6 @@ fun BugReportScreen(
             bugViewModel.uploadFile(it)
         },
         photos = photos,
-        context = context,
     )
 
 
@@ -146,14 +144,14 @@ private fun BugreportContent(
     onIconClick: () -> Unit,
     onBtnClick: (BugEntity) -> Unit,
     sendImage: (File) -> Unit,
-    photos: ArrayList<String>,
-    context: Context,
+    photos: List<String>,
 ) {
+    val context = LocalContext.current
     var where by remember { mutableStateOf("홈") }
     var explanationText by remember { mutableStateOf("") }
     val headerBtnEnabled = explanationText.isNotEmpty()
     var galleryState by remember { mutableStateOf(false) }
-    val images by remember { mutableStateOf(ArrayList<Uri?>()) }
+    var images by remember { mutableStateOf(emptyList<Uri?>()) }
     var selectedImageUri: Uri? = null
     val openWebViewGallery =
         rememberLauncherForActivityResult(
@@ -164,7 +162,7 @@ private fun BugreportContent(
                     for (i in 0 until itemCount) {
                         sendImage(toFile(context, getItemAt(i).uri))
                         selectedImageUri = getItemAt(i).uri
-                        images.add(selectedImageUri)
+                        images += selectedImageUri
                     }
                 }
             }
@@ -199,7 +197,6 @@ private fun BugreportContent(
                             image_urls = photos
                         )
                     )
-                    photos.clear()
                     explanationText = ""
                 },
             )
