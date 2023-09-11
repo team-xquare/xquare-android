@@ -9,7 +9,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import retrofit2.HttpException
 import java.io.File
 import java.lang.NullPointerException
@@ -53,6 +52,7 @@ suspend fun <T> sendHttpRequest(
     } catch (e: HttpException) {
         val code = e.code()
         val message = e.message()
+        cancelAllApiCalls()
         throw when (code) {
             400 -> onBadRequest(message)
             401 -> onUnauthorized(message)
