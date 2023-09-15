@@ -273,18 +273,6 @@ fun getToken(context: Context): String? {
     return token
 }
 
-// 캐시 메모리 삭제
-fun clearCache(context: Context) {
-    val cacheDir = context.cacheDir
-    if (cacheDir.isDirectory) {
-        val children = cacheDir.list()
-        for (i in children!!.indices) {
-            File(cacheDir, children[i]).delete()
-        }
-    }
-}
-
-
 fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
     is ContextWrapper -> baseContext.getActivity()
