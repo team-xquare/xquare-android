@@ -1,7 +1,5 @@
 package com.xquare.xquare_android.feature.profile
 
-import android.util.Log
-
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
 import com.xquare.domain.usecase.auth.LogoutUseCase
@@ -33,7 +31,6 @@ class ProfileViewModel @Inject constructor(
             job = { fixProfileImageUseCase.execute(image) },
             onSuccess = { emitEvent(Event.ImageChangeSuccess) },
             onFailure = {
-                Log.d("TAG", "it: $it")
                 emitEvent(Event.ImageChangeFailure)
             }
         )

@@ -1,8 +1,8 @@
 package com.xquare.xquare_android.feature.home
 
+import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
-import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.domain.usecase.meal.FetchTodayMealUseCase
 import com.xquare.domain.usecase.pick.BackToClassRoomUseCase
@@ -24,27 +24,36 @@ class HomeViewModel @Inject constructor(
     private val fetchPassTimeUseCase: FetchPassTimeUseCase,
 ) : BaseViewModel<HomeViewModel.Event>() {
 
-    private val _userSimpleData = MutableStateFlow(HomeUserEntity("", "", 0, 0))
+    private val _userSimpleData = MutableStateFlow(
+        HomeUserEntity(
+            profileFileImage = "",
+            name = "",
+            goodPoint = 0,
+            badPoint = 0
+        )
+    )
     val userSimpleData: StateFlow<HomeUserEntity> = _userSimpleData
 
     init {
         fetchTodayMeal()
         fetchUserSimpleData()
-        }
+    }
+
     private val _todayMeal = MutableStateFlow(
         MealEntity(
             emptyList(),
             emptyList(),
             emptyList(),
             "", "", ""
-        ))
+        )
+    )
     val todayMeal: StateFlow<MealEntity> = _todayMeal
 
     private fun fetchUserSimpleData() {
         execute(
             job = { fetchUserSimpleDataUseCase.execute(Unit) },
-            onSuccess = { it.collect { userSimpleData -> _userSimpleData.tryEmit(userSimpleData)} },
-            onFailure = {  }
+            onSuccess = { it.collect { userSimpleData -> _userSimpleData.tryEmit(userSimpleData) } },
+            onFailure = { }
         )
     }
 
@@ -64,7 +73,7 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    private val _classPosition = MutableStateFlow(ClassPositionEntity("",""))
+    private val _classPosition = MutableStateFlow(ClassPositionEntity("", ""))
     val classPosition: StateFlow<ClassPositionEntity> = _classPosition
 
     fun fetchClassPosition() {
@@ -83,7 +92,7 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    private val _passCheck = MutableStateFlow(PassTimeEntity("","",""))
+    private val _passCheck = MutableStateFlow(PassTimeEntity("", "", ""))
     val passCheck: StateFlow<PassTimeEntity> = _passCheck
 
     fun fetchPassTime() {

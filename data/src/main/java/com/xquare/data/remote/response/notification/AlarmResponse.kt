@@ -14,8 +14,6 @@ data class AlarmResponse(
         @SerializedName("sent_at") val send_at: String,
         @SerializedName("is_read") val is_read: Boolean,
         @SerializedName("user_id") val user_id: String,
-       //  @SerializedName("category_name") val category_name: String,
-        // @SerializedName("destination") val destination: String,
         @SerializedName("topic") val topic: String,
     )
 }
@@ -33,7 +31,5 @@ fun AlarmResponse.AlarmDataResponse.toEntity() =
         send_at = send_at,
         is_read = is_read,
         user_id = user_id,
-        //category_name = category_name,
-        //destination = destination,
         topic = topic,
     )

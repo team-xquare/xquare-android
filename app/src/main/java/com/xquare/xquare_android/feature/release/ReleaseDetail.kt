@@ -57,7 +57,6 @@ fun ReleaseDetail(
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "새로운 기능", color = gray800, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.size(2.dp))
             }
             Body2(
                 text = releaseWithUpdateEntity.featureContent,
@@ -69,7 +68,6 @@ fun ReleaseDetail(
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "개선된 버그", color = gray800, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.size(2.dp))
             }
             Body2(
                 text = releaseWithUpdateEntity.fixContent,
