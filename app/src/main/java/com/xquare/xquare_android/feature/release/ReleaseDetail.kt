@@ -19,13 +19,10 @@ import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.gray.gray50
-import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
-import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.domain.entity.reports.ReleaseEntity
-import com.xquare.xquare_android.util.toKorean
 
 
 @Stable

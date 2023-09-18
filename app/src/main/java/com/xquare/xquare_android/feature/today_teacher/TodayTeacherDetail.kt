@@ -61,14 +61,14 @@ fun TodayTeacherDetail(
                 .background(color = gray50, shape = RoundedCornerShape(16.dp))
         ) {
             for (floor in 0..4) {
-                if (teacherEntity.teacher[floor].isNotEmpty()) JunJaBoy(teacher = teacherEntity, floor = floor)
+                if (teacherEntity.teacher[floor].isNotEmpty()) TeacherFloor(teacher = teacherEntity, floor = floor)
             }
         }
     }
 }
 
 @Composable
-fun JunJaBoy(
+fun TeacherFloor(
     teacher: TodaySelfStudyTeacherEntity.TeacherEntity,
     floor: Int
 ) {
