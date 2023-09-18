@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -27,19 +29,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.VerticalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
+import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
@@ -64,20 +72,31 @@ fun GithubScreen(
     var information: GithubInformationEntity? by remember { mutableStateOf(null) }
     var githubList: GithubListEntity? by remember { mutableStateOf(null) }
 
-    LaunchedEffect(Unit){
+
+    LaunchedEffect(Unit) {
         viewModel.fetchInformation()
-        viewModel.eventFlow.collect(){
-            when(it){
+        viewModel.fetchUserList()
+        viewModel.eventFlow.collect() {
+            when (it) {
                 is GithubViewModel.Event.InformationSuccess -> {
                     information = it.data
                 }
-                is GithubViewModel.Event.Failure -> {
-                    makeToast(context, "Github 정보를 불러오기에 실패했습니다.")
+
+                is GithubViewModel.Event.GithubInformationFailure -> {
+                    makeToast(context, "내 정보를 불러오기에 실패했습니다.")
                 }
 
+                is GithubViewModel.Event.GithubUserListFailure -> {
+                    makeToast(context, "Github List를 불러오는데 실패했습니다.")
+                }
+
+                is GithubViewModel.Event.UserListSuccess -> {
+                    githubList = it.list
+                }
             }
         }
     }
+
     Github(
         githubInformation = information,
         githubList = githubList,
@@ -85,12 +104,15 @@ fun GithubScreen(
 
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Github(
     githubList: GithubListEntity?,
     githubInformation: GithubInformationEntity?,
     onBack: () -> Unit,
 ) {
+    val lazyListState = rememberLazyListState()
+
     Scaffold(
         modifier = Modifier
             .background(white)
@@ -115,154 +137,65 @@ fun Github(
                 ),
         ) {
             Spacer(modifier = Modifier.size(20.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                GithubItem(
-                    modifier = Modifier.weight(1f),
-                    crown = painterResource(id = R.drawable.ic_github_crown),
-                    profile = painterResource(id = R.drawable.ic_profile_default),
-                    name = "김연우",
-                    id = "@yeon0821",
-                    commit = "1,828커밋",
-                    color = Silver,
-                    centerPadding = 15.dp,
-                    tint = Silver
-                )
-                GithubItem(
-                    modifier = Modifier.weight(1f),
-                    crown = painterResource(id = R.drawable.ic_github_crown),
-                    profile = painterResource(id = R.drawable.ic_profile_default),
-                    name = "박준수",
-                    id = "@junjaㅈboy",
-                    commit = "18,181커밋",
-                    color = Gold,
-                    centerPadding = 30.dp,
-                    tint = Gold
-                )
-                GithubItem(
-                    modifier = Modifier.weight(1f),
-                    crown = painterResource(id = R.drawable.ic_github_crown),
-                    profile = painterResource(id = R.drawable.ic_profile_default),
-                    name = "정승훈",
-                    id = "@Tmdhoon2",
-                    commit = "1,818커밋",
-                    color = Bronze,
-                    centerPadding = 1.dp,
-                    tint = Bronze
-                )
+            githubList?.run {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.Bottom,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    GithubItem(
+                        modifier = Modifier.weight(1f),
+                        githubList = githubList.users[1],
+                        crown = painterResource(id = R.drawable.ic_github_crown),
+                        color = Silver,
+                        centerPadding = 10.dp,
+                        tint = Silver,
+                        image = 34.dp
+                    )
+                    GithubItem(
+                        modifier = Modifier.weight(1f),
+                        githubList = githubList.users[0],
+                        crown = painterResource(id = R.drawable.ic_github_crown),
+                        color = Gold,
+                        centerPadding = 25.dp,
+                        tint = Gold,
+                        image = 44.dp
+                    )
+                    GithubItem(
+                        modifier = Modifier.weight(1f),
+                        githubList = githubList.users[2],
+                        crown = painterResource(id = R.drawable.ic_github_crown),
+                        color = Bronze,
+                        centerPadding = 8.dp,
+                        tint = Bronze,
+                        image = 34.dp
+                    )
+                }
             }
             Spacer(Modifier.size(17.dp))
             Body1(text = "나의 순위", color = gray900, fontWeight = FontWeight.Bold)
             Spacer(Modifier.size(16.dp))
             GithubRankingItem(
-                ranking = "2위",
-                profile = painterResource(id = R.drawable.ic_profile_default),
-                name = "김연우",
-                id = "@yeon0821",
-                commit = "1,828 커밋",
+                githubInformation = githubInformation,
                 borderState = true
             )
             Spacer(Modifier.size(16.dp))
             Body1(text = "전체 순위", color = gray900, fontWeight = FontWeight.Bold)
             Spacer(Modifier.size(16.dp))
-            LazyColumn() {
-                //TODO(준수님이 해주시겠죠?)
+            githubList?.run {
+                LazyColumn(
+                    state = lazyListState
+                ) {
+                    items(githubList.users.count()) {
+                        GithubAllRankingItem(
+                            githubList = githubList.users[it],
+                            borderState = false
+                        )
+                    }
+                }
             }
         }
     }
 }
-
-@Composable
-private fun GithubRankingItem(
-    ranking: String,
-    profile: Painter,
-    name: String,
-    id: String,
-    commit: String,
-    borderState: Boolean,
-) {
-    val borderColor = if (borderState) purple200 else gray50
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(74.dp)
-            .background(color = gray50, shape = RoundedCornerShape(12.dp))
-            .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(12.dp))
-            .padding(start = 25.dp, end = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Body2(text = ranking, fontWeight = FontWeight.Normal, color = gray900)
-        Spacer(Modifier.size(15.dp))
-        Image(
-            painter = profile,
-            contentDescription = null,
-            modifier = Modifier
-                .size(50.dp)
-                .clip(RoundedCornerShape(30.dp)),
-        )
-        Spacer(Modifier.size(10.dp))
-        Column {
-            Body2(text = name, fontWeight = FontWeight.Medium, color = gray900)
-            Body3(text = id, fontWeight = FontWeight.Normal, color = gray700)
-        }
-        Body1(
-            text = commit,
-            fontWeight = FontWeight.SemiBold,
-            color = gray900,
-            modifier = Modifier.padding(start = 25.dp)
-        )
-    }
-}
-
-@Composable
-private fun RowScope.GithubItem(
-    modifier: Modifier = Modifier,
-    crown: Painter,
-    profile: Painter,
-    name: String,
-    id: String,
-    commit: String,
-    color: Color,
-    centerPadding: Dp,
-    tint: Color
-) {
-    Column(
-        modifier = modifier
-            .background(gray50, RoundedCornerShape(12.dp))
-            .border(width = 1.dp, color = color, shape = RoundedCornerShape(12.dp)),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Column(
-            Modifier.padding(top = 10.dp, bottom = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box {
-                Icon(
-                    painter = crown,
-                    contentDescription = null,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    tint = tint
-                )
-                Image(
-                    painter = profile,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(top = (15.5).dp)
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(30.dp)),
-                )
-            }
-            Spacer(Modifier.height(centerPadding))
-            Subtitle4(text = name, color = gray900, fontWeight = FontWeight.SemiBold)
-            Body3(text = id, color = gray700, fontWeight = FontWeight.Normal)
-            Body3(text = commit, color = gray900, fontWeight = FontWeight.Normal)
-        }
-    }
-}
-

@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.feature.github
 
 import com.xquare.domain.entity.github.GithubInformationEntity
+import com.xquare.domain.entity.github.GithubListEntity
 import com.xquare.domain.entity.github.GithubOAuthCheckEntity
 import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.usecase.github.FetchGithubInformationUseCase
@@ -15,6 +16,8 @@ import javax.inject.Inject
 class GithubViewModel @Inject constructor(
     private val fetchGithubInformationUseCase: FetchGithubInformationUseCase,
     private val fetchGithubListUseCase: FetchGithubListUseCase,
+
+
 ) : BaseViewModel<GithubViewModel.Event>() {
 
 
@@ -22,9 +25,18 @@ class GithubViewModel @Inject constructor(
         execute(
             job = { fetchGithubInformationUseCase.execute(Unit) },
             onSuccess = { emitEvent(Event.InformationSuccess(it)) },
-            onFailure = { emitEvent(Event.Failure) }
+            onFailure = { emitEvent(Event.GithubInformationFailure) }
         )
 
+
+    fun fetchUserList() =
+        execute(
+            job = { fetchGithubListUseCase.execute(Unit)},
+            onSuccess = { emitEvent(Event.UserListSuccess(it))},
+            onFailure = { emitEvent(Event.GithubUserListFailure)}
+        )
+
+//    fun fetch
 
 
     sealed class Event {
@@ -33,7 +45,11 @@ class GithubViewModel @Inject constructor(
         data class InformationSuccess(val data: GithubInformationEntity) : Event()
 
 
-        object Failure : Event()
+        data class UserListSuccess(val list: GithubListEntity): Event()
+
+        object GithubInformationFailure : Event()
+
+        object GithubUserListFailure: Event()
 
 
     }
