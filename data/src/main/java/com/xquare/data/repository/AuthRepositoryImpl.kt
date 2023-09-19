@@ -47,4 +47,7 @@ class AuthRepositoryImpl @Inject constructor(
         authPreference.clearRole()
         authPreference.clearUserId()
     }
+
+    override suspend fun fetchId(): String =
+        authPreference.fetchUserId()
 }

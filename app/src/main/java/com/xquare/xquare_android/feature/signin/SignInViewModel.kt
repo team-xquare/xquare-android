@@ -2,6 +2,7 @@ package com.xquare.xquare_android.feature.signin
 
 import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.domain.exception.*
+import com.xquare.domain.usecase.auth.FetchIdUseCase
 import com.xquare.domain.usecase.auth.SignInUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,7 +10,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val fetchIdUseCase: FetchIdUseCase,
 ) : BaseViewModel<SignInViewModel.Event>() {
 
     fun signIn(signInEntity: SignInEntity) = execute(
@@ -25,11 +27,18 @@ class SignInViewModel @Inject constructor(
         }
     )
 
+    fun fetchId() = execute(
+        job = { fetchIdUseCase.execute(Unit) },
+        onSuccess = { emitEvent(Event.FetchIdSuccess(it)) },
+        onFailure = {  }
+    )
+
     sealed class Event {
         object Success : SignInViewModel.Event()
-        object BadRequest : SignInViewModel.Event()
-        object NotFound : SignInViewModel.Event()
-        object Timeout : SignInViewModel.Event()
-        object TooManyRequest : SignInViewModel.Event()
+        object BadRequest : Event()
+        object NotFound : Event()
+        object Timeout : Event()
+        object TooManyRequest : Event()
+        data class FetchIdSuccess(val data: String) : Event()
     }
 }

@@ -12,4 +12,6 @@ interface AuthRepository {
     suspend fun autoSignIn(): Boolean
 
     suspend fun logout()
+
+    suspend fun fetchId(): String
 }
