@@ -3,6 +3,7 @@ package com.xquare.xquare_android.feature.profile
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -40,7 +41,6 @@ import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.component.modal.ConfirmModal
-import com.xquare.xquare_android.getCode
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
@@ -53,8 +53,12 @@ fun ProfileScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: ProfileViewModel = hiltViewModel()
     var profile: ProfileEntity? by remember { mutableStateOf(null) }
+    var githubOAuth: GithubOAuthEntity? by remember { mutableStateOf(null) }
+
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
+        viewModel.fetchOAuthCheck()
+        githubOAuth?.let { viewModel.fetchOAuth(it) }
         viewModel.eventFlow.collect {
             when (it) {
                 is ProfileViewModel.Event.Success -> {
@@ -81,9 +85,8 @@ fun ProfileScreen(navController: NavController) {
                     makeToast(context, "이미지를 변경하지 못했습니다")
                 }
 
-                is ProfileViewModel.Event.OAuthCheckSuccess -> {
-                    viewModel.fetchOAuthCheck()
-                    makeToast(context, "Github 계정연동에 성공하셨습니다.")
+                is ProfileViewModel.Event.OAuthConnected -> {
+                    makeToast(context, "Github 계정연동 되어있습니다.")
                 }
 
                 is ProfileViewModel.Event.OAuthSuccess -> {
@@ -96,6 +99,10 @@ fun ProfileScreen(navController: NavController) {
                             inclusive = true
                         }
                     }
+                }
+
+                ProfileViewModel.Event.OAuthNotConnected -> {
+                    makeToast(context, "Github 계정연동에 되어있지않습니다.")
                 }
             }
         }
@@ -114,7 +121,6 @@ fun ProfileScreen(navController: NavController) {
 private fun Profile(
     profile: ProfileEntity?,
     onBackPress: () -> Unit,
-//    onOAuthClick: (GithubOAuthEntity) -> Unit,
     sendImage: (File) -> Unit,
     viewModel: ProfileViewModel,
 ) {
@@ -122,8 +128,9 @@ private fun Profile(
     var galleryState by remember { mutableStateOf(false) }
     var logoutDialogState by remember { mutableStateOf(false) }
     val gitMenuList = listOf("계정 연동")
-    var gitState: GithubOAuthCheckEntity? by remember { mutableStateOf( GithubOAuthCheckEntity(is_connected = false)) }
+    var gitState: GithubOAuthCheckEntity? by remember { mutableStateOf(GithubOAuthCheckEntity(false)) }
     val accountMenuList = listOf("로그아웃")
+    var isButtonClickable by remember { mutableStateOf(true) }
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -135,6 +142,8 @@ private fun Profile(
             }
             galleryState = false
         }
+
+
     val openGalleryLauncher =
         Intent(Intent.ACTION_PICK).apply {
             this.type = "image/*"
@@ -271,8 +280,7 @@ private fun Profile(
                 gitMenuList.forEachIndexed { index, text ->
                     ButtonColumnMenu(
                         text = "Github 연동",
-                        onClick =
-                        {
+                        onClick = {
                             val intent = Intent(
                                 Intent.ACTION_VIEW,
                                 Uri.parse("https://github.com/login/oauth/authorize?client_id=7ba1da5afd9b182e9793")
@@ -332,12 +340,11 @@ private fun ColumnMenu(text: String, onClick: () -> Unit) {
 @Composable
 private fun ButtonColumnMenu(
     text: String,
-    onClick: (GithubOAuthEntity) -> Unit,
+    onClick: () -> Unit,
     is_connected: Boolean,
 ) {
     val textColor = if (is_connected) purple200 else white
     val buttonColor = if (is_connected) purple50 else purple300
-    val intent:Intent = Intent()
     Box(
         modifier = Modifier
             .padding(top = 12.dp, bottom = 12.dp)
@@ -345,7 +352,7 @@ private fun ButtonColumnMenu(
                 interactionSource = MutableInteractionSource(),
                 indication = null,
                 enabled = true
-            ) { onClick(GithubOAuthEntity(getCode(intent).toString())) }
+            ) { onClick() }
             .fillMaxWidth()
             .height(52.dp)
             .background(gray50, RoundedCornerShape(12.dp)),
@@ -366,18 +373,14 @@ private fun ButtonColumnMenu(
                 modifier = Modifier
                     .size(80.dp, 38.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .clickable {
-                        onClick(GithubOAuthEntity(getCode(intent).toString()))
-                    }
                     .background(buttonColor),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
 
             ) {
-                if (is_connected){
+                if (is_connected) {
                     Text(text = "연동됨", color = textColor)
-                }
-                else Text(text = "연동하기", color = textColor )
+                } else Text(text = "연동하기", color = textColor)
             }
         }
     }

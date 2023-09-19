@@ -62,6 +62,17 @@ import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private fun getCode(intent: Intent): String? {
+        val data: Uri? = intent.data
+        val action: String? = intent.action
+        Log.d("TAG", "getCode: ${data?.getQueryParameter("code")}")
+
+        return if (action == Intent.ACTION_VIEW) {
+            data?.getQueryParameter("code")
+        } else { null }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         setStatusBarTransparent()
@@ -69,8 +80,6 @@ class MainActivity : ComponentActivity() {
         DevicePaddings.navigationBarHeightDp = getNavigationBarHeightDp()
         super.onCreate(savedInstanceState)
         saveDeviceToken(this)
-        getCode(intent)
-
         setContent {
             Thread.setDefaultUncaughtExceptionHandler(
                 XquareExceptionHandler(
@@ -79,6 +88,7 @@ class MainActivity : ComponentActivity() {
             )
             BaseApp()
         }
+        getCode(intent)
     }
 }
 
@@ -299,13 +309,6 @@ fun Context.getActivity(): ComponentActivity? = when (this) {
     else -> null
 }
 
-fun getCode(intent: Intent): String? {
-    val data: Uri? = intent.data
-    val action: String? = intent.action
-    Log.d("TAG", "getCode: ${data?.getQueryParameter("code")}")
 
-    if (action == Intent.ACTION_VIEW) {
-        data?.getQueryParameter("code")
-    }
-    return null
-}
+
+

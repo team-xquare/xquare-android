@@ -16,12 +16,10 @@ class XquareApplication : Application() {
         super.onCreate()
         AndroidThreeTen.init(this)
         FirebaseApp.initializeApp(this)
-
         val sharedPrefs = getSharedPreferences("token", Context.MODE_PRIVATE)
         // 데이터 모두 삭제
         sharedPrefs.edit().clear().apply()
         saveDeviceToken(this)
         clearCache(this)
-        getCode(intent = Intent())
     }
 }

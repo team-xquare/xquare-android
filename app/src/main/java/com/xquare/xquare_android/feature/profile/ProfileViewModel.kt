@@ -1,6 +1,7 @@
 package com.xquare.xquare_android.feature.profile
 
 import android.util.Log
+import androidx.compose.runtime.Composable
 import com.xquare.domain.entity.github.GithubOAuthEntity
 
 import com.xquare.domain.entity.profile.ProfileEntity
@@ -69,7 +70,17 @@ class ProfileViewModel @Inject constructor(
     fun fetchOAuthCheck() =
         execute(
             job = { fetchGithubOAuthCheckUseCase.execute(Unit) },
-            onSuccess = { emitEvent(Event.OAuthCheckSuccess) },
+            onSuccess = {
+                val success = it.is_connected
+                Log.d("TAG", "fetchOAuthCheck: $success")
+                emitEvent(
+                    if (success) {
+                        Event.OAuthConnected
+                    } else {
+                       Event.OAuthNotConnected
+                    },
+                )
+            },
             onFailure = { emitEvent(Event.Failure) }
         )
 
@@ -79,7 +90,9 @@ class ProfileViewModel @Inject constructor(
         data class Success(val data: ProfileEntity) : Event()
         object Failure : Event()
 
-        object OAuthCheckSuccess : Event()
+        object OAuthConnected : Event()
+
+        object OAuthNotConnected: Event()
         data class OAuthSuccess(val data: GithubOAuthEntity) : Event()
 
         data class UploadFileSuccess(val data: List<String>) : Event()
