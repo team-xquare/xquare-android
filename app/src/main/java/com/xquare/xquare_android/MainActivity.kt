@@ -71,7 +71,6 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private val githubOAuthEntity: GithubOAuthEntity = GithubOAuthEntity(getCode(intent).toString())
 
     private fun getCode(intent: Intent): String? {
         val data: Uri? = intent.data
