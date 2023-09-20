@@ -11,12 +11,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -24,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -154,13 +152,10 @@ private fun Profile(
                     }
 
                 Box {
-                    Image(
+                    AsyncImage(
                         modifier = profileImageModifier,
-                        painter = rememberAsyncImagePainter(
-                            model = profile?.profileFileName,
-                            placeholder = ColorPainter(gray200),
-                            error = painterResource(id = R.drawable.ic_profile_default),
-                        ),
+                        model = profile?.profileFileName,
+                        error = painterResource(id = R.drawable.ic_profile_default),
                         contentScale = ContentScale.Crop,
                         contentDescription = null
                     )

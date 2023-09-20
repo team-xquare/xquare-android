@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.splash
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
