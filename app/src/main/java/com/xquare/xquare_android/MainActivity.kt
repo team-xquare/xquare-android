@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,6 +29,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.semicolon.design.color.primary.white.white
+import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.alarm.AlarmScreen
@@ -54,6 +56,7 @@ import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
 import com.xquare.xquare_android.util.*
 import dagger.hilt.android.AndroidEntryPoint
+import org.openjdk.tools.javac.Main
 import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -62,6 +65,13 @@ import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val mainActivityVIewModel: MainActivityVIewModel by lazy {
+        ViewModelProvider(this)[MainActivityVIewModel::class.java]
+    }
+
+
+    private val githubOAuthEntity: GithubOAuthEntity = GithubOAuthEntity(getCode(intent).toString())
 
     private fun getCode(intent: Intent): String? {
         val data: Uri? = intent.data
@@ -73,6 +83,7 @@ class MainActivity : ComponentActivity() {
         } else { null }
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         setStatusBarTransparent()
@@ -80,6 +91,8 @@ class MainActivity : ComponentActivity() {
         DevicePaddings.navigationBarHeightDp = getNavigationBarHeightDp()
         super.onCreate(savedInstanceState)
         saveDeviceToken(this)
+
+
         setContent {
             Thread.setDefaultUncaughtExceptionHandler(
                 XquareExceptionHandler(

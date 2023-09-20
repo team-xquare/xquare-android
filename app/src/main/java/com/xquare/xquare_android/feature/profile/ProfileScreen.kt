@@ -90,7 +90,8 @@ fun ProfileScreen(navController: NavController) {
                 }
 
                 is ProfileViewModel.Event.OAuthSuccess -> {
-                    navController.navigate(AppNavigationItem.Profile.route)
+                    makeToast(context, "Github OAuth에 연동하셨습니다")
+                    viewModel.fetchOAuth(it.data)
                 }
 
                 is ProfileViewModel.Event.LogoutSuccess -> {
@@ -128,7 +129,7 @@ private fun Profile(
     var galleryState by remember { mutableStateOf(false) }
     var logoutDialogState by remember { mutableStateOf(false) }
     val gitMenuList = listOf("계정 연동")
-    var gitState: GithubOAuthCheckEntity? by remember { mutableStateOf(GithubOAuthCheckEntity(false)) }
+    var gitState: GithubOAuthCheckEntity? by remember { mutableStateOf(GithubOAuthCheckEntity(true)) }
     val accountMenuList = listOf("로그아웃")
     var isButtonClickable by remember { mutableStateOf(true) }
     val openWebViewGallery =
