@@ -294,11 +294,13 @@ private fun Profile(
                     ButtonColumnMenu(
                         text = "Github 연동",
                         onClick = {
-                            val intent = Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("https://github.com/login/oauth/authorize?client_id=7ba1da5afd9b182e9793")
-                            )
-                            context.startActivity(intent)
+                            if (!githubConnected) {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/login/oauth/authorize?client_id=7ba1da5afd9b182e9793")
+                                )
+                                context.startActivity(intent)
+                            }
                         },
                         is_connected = githubConnected,
                     )
