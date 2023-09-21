@@ -71,14 +71,14 @@ class MainActivity : ComponentActivity() {
 
 
     private fun uploadGithubOauthCodeIfExists(intent: Intent) {
-        val data: Uri = intent.data ?: return
+        val data: Uri? = intent.data
         val action: String? = intent.action
-        Log.d("TAG", "getCode: ${data.getQueryParameter("code")}")
 
         if (action == Intent.ACTION_VIEW) {
-            val code = data.getQueryParameter("code") ?: return
+            val code = data!!.getQueryParameter("code")
+            Log.d("TAG", "getCode: ${data.getQueryParameter("code")}")
             mainActivityVIewModel.registerGithubUser(
-                GithubOAuthEntity(code = code)
+                GithubOAuthEntity(code = code!!)
             )
         }
     }
@@ -106,7 +106,6 @@ class MainActivity : ComponentActivity() {
                             "깃허브 연동에 성공하였습니다.",
                             Toast.LENGTH_SHORT
                         ).show()
-
                     }
                 }
             }
@@ -117,6 +116,10 @@ class MainActivity : ComponentActivity() {
             )
             BaseApp()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
         uploadGithubOauthCodeIfExists(intent)
     }
 }

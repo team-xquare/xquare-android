@@ -20,8 +20,8 @@ class MainActivityViewModel @Inject constructor(
             job = {
                 val connected = runBlocking(Dispatchers.IO) {
                     fetchGithubOAuthCheckUseCase.execute(Unit).is_connected
-                }
-                if (!connected) {
+                }.also { println("CONNCONN $it") }
+                if (connected) {
                     fetchGithubOAuthUseCase.execute(githubOAuthEntity)
                 }
             },

@@ -1,23 +1,15 @@
 package com.xquare.xquare_android.feature.github
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,31 +19,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.VerticalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.semicolon.design.Body1
-import com.semicolon.design.Body2
-import com.semicolon.design.Body3
-import com.semicolon.design.Subtitle4
-import com.semicolon.design.color.primary.gray.gray200
-import com.semicolon.design.color.primary.gray.gray50
-import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
-import com.semicolon.design.color.primary.purple.purple200
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.github.GithubInformationEntity
 import com.xquare.domain.entity.github.GithubListEntity
@@ -104,7 +80,6 @@ fun GithubScreen(
 
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Github(
     githubList: GithubListEntity?,
