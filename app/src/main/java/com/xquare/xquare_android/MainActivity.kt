@@ -67,17 +67,17 @@ import java.nio.charset.StandardCharsets
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val mainActivityVIewModel: MainActivityViewModel by viewModels()
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
 
     private fun uploadGithubOauthCodeIfExists(intent: Intent) {
-        val data: Uri? = intent.data
-        val action: String? = intent.action
+        val action: String? = intent.action.also { println("ACTACT $it") }
 
         if (action == Intent.ACTION_VIEW) {
+            val data: Uri? = intent.data
             val code = data!!.getQueryParameter("code")
             Log.d("TAG", "getCode: ${data.getQueryParameter("code")}")
-            mainActivityVIewModel.registerGithubUser(
+            mainActivityViewModel.registerGithubUser(
                 GithubOAuthEntity(code = code!!)
             )
         }
@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
         saveDeviceToken(this)
         setContent {
             LaunchedEffect(Unit) {
-                mainActivityVIewModel.eventFlow.collect { event ->
+                mainActivityViewModel.eventFlow.collect { event ->
                     when (event) {
                         MainActivityViewModel.Event.OAuthFailure -> Toast.makeText(
                             this@MainActivity,
