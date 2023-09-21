@@ -67,6 +67,7 @@ fun GithubRankingItem(
                 placeholder = ColorPainter(gray200),
                 error = painterResource(id = R.drawable.ic_profile_default)
             ),
+            contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
                 .size(50.dp)

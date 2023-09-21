@@ -47,7 +47,6 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
-import com.semicolon.design.color.primary.purple.purple300
 import com.semicolon.design.color.primary.purple.purple50
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.profile.ProfileEntity
@@ -66,7 +65,7 @@ fun ProfileScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: ProfileViewModel = hiltViewModel()
     var profile: ProfileEntity? by remember { mutableStateOf(null) }
-    var githubConnected by remember { mutableStateOf(false) }
+    var githubConnected by remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
@@ -135,7 +134,7 @@ private fun Profile(
     profile: ProfileEntity?,
     onBackPress: () -> Unit,
     sendImage: (File) -> Unit,
-    githubConnected: Boolean,
+    githubConnected: Boolean?,
     viewModel: ProfileViewModel,
 ) {
     val context = LocalContext.current
@@ -143,7 +142,6 @@ private fun Profile(
     var logoutDialogState by remember { mutableStateOf(false) }
     val gitMenuList = listOf("계정 연동")
     val accountMenuList = listOf("로그아웃")
-    var isButtonClickable by remember { mutableStateOf(true) }
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -290,11 +288,11 @@ private fun Profile(
                     fontWeight = FontWeight.Medium
                 )
                 Spacer(Modifier.size(4.dp))
-                gitMenuList.forEachIndexed { index, text ->
+                gitMenuList.forEachIndexed { _, _ ->
                     ButtonColumnMenu(
                         text = "Github 연동",
                         onClick = {
-                            if (!githubConnected) {
+                            if (githubConnected == false) {
                                 val intent = Intent(
                                     Intent.ACTION_VIEW,
                                     Uri.parse("https://github.com/login/oauth/authorize?client_id=7ba1da5afd9b182e9793")
@@ -302,7 +300,7 @@ private fun Profile(
                                 context.startActivity(intent)
                             }
                         },
-                        is_connected = githubConnected,
+                        isConnected = githubConnected,
                     )
                 }
             }
@@ -356,10 +354,16 @@ private fun ColumnMenu(text: String, onClick: () -> Unit) {
 private fun ButtonColumnMenu(
     text: String,
     onClick: () -> Unit,
-    is_connected: Boolean,
+    isConnected: Boolean?,
 ) {
-    val textColor = if (is_connected) purple200 else white
-    val buttonColor = if (is_connected) purple50 else purple300
+    val textColor = when (isConnected){
+        true -> purple200
+        else -> white
+    }
+    val buttonColor = when(isConnected) {
+        true -> purple50
+        else -> white
+    }
     Box(
         modifier = Modifier
             .padding(top = 12.dp, bottom = 12.dp)
@@ -384,18 +388,22 @@ private fun ButtonColumnMenu(
                 .padding(end = 12.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            Row(
-                modifier = Modifier
-                    .size(80.dp, 38.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(buttonColor),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+            isConnected?.let {
+                Row(
+                    modifier = Modifier
+                        .size(80.dp, 38.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(buttonColor),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
 
-            ) {
-                if (is_connected) {
-                    Text(text = "연동됨", color = textColor)
-                } else Text(text = "연동하기", color = textColor)
+                ) {
+                    if (isConnected) {
+                        Text(text = "연동됨", color = textColor)
+                    } else {
+                        Text(text = "연동하기", color = textColor)
+                    }
+                }
             }
         }
     }
