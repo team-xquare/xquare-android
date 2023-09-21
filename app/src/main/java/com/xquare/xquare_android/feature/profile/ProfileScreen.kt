@@ -3,18 +3,30 @@ package com.xquare.xquare_android.feature.profile
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,13 +42,14 @@ import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
-import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.gray.gray200
+import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.gray.gray700
+import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
 import com.semicolon.design.color.primary.purple.purple300
 import com.semicolon.design.color.primary.purple.purple50
 import com.semicolon.design.color.primary.white.white
-import com.xquare.domain.entity.github.GithubOAuthCheckEntity
-import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.CenterAppBar
@@ -53,12 +66,11 @@ fun ProfileScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: ProfileViewModel = hiltViewModel()
     var profile: ProfileEntity? by remember { mutableStateOf(null) }
-    var githubOAuth: GithubOAuthEntity? by remember { mutableStateOf(null) }
+    var githubConnected by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
         viewModel.fetchOAuthCheck()
-        githubOAuth?.let { viewModel.fetchOAuth(it) }
         viewModel.eventFlow.collect {
             when (it) {
                 is ProfileViewModel.Event.Success -> {
@@ -86,12 +98,11 @@ fun ProfileScreen(navController: NavController) {
                 }
 
                 is ProfileViewModel.Event.OAuthConnected -> {
-                    makeToast(context, "Github 계정연동 되어있습니다.")
+                    githubConnected = true
                 }
 
-                is ProfileViewModel.Event.OAuthSuccess -> {
-                    makeToast(context, "Github OAuth에 연동하셨습니다")
-                    viewModel.fetchOAuth(it.data)
+                is ProfileViewModel.Event.OAuthNotConnected -> {
+                    githubConnected = false
                 }
 
                 is ProfileViewModel.Event.LogoutSuccess -> {
@@ -114,6 +125,7 @@ fun ProfileScreen(navController: NavController) {
         sendImage = {
             viewModel.uploadFile(it)
         },
+        githubConnected = githubConnected,
         viewModel = viewModel,
     )
 }
@@ -123,13 +135,13 @@ private fun Profile(
     profile: ProfileEntity?,
     onBackPress: () -> Unit,
     sendImage: (File) -> Unit,
+    githubConnected: Boolean,
     viewModel: ProfileViewModel,
 ) {
     val context = LocalContext.current
     var galleryState by remember { mutableStateOf(false) }
     var logoutDialogState by remember { mutableStateOf(false) }
     val gitMenuList = listOf("계정 연동")
-    var gitState: GithubOAuthCheckEntity? by remember { mutableStateOf(GithubOAuthCheckEntity(true)) }
     val accountMenuList = listOf("로그아웃")
     var isButtonClickable by remember { mutableStateOf(true) }
     val openWebViewGallery =
@@ -288,7 +300,7 @@ private fun Profile(
                             )
                             context.startActivity(intent)
                         },
-                        is_connected = gitState!!.is_connected,
+                        is_connected = githubConnected,
                     )
                 }
             }

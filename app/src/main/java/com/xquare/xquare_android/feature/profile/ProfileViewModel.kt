@@ -1,9 +1,7 @@
 package com.xquare.xquare_android.feature.profile
 
 import android.util.Log
-import androidx.compose.runtime.Composable
 import com.xquare.domain.entity.github.GithubOAuthEntity
-
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
 import com.xquare.domain.usecase.auth.LogoutUseCase
@@ -52,19 +50,11 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun fetchOAuth(githubOAuthEntity: GithubOAuthEntity)  =
-        execute(
-            job = { fetchGithubOAuthUseCase.execute(githubOAuthEntity) },
-            onSuccess = { emitEvent(Event.OAuthSuccess(githubOAuthEntity)) },
-            onFailure = { emitEvent(Event.Failure)}
-        )
-
-
     fun logout() =
         execute(
             job = { logoutUseCase.execute(Unit) },
             onSuccess = { emitEvent(Event.LogoutSuccess) },
-            onFailure = {  }
+            onFailure = { }
         )
 
     fun fetchOAuthCheck() =
@@ -77,7 +67,7 @@ class ProfileViewModel @Inject constructor(
                     if (success) {
                         Event.OAuthConnected
                     } else {
-                       Event.OAuthNotConnected
+                        Event.OAuthNotConnected
                     },
                 )
             },
@@ -92,9 +82,7 @@ class ProfileViewModel @Inject constructor(
 
         object OAuthConnected : Event()
 
-        object OAuthNotConnected: Event()
-        data class OAuthSuccess(val data: GithubOAuthEntity) : Event()
-
+        object OAuthNotConnected : Event()
         data class UploadFileSuccess(val data: List<String>) : Event()
         object UploadFileFailure : Event()
 
