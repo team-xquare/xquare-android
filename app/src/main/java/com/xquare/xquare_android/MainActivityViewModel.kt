@@ -17,20 +17,16 @@ class MainActivityViewModel @Inject constructor(
 ) : BaseViewModel<MainActivityViewModel.Event>() {
 
     fun registerGithubUser(githubOAuthEntity: GithubOAuthEntity) {
-        println("CALLEDCALLED")
         execute(
             job = {
                 val connected = fetchGithubOAuthCheckUseCase.execute(Unit).is_connected
 
-                println("LOGLOGLOG $connected")
                 if (!connected) {
                     fetchGithubOAuthUseCase.execute(githubOAuthEntity)
                 }
             },
-            onSuccess = { emitEvent(Event.OAuthSuccess)
-                        println("SUCCESSSUCCESS")},
-            onFailure = { emitEvent(Event.OAuthFailure) 
-            println("FAILFAIL")}
+            onSuccess = { emitEvent(Event.OAuthSuccess) },
+            onFailure = { emitEvent(Event.OAuthFailure) }
         )
     }
 

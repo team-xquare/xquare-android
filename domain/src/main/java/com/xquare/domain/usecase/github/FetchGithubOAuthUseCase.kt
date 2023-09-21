@@ -11,6 +11,6 @@ class FetchGithubOAuthUseCase @Inject constructor(
 ) : UseCase<GithubOAuthEntity, Unit>() {
 
     override suspend fun execute(data: GithubOAuthEntity) =
-        githubRepository.fetchGithubOAuth(code = data.code).also { println("CODECODE ${data.code}") }
+        githubRepository.fetchGithubOAuth(code = data.code)
 
 }
