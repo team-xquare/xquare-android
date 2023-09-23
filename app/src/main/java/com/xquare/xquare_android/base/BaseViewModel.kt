@@ -3,6 +3,7 @@ package com.xquare.xquare_android.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.xquare.domain.exception.NeedLoginException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<T> : ViewModel() {
@@ -18,7 +19,7 @@ abstract class BaseViewModel<T> : ViewModel() {
         job: suspend () -> V,
         onSuccess: suspend (value: V) -> Unit,
         onFailure: suspend (t: Throwable) -> Unit
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(Dispatchers.IO) {
         kotlin.runCatching { job() }
             .onSuccess { onSuccess(it) }
             .onFailure {

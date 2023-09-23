@@ -1,8 +1,12 @@
 package com.xquare.xquare_android.feature.profile
 
+import android.util.Log
+import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
 import com.xquare.domain.usecase.auth.LogoutUseCase
+import com.xquare.domain.usecase.github.FetchGithubOAuthCheckUseCase
+import com.xquare.domain.usecase.github.FetchGithubOAuthUseCase
 import com.xquare.domain.usecase.user.FetchProfileUseCase
 import com.xquare.domain.usecase.user.FixProfileImageUseCase
 import com.xquare.xquare_android.base.BaseViewModel
@@ -17,6 +21,8 @@ class ProfileViewModel @Inject constructor(
     private val fixProfileImageUseCase: FixProfileImageUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val fetchGithubOAuthUseCase: FetchGithubOAuthUseCase,
+    private val fetchGithubOAuthCheckUseCase: FetchGithubOAuthCheckUseCase,
 ) : BaseViewModel<ProfileViewModel.Event>() {
 
     fun fetchProfile() =
@@ -51,12 +57,32 @@ class ProfileViewModel @Inject constructor(
             onFailure = { }
         )
 
+    fun fetchOAuthCheck() =
+        execute(
+            job = { fetchGithubOAuthCheckUseCase.execute(Unit) },
+            onSuccess = {
+                val success = it.is_connected
+                Log.d("TAG", "fetchOAuthCheck: $success")
+                emitEvent(
+                    if (success) {
+                        Event.OAuthConnected
+                    } else {
+                        Event.OAuthNotConnected
+                    },
+                )
+            },
+            onFailure = { emitEvent(Event.Failure) }
+        )
+
     sealed class Event {
 
         object LogoutSuccess : Event()
         data class Success(val data: ProfileEntity) : Event()
         object Failure : Event()
 
+        object OAuthConnected : Event()
+
+        object OAuthNotConnected : Event()
         data class UploadFileSuccess(val data: List<String>) : Event()
         object UploadFileFailure : Event()
 

@@ -2,6 +2,7 @@ package com.xquare.xquare_android
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging

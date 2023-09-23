@@ -1,6 +1,6 @@
 package com.xquare.data.repository.reports
 
-import com.xquare.data.remote.datasource.ReportRemoteDataSource
+import com.xquare.data.remote.datasource.report.ReportRemoteDataSource
 import com.xquare.domain.entity.reports.BugEntity
 import com.xquare.domain.entity.reports.ReleaseEntity
 import com.xquare.domain.repository.reports.ReportRepository

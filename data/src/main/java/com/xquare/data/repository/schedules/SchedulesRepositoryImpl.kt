@@ -1,13 +1,11 @@
 package com.xquare.data.repository.schedules
 
-import com.xquare.data.fetchDataWithOfflineCache
-import com.xquare.data.remote.datasource.SchedulesRemoteDataSource
+import com.xquare.data.remote.datasource.schedules.SchedulesRemoteDataSource
 import com.xquare.data.today
 import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.domain.entity.schedules.CreateSchedulesEntity
 import com.xquare.domain.entity.schedules.FixSchedulesEntity
 import com.xquare.domain.repository.schedules.SchedulesRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SchedulesRepositoryImpl @Inject constructor(

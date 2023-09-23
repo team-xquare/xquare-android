@@ -1,6 +1,7 @@
 package com.xquare.di
 
 import com.xquare.data.repository.AuthRepositoryImpl
+import com.xquare.data.repository.GithubRepositoryImpl
 import com.xquare.data.repository.PointRepositoryImpl
 import com.xquare.data.repository.WebViewRepositoryImpl
 import com.xquare.data.repository.attachment.AttachmentRepositoryImpl
@@ -12,6 +13,7 @@ import com.xquare.data.repository.pick.PickRepositoryImpl
 import com.xquare.data.repository.reports.ReportRepositoryImpl
 import com.xquare.data.repository.user.UserRepositoryImpl
 import com.xquare.domain.repository.AuthRepository
+import com.xquare.domain.repository.GithubRepository
 import com.xquare.domain.repository.PointRepository
 import com.xquare.domain.repository.WebViewRepository
 import com.xquare.domain.repository.attachment.AttachmentRepository
@@ -85,4 +87,9 @@ abstract class RepositoryModule {
     abstract fun bindReportsRepository(
         reportRepositoryImpl: ReportRepositoryImpl,
     ): ReportRepository
+
+    @Binds
+    abstract fun bindGithubRepository(
+        githubRepositoryImpl: GithubRepositoryImpl
+    ): GithubRepository
 }

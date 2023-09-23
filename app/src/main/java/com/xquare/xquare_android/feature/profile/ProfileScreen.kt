@@ -2,16 +2,31 @@ package com.xquare.xquare_android.feature.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,7 +41,12 @@ import coil.compose.AsyncImage
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
-import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.gray.gray200
+import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.gray.gray700
+import com.semicolon.design.color.primary.gray.gray900
+import com.semicolon.design.color.primary.purple.purple200
+import com.semicolon.design.color.primary.purple.purple50
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.xquare_android.R
@@ -44,34 +64,55 @@ fun ProfileScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: ProfileViewModel = hiltViewModel()
     var profile: ProfileEntity? by remember { mutableStateOf(null) }
+    var githubConnected by remember { mutableStateOf<Boolean?>(null) }
+
     LaunchedEffect(Unit) {
         viewModel.fetchProfile()
+        viewModel.fetchOAuthCheck()
         viewModel.eventFlow.collect {
             when (it) {
                 is ProfileViewModel.Event.Success -> {
                     profile = it.data
                 }
+
                 is ProfileViewModel.Event.Failure -> {
                     makeToast(context, "프로필을 불러오지 못했습니다")
                 }
+
                 is ProfileViewModel.Event.UploadFileSuccess -> {
                     viewModel.fixProfileImage(it.data[0])
                 }
+
                 is ProfileViewModel.Event.UploadFileFailure -> {
                     makeToast(context, "이미지를 불러오지 못했습니다")
                 }
+
                 is ProfileViewModel.Event.ImageChangeSuccess -> {
                     viewModel.fetchProfile()
                 }
+
                 is ProfileViewModel.Event.ImageChangeFailure -> {
                     makeToast(context, "이미지를 변경하지 못했습니다")
                 }
+
+                is ProfileViewModel.Event.OAuthConnected -> {
+                    githubConnected = true
+                }
+
+                is ProfileViewModel.Event.OAuthNotConnected -> {
+                    githubConnected = false
+                }
+
                 is ProfileViewModel.Event.LogoutSuccess -> {
                     navController.navigate(AppNavigationItem.Onboard.route) {
                         popUpTo(0) {
                             inclusive = true
                         }
                     }
+                }
+
+                ProfileViewModel.Event.OAuthNotConnected -> {
+                    makeToast(context, "Github 계정연동에 되어있지않습니다.")
                 }
             }
         }
@@ -82,21 +123,23 @@ fun ProfileScreen(navController: NavController) {
         sendImage = {
             viewModel.uploadFile(it)
         },
-        viewModel = viewModel
+        githubConnected = githubConnected,
+        viewModel = viewModel,
     )
 }
+
 @Composable
 private fun Profile(
     profile: ProfileEntity?,
     onBackPress: () -> Unit,
     sendImage: (File) -> Unit,
+    githubConnected: Boolean?,
     viewModel: ProfileViewModel,
 ) {
     val context = LocalContext.current
     var galleryState by remember { mutableStateOf(false) }
     var logoutDialogState by remember { mutableStateOf(false) }
     val gitMenuList = listOf("계정 연동")
-//    var gitState by remember { mutableStateOf(false) }
     val accountMenuList = listOf("로그아웃")
     val openWebViewGallery =
         rememberLauncherForActivityResult(
@@ -109,6 +152,8 @@ private fun Profile(
             }
             galleryState = false
         }
+
+
     val openGalleryLauncher =
         Intent(Intent.ACTION_PICK).apply {
             this.type = "image/*"
@@ -181,7 +226,8 @@ private fun Profile(
                     }
             )
             Spacer(Modifier.size(30.dp))
-            Row(Modifier.padding(horizontal = 16.dp)
+            Row(
+                Modifier.padding(horizontal = 16.dp)
             ) {
                 Body1(text = "이름", color = gray900)
                 Spacer(modifier = Modifier.weight(1f))
@@ -189,11 +235,12 @@ private fun Profile(
             }
 
             Spacer(Modifier.size(20.dp))
-            Row(Modifier.padding(horizontal = 16.dp)){
+            Row(Modifier.padding(horizontal = 16.dp)) {
                 Body1(text = "생년월일", color = gray900)
                 Spacer(modifier = Modifier.weight(1f))
                 Body1(
-                    text = profile?.birthday?.format(DateTimeFormatter.ofPattern("yyyy.MM.dd")) ?: "",
+                    text = profile?.birthday?.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+                        ?: "",
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -230,11 +277,34 @@ private fun Profile(
                     logoutDialogState = false
                 }
             }
+            Spacer(Modifier.size(4.dp))
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                Body1(
+                    text = "계정 연동",
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(Modifier.size(4.dp))
+                gitMenuList.forEachIndexed { _, _ ->
+                    ButtonColumnMenu(
+                        text = "Github 연동",
+                        onClick = {
+                            if (githubConnected == false) {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://github.com/login/oauth/authorize?client_id=7ba1da5afd9b182e9793")
+                                )
+                                context.startActivity(intent)
+                            }
+                        },
+                        isConnected = githubConnected,
+                    )
+                }
+            }
+            Spacer(Modifier.size(4.dp))
             Column(Modifier.padding(horizontal = 16.dp)) {
                 Body1(
                     text = "계정 설정",
-                    fontWeight = FontWeight.Bold,
-
+                    fontWeight = FontWeight.Medium,
                 )
                 Spacer(Modifier.size(4.dp))
                 Body3(text = "기기내 계정에서 로그아웃 할 수 있어요.", color = gray700)
@@ -246,27 +316,13 @@ private fun Profile(
                         }
                     }
                 }
-                /*
-                Column {
-                    Body1(
-                        text = "계정 연동",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                    )
-                    gitMenuList.forEachIndexed { index, text ->
-                        ButtonColumnMenu(text = text) {
-                            when(index) {
-                                0 -> TODO()
-                            }
-                        }
-                    }
-                }
-                */
             }
+
         }
     }
 }
+
+
 @Composable
 private fun ColumnMenu(text: String, onClick: () -> Unit) {
     Box(
@@ -289,18 +345,24 @@ private fun ColumnMenu(text: String, onClick: () -> Unit) {
         )
     }
 }
-/*
+
 @Composable
 private fun ButtonColumnMenu(
-text: String,
-onClick: () -> Unit,
-gitState: Boolean,
+    text: String,
+    onClick: () -> Unit,
+    isConnected: Boolean?,
 ) {
-    //val textColor = if (gitState) white else purple200
-    //val buttonColor = if (gitState) purple300 else purple50
+    val textColor = when (isConnected){
+        true -> purple200
+        else -> white
+    }
+    val buttonColor = when(isConnected) {
+        true -> purple50
+        else -> white
+    }
     Box(
         modifier = Modifier
-            .padding(start = 12.dp, end = 16.dp, top = 12.dp)
+            .padding(top = 12.dp, bottom = 12.dp)
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = null,
@@ -322,17 +384,23 @@ gitState: Boolean,
                 .padding(end = 12.dp),
             horizontalArrangement = Arrangement.End
         ) {
-            Row(
-                modifier = Modifier
-                    .size(80.dp, 38.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(purple300),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(text = "연동하기", color = white)
+            isConnected?.let {
+                Row(
+                    modifier = Modifier
+                        .size(80.dp, 38.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(buttonColor),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+
+                ) {
+                    if (isConnected) {
+                        Text(text = "연동됨", color = textColor)
+                    } else {
+                        Text(text = "연동하기", color = textColor)
+                    }
+                }
             }
         }
     }
 }
-*/

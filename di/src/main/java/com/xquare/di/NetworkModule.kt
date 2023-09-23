@@ -111,6 +111,12 @@ object NetworkModule {
         retrofit.create(ReportsApi::class.java)
 
     @Provides
+    fun provideGithubApi(
+        retrofit: Retrofit
+    ): GithubApi =
+        retrofit.create((GithubApi::class.java))
+
+    @Provides
     fun provideFileUploadManager(
         attachmentApi: AttachmentApi,
         httpLoggingInterceptor: HttpLoggingInterceptor,

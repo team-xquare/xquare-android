@@ -44,7 +44,7 @@ import com.xquare.xquare_android.util.DevicePaddings
 
 @Composable
 fun AllScreen(navController: NavController) {
-    val schoolMenuList = listOf("오늘의 자습감독 선생님")//"동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
+    val schoolMenuList = listOf("오늘의 자습감독 선생님", "랭킹")//"동아리 지원하기", "오늘의 자습감독 선생님", "랭킹")
     val dormitoryMenuList = listOf("봉사 지원하기", "청소판 확인하기")
     val userMenuList = listOf("업데이트 사항")
 
@@ -92,6 +92,7 @@ fun AllScreen(navController: NavController) {
                 ColumnMenuItem(title) {
                     when(index) {
                         0 -> navController.navigate(AppNavigationItem.TodayTeacher.route)
+                        1 -> navController.navigate(AppNavigationItem.Github.route)
                     }
                 }
             }
