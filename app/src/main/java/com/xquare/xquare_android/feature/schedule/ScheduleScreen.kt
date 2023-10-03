@@ -59,7 +59,8 @@ fun ScheduleScreen(navController: NavController) {
     val timetableViewModel: TimetableViewModel = hiltViewModel()
     val scheduleViewModel: ScheduleViewModel = hiltViewModel()
     val actionSheetScope = rememberCoroutineScope()
-    val actionSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val actionSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     var selectedItem: SchedulesEntity.SchedulesDataEntity? = remember { null }
 
     var pageNum by rememberSaveable { mutableStateOf(0) }
@@ -77,11 +78,13 @@ fun ScheduleScreen(navController: NavController) {
                     isLoadingSchedule = false
                     scheduleData = Pair(loadingMonth, it.data)
                 }
+
                 is ScheduleViewModel.Event.DeleteSuccess -> {
                     isLoadingSchedule = true
                     scheduleViewModel.fetchSchedules(loadingMonth)
                     makeToast(context, "일정을 삭제하였습니다")
                 }
+
                 else -> {
 
                 }
@@ -100,6 +103,7 @@ fun ScheduleScreen(navController: NavController) {
                         0 -> withContext(Dispatchers.Main) {
                             navController.navigate(AppNavigationItem.WriteSchedule.createRoute(it))
                         }
+
                         1 -> scheduleViewModel.deleteSchedules(it.id)
                     }
                 }
@@ -169,9 +173,8 @@ private fun Timetable(
     val pagerState = rememberPagerState()
     LaunchedEffect(Unit) {
         val lastIndex = timetableEntity.week_timetable.lastIndex
-        //val coerce = dayOfWeek.coerceIn(0, lastIndex)
         if (dayOfWeek > 4) dayOfWeek = 4
-        if (timetableEntity.week_timetable[dayOfWeek-1].week_day != dayOfWeek) date -= (5-timetableEntity.week_timetable.size)
+        if (timetableEntity.week_timetable[dayOfWeek - 1].week_day != dayOfWeek) date -= (5 - timetableEntity.week_timetable.size)
         val initPage = getTimeTablePage(dayOfWeek = date, lastIndex = lastIndex)
         pagerState.scrollToPage(initPage)
     }
@@ -223,7 +226,8 @@ private fun Timetable(
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun TimetablePage(
-    weekTimetableEntity: TimetableEntity.WeekTimetableEntity) {
+    weekTimetableEntity: TimetableEntity.WeekTimetableEntity
+) {
     Scaffold(
         topBar = {
             Box(modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 8.dp)) {
@@ -312,7 +316,10 @@ private fun Schedule(
             var isExpandedAll = remember { true }
             val nestedScrollConnection =
                 object : NestedScrollConnection {
-                    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    override fun onPreScroll(
+                        available: Offset,
+                        source: NestedScrollSource
+                    ): Offset {
                         return if (available.y < 0) {
                             isExpandedAll = false
                             calendarPlusHeightPx = available.y.toInt()
@@ -422,11 +429,11 @@ fun ScheduleItem(
                 )
             }
             Spacer(Modifier.size(21.dp))
-                Body1(
-                    text = schedulesDataEntity.name,
-                    color = gray900,
-                    fontWeight = FontWeight.Medium
-                )
+            Body1(
+                text = schedulesDataEntity.name,
+                color = gray900,
+                fontWeight = FontWeight.Medium
+            )
         }
         Box(Modifier
             .size(36.dp)
