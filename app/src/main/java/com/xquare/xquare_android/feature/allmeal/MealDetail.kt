@@ -1,3 +1,5 @@
+package com.xquare.xquare_android.feature.allmeal
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -56,51 +58,46 @@ fun MealDetail(
             fontWeight = FontWeight.Medium
         )
         if (breakfast.isNotEmpty()) {
-            Spacer(Modifier.size(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Body1(text = "아침", color = gray800)
-                Spacer(Modifier.size(8.dp))
-                Body3(
-                    text = mealWithDateEntity.caloriesOfBreakfast,
-                    color = gray700,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(3.dp)
-                        .wrapContentWidth(align = Alignment.End)
-                )
-            }
-            Body2(text = breakfast, color = gray900)
+            Meal(
+                mealWithDateEntity = mealWithDateEntity,
+                meal = breakfast,
+                time = "아침",
+            )
         }
         if (lunch.isNotEmpty()) {
-            Spacer(Modifier.size(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Body1(text = "점심", color = gray800)
-                Body3(
-                    text = mealWithDateEntity.caloriesOfLunch,
-                    color = gray700,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(3.dp)
-                        .wrapContentWidth(align = Alignment.End)
-                )
-            }
-            Body2(text = lunch, color = gray900)
+            Meal(
+                mealWithDateEntity = mealWithDateEntity,
+                meal = lunch,
+                time = "점심",
+            )
         }
         if (dinner.isNotEmpty()) {
-            Spacer(Modifier.size(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Body1(text = "저녁", color = gray800)
-                Body3(
-                    text = mealWithDateEntity.caloriesOfDinner,
-                    color = gray700,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(3.dp)
-                        .wrapContentWidth(align = Alignment.End),
-                )
-            }
-            Body2(text = dinner, color = gray900)
+            Meal(
+                mealWithDateEntity = mealWithDateEntity,
+                meal = dinner,
+                time = "저녁",
+            )
         }
     }
 }
 
+@Composable
+fun Meal(
+    mealWithDateEntity: AllMealEntity.MealWithDateEntity,
+    meal: String,
+    time: String,
+) {
+    Spacer(Modifier.size(8.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Body1(text = time, color = gray800)
+        Body3(
+            text = mealWithDateEntity.caloriesOfLunch,
+            color = gray700,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp)
+                .wrapContentWidth(align = Alignment.End)
+        )
+    }
+    Body2(text = meal, color = gray900)
+}

@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.allmeal
 
-import MealDetail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

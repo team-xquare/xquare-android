@@ -1,10 +1,7 @@
 package com.xquare.xquare_android.feature.signin
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,7 +29,6 @@ import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.TextField
 import com.xquare.xquare_android.getToken
 import com.xquare.xquare_android.navigation.AppNavigationItem
-import com.xquare.xquare_android.saveDeviceToken
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 
@@ -40,7 +36,9 @@ import com.xquare.xquare_android.util.makeToast
 fun SignInScreen(navController: NavController) {
     val context = LocalContext.current
     val signInViewModel: SignInViewModel = hiltViewModel()
+    var userId by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
+        signInViewModel.fetchId()
         signInViewModel.eventFlow.collect {
             when (it) {
                 is SignInViewModel.Event.Success -> {
@@ -58,6 +56,9 @@ fun SignInScreen(navController: NavController) {
                 is SignInViewModel.Event.TooManyRequest -> {
                     makeToast(context, "현재 요청이 너무 많습니다")
                 }
+                is SignInViewModel.Event.FetchIdSuccess -> {
+                    userId = it.data
+                }
             }
         }
     }
@@ -69,7 +70,8 @@ fun SignInScreen(navController: NavController) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=100091948951498"))
             context.startActivity(intent)
             //TODO("아이디/비밀번호 찾기로 이동")
-        }
+        },
+        userId = userId,
     )
 }
 
@@ -78,10 +80,12 @@ private fun SignIn(
     onBackClick: () -> Unit,
     onSignInClick: (SignInEntity) -> Unit,
     onFindAccountClick: () -> Unit,
+    userId: String,
 ) {
     val context = LocalContext.current
     var accountId by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    if (userId.isNotBlank()) accountId = userId
     val isSignInEnabled = accountId.isNotEmpty() && password.isNotEmpty()
     Scaffold(
         modifier = Modifier
@@ -144,6 +148,7 @@ fun SignInPreview() {
     SignIn(
         onBackClick = {},
         onSignInClick = {},
-        onFindAccountClick = {}
+        onFindAccountClick = {},
+        userId = ""
     )
 }

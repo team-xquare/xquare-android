@@ -3,6 +3,7 @@ package com.xquare.xquare_android.feature.bug
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,13 +36,19 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -52,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
@@ -93,25 +101,29 @@ fun BugReportScreen(
 ) {
     val bugViewModel: BugViewModel = hiltViewModel()
     val context = LocalContext.current
-    val photos by remember { mutableStateOf(ArrayList<String>()) }
-    var image by remember { mutableStateOf("") }
+    var photos by remember { mutableStateOf(emptyList<String>()) }
 
-    LaunchedEffect(Unit){
-        bugViewModel.eventFlow.collect{
-            when (it){
+    LaunchedEffect(Unit) {
+        bugViewModel.eventFlow.collect {
+            when (it) {
                 is BugViewModel.Event.Success -> {
-                    Toast.makeText(context,"버그 제보 성공",Toast.LENGTH_SHORT).show()
-                    photos.clear()
+                    Toast.makeText(context, "버그 제보 성공", Toast.LENGTH_SHORT).show()
+                    navController.navigateUp()
                 }
-                is BugViewModel.Event.Failure -> Toast.makeText(context,"버그 제보 실패",Toast.LENGTH_SHORT).show()
+
+                is BugViewModel.Event.Failure -> Toast.makeText(
+                    context,
+                    "버그 제보 실패",
+                    Toast.LENGTH_SHORT
+                ).show()
+
                 is BugViewModel.Event.UploadFileSuccess -> {
-                    image = it.data[0]
+                    photos += it.data[0]
+                    Toast.makeText(context, "사진 추가 성공", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-    if (image != "") photos.add(image)
-    image = ""
     BugreportContent(
         onIconClick = { navController.popBackStack() },
         onBtnClick = {
@@ -132,13 +144,15 @@ private fun BugreportContent(
     onIconClick: () -> Unit,
     onBtnClick: (BugEntity) -> Unit,
     sendImage: (File) -> Unit,
-    photos: ArrayList<String>,
+    photos: List<String>,
 ) {
+    val context = LocalContext.current
     var where by remember { mutableStateOf("홈") }
     var explanationText by remember { mutableStateOf("") }
     val headerBtnEnabled = explanationText.isNotEmpty()
-    val context = LocalContext.current
     var galleryState by remember { mutableStateOf(false) }
+    var images by remember { mutableStateOf(emptyList<Uri?>()) }
+    var selectedImageUri: Uri? = null
     val openWebViewGallery =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -146,10 +160,10 @@ private fun BugreportContent(
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data!!.clipData?.run {
                     for (i in 0 until itemCount) {
-                        val listItem = getItemAt(i).uri
-                        sendImage(toFile(context, listItem))
+                        sendImage(toFile(context, getItemAt(i).uri))
+                        selectedImageUri = getItemAt(i).uri
+                        images += selectedImageUri
                     }
-                    Toast.makeText(context, "사진 추가 성공", Toast.LENGTH_SHORT).show()
                 }
             }
             galleryState = false
@@ -176,8 +190,13 @@ private fun BugreportContent(
                 btnEnabled = headerBtnEnabled,
                 onIconClick = onIconClick,
                 onBtnClick = {
-                    onBtnClick(BugEntity(explanationText, where.toEntityWhere(), image_urls = photos))
-                    photos.clear()
+                    onBtnClick(
+                        BugEntity(
+                            explanationText,
+                            where.toEntityWhere(),
+                            image_urls = photos
+                        )
+                    )
                     explanationText = ""
                 },
             )
@@ -195,39 +214,39 @@ private fun BugreportContent(
             Spacer(modifier = Modifier.size(30.dp))
             Text(text = "사진을 첨부해 주세요")
             Spacer(modifier = Modifier.size(10.dp))
-            Row {
-                if (photos.isEmpty()){
-                    Column(
+            if (images.isEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .clickable { galleryState = true }
+                        .size(150.dp)
+                        .background(gray50),
+                ) {
+                    Image(
                         modifier = Modifier
-                            .clickable { galleryState = true }
-                            .size(150.dp)
-                            .background(gray50),
-                    ) {
-                        Image(
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        painter = rememberAsyncImagePainter(model = R.drawable.ic_add_photo),
+                        contentDescription = "insertBugPhoto",
+                    )
+                }
+            } else {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 12.dp),
+                ) {
+                    items(images) {
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(20.dp),
-                            painter = rememberAsyncImagePainter(model = R.drawable.ic_add_photo),
-                            contentDescription = "insertBugPhoto",
-                        )
-                    }
-                } else {
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 12.dp),
-                    ) {
-                        items(photos) {
-                            Column(
-                                modifier = Modifier
-                                    .size(150.dp)
-                                    .clickable { galleryState = true }
-                                    .padding(end = 4.dp),
-                            ) {
-                                Image(
-                                    modifier = Modifier.fillMaxSize(),
-                                    painter = rememberAsyncImagePainter(model = it),
-                                    contentDescription = "bugPhoto",
-                                )
-                            }
+                                .size(150.dp)
+                                .clickable { galleryState = true }
+                                .padding(end = 4.dp),
+                        ) {
+                            AsyncImage(
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                                model = it,
+                                contentDescription = "bugPhoto",
+                                error = rememberAsyncImagePainter(model = selectedImageUri),
+                            )
                         }
                     }
                 }

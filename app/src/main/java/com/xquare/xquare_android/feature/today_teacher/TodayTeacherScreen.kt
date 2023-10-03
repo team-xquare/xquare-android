@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.pick.TodaySelfStudyTeacherEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
+import com.xquare.xquare_android.util.makeToast
 import org.threeten.bp.LocalDate
 
 
@@ -32,10 +32,11 @@ fun TodayTeacherScreen(
     var todayTeacher: TodaySelfStudyTeacherEntity? by remember { mutableStateOf(null) }
     LaunchedEffect(Unit) {
         viewModel.todaySelfStudyTeacher()
-        viewModel.eventFlow.collect{
-            when(it) {
-                is TodayTeacherViewModel.Event.Success -> todayTeacher = it.data
-            }
+        is TodayTeacherViewModel.Event.Success -> {
+            todayTeacher = it.data
+        }
+        is TodayTeacherViewModel.Event.Failure -> {
+            makeToast(context, "자습감독선생님을 불러오지 못했습니다.")
         }
     }
     TodayTeacher(

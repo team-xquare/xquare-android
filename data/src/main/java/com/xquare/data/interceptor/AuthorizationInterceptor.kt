@@ -33,7 +33,7 @@ class AuthorizationInterceptor @Inject constructor(
         else if (path == "/users" && method == "POST") return chain.proceed(request)
         else if (path.startsWith("/meal")) return chain.proceed(request)
 
-        val expiredAt = runBlocking { authPreference.fetchExpirationAt() }
+        val expiredAt = runBlocking { authPreference.fetchAccessTokenExpireAt() }
         val currentTime = LocalDateTime.now(ZoneId.systemDefault())
 
         if (expiredAt.isBefore(currentTime)) {
@@ -41,7 +41,7 @@ class AuthorizationInterceptor @Inject constructor(
             val refreshToken = runBlocking { authPreference.fetchRefreshToken() }
 
             val tokenRefreshRequest = Request.Builder()
-                .url("https://api.xquare.app/users/login")
+                .url("https://prod-server.xquare.app/users/login")
                 .put("".toRequestBody("application/json".toMediaTypeOrNull()))
                 .addHeader("Refresh-Token", "Bearer $refreshToken")
                 .build()
@@ -58,14 +58,16 @@ class AuthorizationInterceptor @Inject constructor(
                     runBlocking {
                         authPreference.saveAccessToken(token.accessToken)
                         authPreference.saveRefreshToken(token.refreshToken)
-                        authPreference.saveExpirationAt(LocalDateTime.parse(token.expirationAt))
+                        authPreference.saveAccessTokenExpireAt(LocalDateTime.parse(token.accessTokenExpireAt))
+                        authPreference.saveRefreshTokenExpireAt(LocalDateTime.parse(token.refreshTokenExpireAt))
                     }
                 } else throw NeedLoginException()
             } catch (e: NeedLoginException) {
                 runBlocking {
                     authPreference.saveAccessToken("")
                     authPreference.saveRefreshToken("")
-                    authPreference.saveExpirationAt(LocalDateTime.MIN)
+                    authPreference.saveAccessTokenExpireAt(LocalDateTime.MIN)
+                    authPreference.saveRefreshTokenExpireAt(LocalDateTime.MIN)
                 }
             }
         }

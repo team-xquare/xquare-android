@@ -2,20 +2,22 @@ package com.xquare.xquare_android
 
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -26,12 +28,14 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.semicolon.design.color.primary.white.white
+import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.entity.schedules.SchedulesEntity
 import com.xquare.xquare_android.component.BottomNavigation
 import com.xquare.xquare_android.feature.alarm.AlarmScreen
 import com.xquare.xquare_android.feature.all.AllScreen
 import com.xquare.xquare_android.feature.allmeal.AllMealScreen
 import com.xquare.xquare_android.feature.bug.BugReportScreen
+import com.xquare.xquare_android.feature.github.GithubScreen
 import com.xquare.xquare_android.feature.home.HomeScreen
 import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
@@ -49,7 +53,11 @@ import com.xquare.xquare_android.feature.today_teacher.TodayTeacherScreen
 import com.xquare.xquare_android.feature.webview.CommonWebViewScreen
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.navigation.BottomNavigationItem
-import com.xquare.xquare_android.util.*
+import com.xquare.xquare_android.util.DevicePaddings
+import com.xquare.xquare_android.util.XquareExceptionHandler
+import com.xquare.xquare_android.util.getNavigationBarHeightDp
+import com.xquare.xquare_android.util.getStatusBarHeightDp
+import com.xquare.xquare_android.util.setStatusBarTransparent
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.net.URLDecoder
@@ -58,6 +66,24 @@ import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
+
+
+    private fun uploadGithubOauthCodeIfExists(intent: Intent) {
+        val action: String? = intent.action.also { println("ACTACT $it") }
+
+        if (action == Intent.ACTION_VIEW) {
+            val data: Uri? = intent.data
+            val code = data!!.getQueryParameter("code")
+            Log.d("TAG", "getCode: ${data.getQueryParameter("code")}")
+            mainActivityViewModel.registerGithubUser(
+                GithubOAuthEntity(code = code!!)
+            )
+        }
+    }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         setStatusBarTransparent()
@@ -65,8 +91,24 @@ class MainActivity : ComponentActivity() {
         DevicePaddings.navigationBarHeightDp = getNavigationBarHeightDp()
         super.onCreate(savedInstanceState)
         saveDeviceToken(this)
-
         setContent {
+            LaunchedEffect(Unit) {
+                mainActivityViewModel.eventFlow.collect { event ->
+                    when (event) {
+                        MainActivityViewModel.Event.OAuthFailure -> Toast.makeText(
+                            this@MainActivity,
+                            "깃허브 연동에 실패하였습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        MainActivityViewModel.Event.OAuthSuccess ->Toast.makeText(
+                            this@MainActivity,
+                            "깃허브 연동에 성공하였습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
             Thread.setDefaultUncaughtExceptionHandler(
                 XquareExceptionHandler(
                     context = this,
@@ -74,6 +116,11 @@ class MainActivity : ComponentActivity() {
             )
             BaseApp()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        uploadGithubOauthCodeIfExists(intent)
     }
 }
 
@@ -131,15 +178,18 @@ fun BaseApp() {
         composable(AppNavigationItem.Pass.route) {
             PassScreen(navController)
         }
-        composable(AppNavigationItem.TodayTeacher.route){
+        composable(AppNavigationItem.TodayTeacher.route) {
             TodayTeacherScreen(navController)
         }
         composable(AppNavigationItem.Setting.route) {
             SettingScreen(navController)
         }
-        composable(AppNavigationItem.ReleaseNote.route){
+        composable(AppNavigationItem.ReleaseNote.route) {
             ReleaseScreen(navController)
-            
+
+        }
+        composable(AppNavigationItem.Github.route) {
+            GithubScreen(navController)
         }
         composable(AppNavigationItem.WriteSchedule.route) {
             val schedulesData = it.arguments?.get("schedulesData").toString()
@@ -227,7 +277,7 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Feed.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/feed",
+                    url = "https://prod-server.xquare.app/feed",
                     title = "피드",
                     haveBackButton = false,
                 )
@@ -235,7 +285,7 @@ fun Main(mainNavController: NavController) {
             composable(BottomNavigationItem.Application.route) {
                 CommonWebViewScreen(
                     navController = mainNavController,
-                    url = "https://service.xquare.app/apply",
+                    url = "https://prod-server.xquare.app/apply",
                     title = "신청",
                     haveBackButton = false,
                 )
@@ -255,7 +305,7 @@ fun saveDeviceToken(context: Context) {
             Log.d("TAG", "saveDeviceToken: $token")
             val pref = context.getSharedPreferences("token", Context.MODE_PRIVATE)
             val editor = pref.edit()
-            editor.putString("token",token).apply()
+            editor.putString("token", token).apply()
             editor.commit()
 
             Log.d("TAG", "Save Token Successfully")
@@ -273,20 +323,12 @@ fun getToken(context: Context): String? {
     return token
 }
 
-// 캐시 메모리 삭제
-fun clearCache(context: Context) {
-    val cacheDir = context.cacheDir
-    if (cacheDir.isDirectory) {
-        val children = cacheDir.list()
-        for (i in children!!.indices) {
-            File(cacheDir, children[i]).delete()
-        }
-    }
-}
-
-
 fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
     is ContextWrapper -> baseContext.getActivity()
     else -> null
 }
+
+
+
+

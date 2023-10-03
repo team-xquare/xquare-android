@@ -19,13 +19,10 @@ import androidx.compose.ui.unit.dp
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.color.primary.gray.gray50
-import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray800
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
-import com.xquare.domain.entity.meal.AllMealEntity
 import com.xquare.domain.entity.reports.ReleaseEntity
-import com.xquare.xquare_android.util.toKorean
 
 
 @Stable
@@ -57,7 +54,6 @@ fun ReleaseDetail(
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "새로운 기능", color = gray800, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.size(2.dp))
             }
             Body2(
                 text = releaseWithUpdateEntity.featureContent,
@@ -69,7 +65,6 @@ fun ReleaseDetail(
             Spacer(Modifier.size(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Body1(text = "개선된 버그", color = gray800, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.size(2.dp))
             }
             Body2(
                 text = releaseWithUpdateEntity.fixContent,

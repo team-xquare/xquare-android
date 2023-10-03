@@ -2,10 +2,9 @@ package com.xquare.data.repository.user
 
 import com.xquare.data.fetchDataWithOfflineCache
 import com.xquare.data.local.datasource.HomeUserLocalDataSource
-import com.xquare.data.local.entity.homeUser.toRoomEntity
-import com.xquare.data.remote.datasource.UserRemoteDataSource
+import com.xquare.data.remote.datasource.user.UserRemoteDataSource
 import com.xquare.domain.entity.profile.ProfileEntity
-import com.xquare.data.remote.datasource.UserSimpleRemoteDataSource
+import com.xquare.data.remote.datasource.user.UserSimpleRemoteDataSource
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.domain.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow

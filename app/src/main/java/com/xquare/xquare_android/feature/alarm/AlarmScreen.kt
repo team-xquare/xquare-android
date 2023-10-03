@@ -104,9 +104,10 @@ fun AlarmItem(
     val minutesDifference = ChronoUnit.MINUTES.between(sendAt.toLocalTime(),today.toLocalTime())
 
     val time: String = when {
-        daysDifference > 0 -> "${daysDifference}일 전"
-        hoursDifference <= 0 ->"${minutesDifference}분 전"
-        else -> "${hoursDifference}시간 전"
+        daysDifference > 30 -> "${daysDifference/30}달 전"
+        daysDifference in 1..30 -> "${daysDifference}일 전"
+        hoursDifference > 0 -> "${hoursDifference}시간 전"
+        else -> "${minutesDifference}분 전"
     }.let { if (it == "0분 전") "방금전" else it }
 
     val tint = if (alarmList.is_read) black else purple300

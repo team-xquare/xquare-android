@@ -2,7 +2,7 @@ package com.xquare.data.repository
 
 import com.xquare.data.local.datasource.AuthLocalDataSource
 import com.xquare.data.local.preference.AuthPreference
-import com.xquare.data.remote.datasource.AuthRemoteDataSource
+import com.xquare.data.remote.datasource.auth.AuthRemoteDataSource
 import com.xquare.domain.AppCookieManager
 import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.domain.entity.auth.SignUpEntity
@@ -42,7 +42,12 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun logout() {
         authPreference.clearAccessToken()
         authPreference.clearRefreshToken()
-        authPreference.clearExpirationAt()
+        authPreference.clearAccessTokenExpireAt()
+        authPreference.clearRefreshTokenExpireAt()
+        authPreference.clearRole()
         authPreference.clearUserId()
     }
+
+    override suspend fun fetchId(): String =
+        authPreference.fetchUserId()
 }

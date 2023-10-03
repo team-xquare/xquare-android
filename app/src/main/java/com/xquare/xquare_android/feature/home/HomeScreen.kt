@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -28,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -182,12 +181,9 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
             ) { onClick() }
 
     ) {
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = userData.profileFileImage,
-                placeholder = ColorPainter(gray200),
-                error = painterResource(id = R.drawable.ic_profile_default),
-            ),
+        AsyncImage(
+            model = userData.profileFileImage,
+            error = painterResource(id = R.drawable.ic_profile_default),
             contentDescription = "profileImage",
             contentScale = ContentScale.Crop,
             modifier = Modifier

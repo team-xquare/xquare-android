@@ -11,12 +11,12 @@ import javax.inject.Inject
 @HiltViewModel
 class PassViewModel @Inject constructor(
     private val fetchPassDataUseCase: FetchPassDataUseCase
-): BaseViewModel<PassViewModel.Event>() {
+) : BaseViewModel<PassViewModel.Event>() {
 
 
     private val _passData = MutableStateFlow(
         PassDataEntity(
-            "","","","","","","", picnic_date = ""
+            "", "", "", "", "", "", "", picnic_date = ""
         )
     )
     val passData: StateFlow<PassDataEntity> = _passData

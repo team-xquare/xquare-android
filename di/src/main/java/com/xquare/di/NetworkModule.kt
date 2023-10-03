@@ -2,6 +2,7 @@ package com.xquare.di
 
 import com.xquare.data.interceptor.AuthorizationInterceptor
 import com.xquare.data.interceptor.EmptyBodyInterceptor
+import com.xquare.data.remote.FileUploadManager
 import com.xquare.data.remote.api.*
 import dagger.Module
 import dagger.Provides
@@ -16,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://api.xquare.app/"
+    private const val BASE_URL = "https://prod-server.xquare.app/"
 
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
@@ -108,4 +109,19 @@ object NetworkModule {
         retrofit: Retrofit
     ): ReportsApi =
         retrofit.create(ReportsApi::class.java)
+
+    @Provides
+    fun provideGithubApi(
+        retrofit: Retrofit
+    ): GithubApi =
+        retrofit.create((GithubApi::class.java))
+
+    @Provides
+    fun provideFileUploadManager(
+        attachmentApi: AttachmentApi,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): FileUploadManager = FileUploadManager(
+        attachmentApi = attachmentApi,
+        httpLoggingInterceptor = httpLoggingInterceptor,
+    )
 }

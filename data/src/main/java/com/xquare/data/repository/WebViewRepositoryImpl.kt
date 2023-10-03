@@ -1,7 +1,7 @@
 package com.xquare.data.repository
 
 import com.xquare.data.local.datasource.AuthLocalDataSource
-import com.xquare.data.remote.datasource.AuthRemoteDataSource
+import com.xquare.data.remote.datasource.auth.AuthRemoteDataSource
 import com.xquare.domain.repository.WebViewRepository
 import javax.inject.Inject
 

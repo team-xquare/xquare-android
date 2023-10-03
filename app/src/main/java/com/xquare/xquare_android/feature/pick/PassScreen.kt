@@ -4,7 +4,6 @@ import android.text.TextUtils
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,11 +32,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.semicolon.design.Body1
 import com.semicolon.design.Subtitle2
 import com.semicolon.design.Subtitle4
-import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray800
@@ -91,15 +88,12 @@ fun PassScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Image(
+                    AsyncImage(
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape),
-                        painter = rememberAsyncImagePainter(
-                            model = passData.profile_file_name,
-                            placeholder = ColorPainter(gray200),
-                            error = painterResource(id = R.drawable.ic_profile_default)
-                        ),
+                        model = passData.profile_file_name,
+                        error = painterResource(id = R.drawable.ic_profile_default),
                         contentScale = ContentScale.Crop,
                         contentDescription = null,
                     )

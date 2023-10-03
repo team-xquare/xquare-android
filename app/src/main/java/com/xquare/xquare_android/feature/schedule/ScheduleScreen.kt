@@ -1,7 +1,6 @@
 package com.xquare.xquare_android.feature.schedule
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -266,11 +265,11 @@ private fun TimetableItem(
                 .size(40.dp)
                 .background(gray100, RoundedCornerShape(20.dp))
         ) {
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(20.dp)),
-                painter = rememberAsyncImagePainter(model = dayTimetableEntity.subject_image),
+                model = dayTimetableEntity.subject_image,
                 contentDescription = null
             )
         }

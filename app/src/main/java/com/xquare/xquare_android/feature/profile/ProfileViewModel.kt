@@ -1,14 +1,18 @@
 package com.xquare.xquare_android.feature.profile
 
+import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
 import com.xquare.domain.usecase.auth.LogoutUseCase
+import com.xquare.domain.usecase.github.FetchGithubOAuthCheckUseCase
+import com.xquare.domain.usecase.github.FetchGithubOAuthUseCase
 import com.xquare.domain.usecase.user.FetchProfileUseCase
 import com.xquare.domain.usecase.user.FixProfileImageUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import java.io.File
 import javax.inject.Inject
 
@@ -18,6 +22,8 @@ class ProfileViewModel @Inject constructor(
     private val fixProfileImageUseCase: FixProfileImageUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val fetchGithubOAuthUseCase: FetchGithubOAuthUseCase,
+    private val fetchGithubOAuthCheckUseCase: FetchGithubOAuthCheckUseCase,
 ) : BaseViewModel<ProfileViewModel.Event>() {
 
     private val _profile = MutableStateFlow(
@@ -38,15 +44,17 @@ class ProfileViewModel @Inject constructor(
         execute(
             job = { fixProfileImageUseCase.execute(image) },
             onSuccess = { emitEvent(Event.ImageChangeSuccess) },
-            onFailure = {  }
+            onFailure = {
+                emitEvent(Event.ImageChangeFailure)
+            }
         )
     }
 
     fun uploadFile(file: File) {
         execute(
             job = { uploadFileUseCase.execute(file) },
-            onSuccess = { emitEvent(Event.UploadFileSuccess(it.file_url)) },
-            onFailure = {  }
+            onSuccess = { emitEvent(Event.UploadFileSuccess(it.first().fileUrls)) },
+            onFailure = { emitEvent(Event.UploadFileFailure) }
         )
     }
 
@@ -54,7 +62,24 @@ class ProfileViewModel @Inject constructor(
         execute(
             job = { logoutUseCase.execute(Unit) },
             onSuccess = { emitEvent(Event.LogoutSuccess) },
-            onFailure = {  }
+            onFailure = { }
+        )
+
+    fun fetchOAuthCheck() =
+        execute(
+            job = { fetchGithubOAuthCheckUseCase.execute(Unit) },
+            onSuccess = {
+                val success = it.is_connected
+                Log.d("TAG", "fetchOAuthCheck: $success")
+                emitEvent(
+                    if (success) {
+                        Event.OAuthConnected
+                    } else {
+                        Event.OAuthNotConnected
+                    },
+                )
+            },
+            onFailure = { emitEvent(Event.Failure) }
         )
 
     sealed class Event {
@@ -63,6 +88,9 @@ class ProfileViewModel @Inject constructor(
         data class Success(val data: ProfileEntity) : Event()
         object Failure : Event()
 
+        object OAuthConnected : Event()
+
+        object OAuthNotConnected : Event()
         data class UploadFileSuccess(val data: List<String>) : Event()
 
         object ImageChangeSuccess : Event()

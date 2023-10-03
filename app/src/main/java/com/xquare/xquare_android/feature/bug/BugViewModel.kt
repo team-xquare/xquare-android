@@ -12,18 +12,21 @@ import javax.inject.Inject
 class BugViewModel @Inject constructor(
     private val bugUseCase: UploadBugUseCase,
     private val uploadFileUseCase: UploadFileUseCase
-): BaseViewModel<BugViewModel.Event>(){
-
+) : BaseViewModel<BugViewModel.Event>() {
     fun uploadBug(bugEntity: BugEntity) = execute(
         job = { bugUseCase.execute(bugEntity) },
-        onSuccess = { emitEvent(Event.Success)},
+        onSuccess = { emitEvent(Event.Success) },
         onFailure = { emitEvent(Event.Failure) }
     )
 
     fun uploadFile(file: File) = execute(
-        job = {uploadFileUseCase.execute(file)},
-        onSuccess = {emitEvent(Event.UploadFileSuccess(it.file_url))},
-        onFailure = { emitEvent(Event.Failure)}
+        job = { uploadFileUseCase.execute(file) },
+        onSuccess = {
+            it.collect { file ->
+                emitEvent(Event.UploadFileSuccess(file.fileUrls))
+            }
+        },
+        onFailure = { emitEvent(Event.Failure) }
     )
 
     sealed class Event {
