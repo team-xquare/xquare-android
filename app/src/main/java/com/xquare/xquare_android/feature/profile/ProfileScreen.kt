@@ -1,5 +1,6 @@
 package com.xquare.xquare_android.feature.profile
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.semicolon.design.Body1
@@ -54,16 +56,15 @@ import com.xquare.xquare_android.component.CenterAppBar
 import com.xquare.xquare_android.component.modal.ConfirmModal
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
-import com.xquare.xquare_android.util.makeToast
 import com.xquare.xquare_android.util.toFile
 import org.threeten.bp.format.DateTimeFormatter
 import java.io.File
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun ProfileScreen(navController: NavController) {
-    val context = LocalContext.current
     val viewModel: ProfileViewModel = hiltViewModel()
-    var profile: ProfileEntity? by remember { mutableStateOf(null) }
+    val profile = viewModel.profile.collectAsStateWithLifecycle().value
     var githubConnected by remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(Unit) {
@@ -71,7 +72,7 @@ fun ProfileScreen(navController: NavController) {
         viewModel.fetchOAuthCheck()
         viewModel.eventFlow.collect {
             when (it) {
-                is ProfileViewModel.Event.Success -> {
+is ProfileViewModel.Event.Success -> {
                     profile = it.data
                 }
 

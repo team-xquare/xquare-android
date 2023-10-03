@@ -9,20 +9,16 @@ import javax.inject.Inject
 @HiltViewModel
 class TodayTeacherViewModel @Inject constructor(
     private val todaySelfStudyTeacherUseCase: TodaySelfStudyTeacherUseCase
-): BaseViewModel<TodayTeacherViewModel.Event>() {
-
+): BaseViewModel<TodayTeacherViewModel.Event>(){
+    
     fun todaySelfStudyTeacher() = execute(
-        job = { todaySelfStudyTeacherUseCase.execute(Unit) },
-        onSuccess = { emitEvent(Event.Success(it)) },
-        onFailure = { emitEvent(Event.Failure)}
+        job = { todaySelfStudyTeacherUseCase.execute(Unit)},
+        onSuccess = { it.collect{ teacher -> emitEvent(Event.Success(teacher))}  },
+        onFailure = {  }
     )
-
+    
     sealed class Event{
-
         data class Success(val data: TodaySelfStudyTeacherEntity) : Event()
 
-        object Failure : Event()
-
     }
-
 }

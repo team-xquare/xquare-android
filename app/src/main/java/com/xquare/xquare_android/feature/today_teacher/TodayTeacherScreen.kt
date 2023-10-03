@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,20 +28,15 @@ import org.threeten.bp.LocalDate
 fun TodayTeacherScreen(
     navController: NavController
 ) {
-    val context = LocalContext.current
     val viewModel: TodayTeacherViewModel = hiltViewModel()
     var todayTeacher: TodaySelfStudyTeacherEntity? by remember { mutableStateOf(null) }
     LaunchedEffect(Unit) {
         viewModel.todaySelfStudyTeacher()
-        viewModel.eventFlow.collect {
-            when (it) {
-                is TodayTeacherViewModel.Event.Success -> {
-                    todayTeacher = it.data
-                }
-                is TodayTeacherViewModel.Event.Failure -> {
-                    makeToast(context, "자습감독선생님을 불러오지 못했습니다.")
-                }
-            }
+        is TodayTeacherViewModel.Event.Success -> {
+            todayTeacher = it.data
+        }
+        is TodayTeacherViewModel.Event.Failure -> {
+            makeToast(context, "자습감독선생님을 불러오지 못했습니다.")
         }
     }
     TodayTeacher(

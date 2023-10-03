@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.meal.AllMealEntity
@@ -30,12 +31,10 @@ fun AllMealScreen(
         viewModel.fetchAllMeal()
         viewModel.eventFlow.collect {
             when (it) {
-                is AllMealViewModel.Event.Success -> {
-                    allMeal = it.data
-                }
                 is AllMealViewModel.Event.Failure -> {
                     makeToast(context, "급식을 불러오는 데 실패했습니다")
                 }
+                is AllMealViewModel.Event.Success -> allMeal = it.data
             }
         }
     }

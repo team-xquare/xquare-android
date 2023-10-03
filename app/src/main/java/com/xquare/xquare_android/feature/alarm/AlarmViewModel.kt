@@ -6,6 +6,7 @@ import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,12 +20,11 @@ class AlarmViewModel @Inject constructor(
     fun fetchAlarmList() =
         execute(
             job = { fetchAlarmUseCase.execute(Unit) },
-            onSuccess = { emitEvent(Event.Success(it)) },
-            onFailure = { emitEvent(Event.Failure) }
+            onSuccess = { it.collect{ alarmList -> _alarmList.tryEmit(alarmList)} },
+            onFailure = {  }
         )
 
     sealed class Event {
         data class Success(val data: AlarmEntity) : Event()
-        object Failure : Event()
     }
 }

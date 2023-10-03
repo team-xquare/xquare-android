@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class FetchAlarmUseCase @Inject constructor(
     private val alarmRepository: AlarmRepository,
-) : UseCase<Unit, AlarmEntity>() {
-    override suspend fun execute(data: Unit): AlarmEntity =
+) : UseCase<Unit, Flow<AlarmEntity>>() {
+    override suspend fun execute(data: Unit): Flow<AlarmEntity> =
         alarmRepository.fetchAlarmHistory()
 }

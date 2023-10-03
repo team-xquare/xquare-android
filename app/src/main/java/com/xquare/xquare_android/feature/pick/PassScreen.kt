@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.semicolon.design.Body1
@@ -52,7 +52,7 @@ fun PassScreen(
     val context = LocalContext.current
     val mainActivity: MainActivity = context as MainActivity
     val vm: PassViewModel = hiltViewModel()
-    val passData = vm.passData.collectAsState().value
+    val passData = vm.passData.collectAsStateWithLifecycle().value
 
     LaunchedEffect(Unit) {
         mainActivity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)

@@ -8,6 +8,8 @@ import com.xquare.domain.usecase.notification.FetchAlarmCategoriesUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import com.xquare.xquare_android.feature.profile.ProfileViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,17 +19,20 @@ class SettingViewModel @Inject constructor(
     private val secessionUseCase: LogoutUseCase,
 ): BaseViewModel<SettingViewModel.Event>(){
 
+    private val _setting = MutableStateFlow(AlarmCategoriesEntity(categories = listOf()))
+    val setting: StateFlow<AlarmCategoriesEntity> = _setting
+
     fun activateAlarm(activateAlarmEntity: ActivateAlarmEntity) =
         execute(
             job = { activateAlarmUseCase.execute(activateAlarmEntity) },
             onSuccess = { emitEvent(Event.Success) },
-            onFailure = { emitEvent(Event.Failure) }
+            onFailure = {  }
         )
 
     fun fetchAlarmCategories() =
         execute(
             job = { fetchAlarmCategoriesUseCase.execute(Unit) },
-            onSuccess = { emitEvent(Event.FetchSuccess(it)) },
+            onSuccess = { it.collect{ categories -> _setting.tryEmit(categories)} },
             onFailure = { emitEvent(Event.Failure) }
         )
 
@@ -40,8 +45,6 @@ class SettingViewModel @Inject constructor(
 
     sealed class Event{
         object Success : Event()
-
-        data class FetchSuccess(val data: AlarmCategoriesEntity) : Event()
 
         object Failure : Event()
 

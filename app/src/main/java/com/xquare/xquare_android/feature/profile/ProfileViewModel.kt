@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.profile
 
-import android.util.Log
 import com.xquare.domain.entity.github.GithubOAuthEntity
 import com.xquare.domain.entity.profile.ProfileEntity
 import com.xquare.domain.usecase.attachment.UploadFileUseCase
@@ -11,6 +10,8 @@ import com.xquare.domain.usecase.user.FetchProfileUseCase
 import com.xquare.domain.usecase.user.FixProfileImageUseCase
 import com.xquare.xquare_android.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import java.io.File
 import javax.inject.Inject
@@ -25,11 +26,18 @@ class ProfileViewModel @Inject constructor(
     private val fetchGithubOAuthCheckUseCase: FetchGithubOAuthCheckUseCase,
 ) : BaseViewModel<ProfileViewModel.Event>() {
 
+    private val _profile = MutableStateFlow(
+        ProfileEntity(
+            "", "", "",1,1,1,""
+        )
+    )
+    val profile: StateFlow<ProfileEntity> = _profile
+
     fun fetchProfile() =
         execute(
             job = { fetchProfileUseCase.execute(Unit) },
-            onSuccess = { it.collect { profile -> emitEvent(Event.Success(profile)) } },
-            onFailure = { emitEvent(Event.Failure) }
+            onSuccess = { it.collect { profile -> _profile.tryEmit(profile)} },
+            onFailure = {  }
         )
 
     fun fixProfileImage(image: String?) {
@@ -84,9 +92,7 @@ class ProfileViewModel @Inject constructor(
 
         object OAuthNotConnected : Event()
         data class UploadFileSuccess(val data: List<String>) : Event()
-        object UploadFileFailure : Event()
 
         object ImageChangeSuccess : Event()
-        object ImageChangeFailure : Event()
     }
 }

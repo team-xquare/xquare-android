@@ -11,6 +11,7 @@ class AllMealViewModel @Inject constructor(
     private val fetchAllMealUseCase: FetchAllMealUseCase
 ) : BaseViewModel<AllMealViewModel.Event>() {
 
+
     fun fetchAllMeal() =
         execute(
             job = { fetchAllMealUseCase.execute(Unit) },

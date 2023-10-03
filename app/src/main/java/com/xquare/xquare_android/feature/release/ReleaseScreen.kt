@@ -11,42 +11,26 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.reports.ReleaseEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
-import com.xquare.xquare_android.util.makeToast
 
 @Composable
 fun ReleaseScreen(
     navController: NavController,
 ){
-    val context = LocalContext.current
     val viewModel: ReleaseViewModel = hiltViewModel()
-    var release: ReleaseEntity? by remember { mutableStateOf(null) }
+    val release = viewModel.release.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
         viewModel.fetchRelease()
-        viewModel.eventFlow.collect {
-            when (it) {
-                is ReleaseViewModel.Event.Success -> {
-                    release = it.data
-                }
-                is ReleaseViewModel.Event.Failure -> {
-                    makeToast(context, "업데이트 사항을 불러오는 데 실패했습니다")
-                }
-            }
-        }
     }
     Release(
         release = release,

@@ -91,6 +91,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.1'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha04"
 }
 
 apply plugin: 'com.google.gms.google-services'

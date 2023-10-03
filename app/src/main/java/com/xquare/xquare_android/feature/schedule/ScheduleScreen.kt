@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -65,7 +66,7 @@ fun ScheduleScreen(navController: NavController) {
     var pageNum by rememberSaveable { mutableStateOf(0) }
 
     var scheduleData: Pair<Int, SchedulesEntity>? by remember { mutableStateOf(null) }
-    val timetable = timetableViewModel.timetable.collectAsState().value
+    val timetable = timetableViewModel.timetable.collectAsStateWithLifecycle().value
     var isLoadingSchedule by remember { mutableStateOf(false) }
     var loadingMonth by remember { mutableStateOf(LocalDate.now().monthValue) }
 

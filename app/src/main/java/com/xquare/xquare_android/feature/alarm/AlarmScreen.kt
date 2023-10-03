@@ -19,19 +19,15 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.semicolon.design.Body3
 import com.semicolon.design.color.primary.black.black
@@ -42,26 +38,16 @@ import com.xquare.domain.entity.notification.AlarmEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.Header
 import com.xquare.xquare_android.util.DevicePaddings
-import com.xquare.xquare_android.util.makeToast
 import java.time.temporal.ChronoUnit
 
 @Composable
 fun AlarmScreen(
     navController: NavController,
 ) {
-    val context = LocalContext.current
     val viewModel: AlarmViewModel = hiltViewModel()
-    var alarmList: AlarmEntity?  by remember { mutableStateOf(null) }
+    val alarmList = viewModel.alarmList.collectAsStateWithLifecycle().value
     LaunchedEffect(Unit) {
         viewModel.fetchAlarmList()
-        viewModel.eventFlow.collect {
-            when (it) {
-                is AlarmViewModel.Event.Success -> alarmList = it.data
-                is AlarmViewModel.Event.Failure -> {
-                    makeToast(context, "알림을 불러오는데 실패했습니다")
-                }
-            }
-        }
     }
     Alarm(
         alarmList = alarmList,
