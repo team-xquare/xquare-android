@@ -159,8 +159,8 @@ fun ScheduleScreen(navController: NavController) {
     }
 }
 
-@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @OptIn(ExperimentalPagerApi::class)
+@Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 @Composable
 private fun Timetable(
     dayOfWeek: Int,
@@ -174,7 +174,13 @@ private fun Timetable(
     LaunchedEffect(Unit) {
         val lastIndex = timetableEntity.week_timetable.lastIndex
         if (dayOfWeek > 4) dayOfWeek = 4
-        if (timetableEntity.week_timetable[dayOfWeek - 1].week_day != dayOfWeek) date -= (5 - timetableEntity.week_timetable.size)
+
+        if (timetableEntity.week_timetable.isNotEmpty()) {
+            if (timetableEntity.week_timetable[dayOfWeek - 1].week_day != dayOfWeek) {
+                date -= (5 - timetableEntity.week_timetable.size)
+            }
+        }
+
         val initPage = getTimeTablePage(dayOfWeek = date, lastIndex = lastIndex)
         pagerState.scrollToPage(initPage)
     }
