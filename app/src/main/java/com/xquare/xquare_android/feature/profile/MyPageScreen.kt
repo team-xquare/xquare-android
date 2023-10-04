@@ -37,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -55,6 +54,7 @@ import com.xquare.xquare_android.component.modal.ConfirmModal
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
+import com.xquare.xquare_android.util.rememberAsyncGifImagePainter
 import com.xquare.xquare_android.util.toFile
 import org.threeten.bp.format.DateTimeFormatter
 import java.io.File
@@ -189,18 +189,14 @@ private fun Profile(
                 val profileImageModifier = Modifier
                     .size(60.dp)
                     .clip(RoundedCornerShape(30.dp))
-                    .clickable(
-                        interactionSource = MutableInteractionSource(),
-                        indication = null,
-                    ) {
+                    .clickable {
                         galleryState = true
                     }
 
                 Box {
-                    AsyncImage(
+                    Image(
                         modifier = profileImageModifier,
-                        model = profile?.profileFileName,
-                        error = painterResource(id = R.drawable.ic_profile_default),
+                        painter = rememberAsyncGifImagePainter(profile?.profileFileName),
                         contentScale = ContentScale.Crop,
                         contentDescription = null
                     )
@@ -352,11 +348,11 @@ private fun ButtonColumnMenu(
     onClick: () -> Unit,
     isConnected: Boolean?,
 ) {
-    val textColor = when (isConnected){
+    val textColor = when (isConnected) {
         true -> purple200
         else -> white
     }
-    val buttonColor = when(isConnected) {
+    val buttonColor = when (isConnected) {
         true -> purple50
         else -> purple300
     }
@@ -376,7 +372,7 @@ private fun ButtonColumnMenu(
         Body1(
             text = text,
             color = gray900,
-            modifier = Modifier.padding(start = 4.dp)
+            modifier = Modifier.padding(start = 8.dp)
         )
         Row(
             modifier = Modifier
