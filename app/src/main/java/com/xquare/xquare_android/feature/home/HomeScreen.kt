@@ -1,6 +1,5 @@
 package com.xquare.xquare_android.feature.home
 
-import android.os.Build.VERSION.SDK_INT
 import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,12 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.request.ImageRequest
-import coil.size.Size
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
@@ -75,6 +68,7 @@ import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
+import com.xquare.xquare_android.util.rememberAsyncGifImagePainter
 import org.threeten.bp.LocalDateTime
 
 @Composable
@@ -209,26 +203,9 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
                 enabled = true
             ) { onClick() }
     ) {
-        val context = LocalContext.current
-        val imageLoader = ImageLoader.Builder(context)
-            .components {
-                if (SDK_INT >= 28) {
-                    add(ImageDecoderDecoder.Factory())
-                } else {
-                    add(GifDecoder.Factory())
-                }
-            }
-            .build()
 
         Image(
-            painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(context)
-                    .data(userData.profileFileImage)
-                    .apply {
-                        size(Size.ORIGINAL)
-                    }.build(),
-                imageLoader = imageLoader,
-            ),
+            painter = rememberAsyncGifImagePainter(data = userData.profileFileImage),
             contentDescription = "profileImage",
             contentScale = ContentScale.Crop,
             modifier = Modifier
