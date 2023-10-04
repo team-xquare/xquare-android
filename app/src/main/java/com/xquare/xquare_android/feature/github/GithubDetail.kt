@@ -124,11 +124,6 @@ fun GithubItem(
                 )
                 Image(
                     painter = rememberAsyncGifImagePainter(githubUser.profile_file_name),
-                    /*rememberAsyncImagePainter(
-                        model = githubList.profile_file_name,
-                        placeholder = ColorPainter(gray200),
-                        error = painterResource(id = R.drawable.ic_profile_default)
-                    )*/
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
