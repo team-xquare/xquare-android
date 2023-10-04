@@ -41,7 +41,7 @@ import com.xquare.xquare_android.feature.imagedetail.ImageDetailScreen
 import com.xquare.xquare_android.feature.onboard.OnboardScreen
 import com.xquare.xquare_android.feature.pick.PassScreen
 import com.xquare.xquare_android.feature.point_history.PointHistoryScreen
-import com.xquare.xquare_android.feature.profile.ProfileScreen
+import com.xquare.xquare_android.feature.profile.MyPageScreen
 import com.xquare.xquare_android.feature.release.ReleaseScreen
 import com.xquare.xquare_android.feature.schedule.ScheduleScreen
 import com.xquare.xquare_android.feature.schedule.WriteScheduleScreen
@@ -59,7 +59,6 @@ import com.xquare.xquare_android.util.getNavigationBarHeightDp
 import com.xquare.xquare_android.util.getStatusBarHeightDp
 import com.xquare.xquare_android.util.setStatusBarTransparent
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -170,7 +169,7 @@ fun BaseApp() {
             PointHistoryScreen(navController)
         }
         composable(AppNavigationItem.Profile.route) {
-            ProfileScreen(navController)
+            MyPageScreen(navController)
         }
         composable(AppNavigationItem.Bug.route) {
             BugReportScreen(navController)

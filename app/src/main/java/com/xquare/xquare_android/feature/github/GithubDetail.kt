@@ -19,26 +19,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
-import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
 import com.xquare.domain.entity.github.GithubInformationEntity
 import com.xquare.domain.entity.github.GithubListEntity
-import com.xquare.xquare_android.R
+import com.xquare.xquare_android.util.rememberAsyncGifImagePainter
 import java.text.DecimalFormat
 
 fun formatNumberWithComma(number: Int): String {
@@ -62,11 +58,7 @@ fun GithubRankingItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = rememberAsyncImagePainter(
-                model = githubInformation?.profileFilename,
-                placeholder = ColorPainter(gray200),
-                error = painterResource(id = R.drawable.ic_profile_default)
-            ),
+            painter = rememberAsyncGifImagePainter(githubInformation?.profileFilename),
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
@@ -75,8 +67,16 @@ fun GithubRankingItem(
         )
         Spacer(Modifier.size(10.dp))
         Column {
-            Body2(text = "${githubInformation?.ranking}위 : ${githubInformation?.name}", fontWeight = FontWeight.Medium, color = gray900)
-            Body3(text = "@${githubInformation?.username}", fontWeight = FontWeight.Normal, color = gray700)
+            Body2(
+                text = "${githubInformation?.ranking}위 : ${githubInformation?.name}",
+                fontWeight = FontWeight.Medium,
+                color = gray900,
+            )
+            Body3(
+                text = "@${githubInformation?.username}",
+                fontWeight = FontWeight.Normal,
+                color = gray700,
+            )
         }
         Spacer(Modifier.weight(1f))
         Box(
@@ -97,7 +97,7 @@ fun GithubRankingItem(
 
 @Composable
 fun GithubItem(
-    githubList: GithubListEntity.GithubUserListEntity,
+    githubUser: GithubListEntity.GithubUserListEntity,
     modifier: Modifier = Modifier,
     crown: Painter,
     color: Color,
@@ -105,14 +105,12 @@ fun GithubItem(
     tint: Color,
     image: Dp
 ) {
-
     Column(
         modifier = modifier
             .background(gray50, RoundedCornerShape(12.dp))
             .border(width = 1.dp, color = color, shape = RoundedCornerShape(12.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Column(
             Modifier.padding(top = 10.dp, bottom = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -125,11 +123,7 @@ fun GithubItem(
                     tint = tint
                 )
                 Image(
-                    painter = rememberAsyncImagePainter(
-                        model = githubList.profile_file_name,
-                        placeholder = ColorPainter(gray200),
-                        error = painterResource(id = R.drawable.ic_profile_default)
-                    ),
+                    painter = rememberAsyncGifImagePainter(githubUser.profile_file_name),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     modifier = Modifier
@@ -139,19 +133,31 @@ fun GithubItem(
                 )
             }
             Spacer(Modifier.height(centerPadding))
-            Subtitle4(text = githubList.name, color = gray900, fontWeight = FontWeight.SemiBold)
-            Body3(text = " @${githubList.username}", color = gray700, fontWeight = FontWeight.Normal)
-            Body3(text = "${formatNumberWithComma(githubList.contributions)} 커밋", color = gray900, fontWeight = FontWeight.Medium)
+            Subtitle4(text = githubUser.name, color = gray900, fontWeight = FontWeight.SemiBold)
+            Body3(
+                text = " @${githubUser.username}",
+                color = gray700,
+                fontWeight = FontWeight.Normal
+            )
+            Body3(
+                text = "${formatNumberWithComma(githubUser.contributions)} 커밋",
+                color = gray900,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }
 
 @Composable
 fun GithubAllRankingItem(
-    githubList: GithubListEntity.GithubUserListEntity,
+    githubUser: GithubListEntity.GithubUserListEntity,
     borderState: Boolean,
 ) {
-    val borderColor = if (borderState) purple200 else gray50
+    val borderColor = if (borderState) {
+        purple200
+    } else {
+        gray50
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -162,10 +168,7 @@ fun GithubAllRankingItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = rememberAsyncImagePainter(
-                model = githubList.profile_file_name,
-                error = painterResource(id = R.drawable.ic_profile_default)
-            ),
+            painter = rememberAsyncGifImagePainter(githubUser.profile_file_name),
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier
@@ -174,8 +177,12 @@ fun GithubAllRankingItem(
         )
         Spacer(Modifier.size(10.dp))
         Column {
-            Body2(text = "${githubList.ranking}위 : ${githubList.name}", fontWeight = FontWeight.Medium, color = gray900)
-            Body3(text = "@${githubList.username}", fontWeight = FontWeight.Normal, color = gray700)
+            Body2(
+                text = "${githubUser.ranking}위 : ${githubUser.name}",
+                fontWeight = FontWeight.Medium,
+                color = gray900
+            )
+            Body3(text = "@${githubUser.username}", fontWeight = FontWeight.Normal, color = gray700)
         }
         Spacer(Modifier.weight(1f))
         Box(
@@ -185,7 +192,7 @@ fun GithubAllRankingItem(
                 .padding(bottom = 5.dp)
         ) {
             Body1(
-                text = "${formatNumberWithComma(githubList.contributions)} 커밋",
+                text = "${formatNumberWithComma(githubUser.contributions)} 커밋",
                 fontWeight = FontWeight.Medium,
                 color = gray900,
                 modifier = Modifier

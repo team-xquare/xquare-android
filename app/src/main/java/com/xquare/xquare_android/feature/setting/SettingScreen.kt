@@ -73,6 +73,8 @@ fun SettingScreen(
                         }
                     }
                 }
+
+                SettingViewModel.Event.Success -> {}
             }
         }
     }

@@ -1,10 +1,28 @@
 package com.xquare.xquare_android.feature.home
 
 import android.view.WindowManager
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -27,25 +45,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
 import com.semicolon.design.Subtitle4
 import com.semicolon.design.color.primary.black.black
-import com.semicolon.design.color.primary.gray.*
+import com.semicolon.design.color.primary.gray.gray400
+import com.semicolon.design.color.primary.gray.gray50
+import com.semicolon.design.color.primary.gray.gray500
+import com.semicolon.design.color.primary.gray.gray700
+import com.semicolon.design.color.primary.gray.gray800
+import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
 import com.semicolon.design.color.primary.purple.purple400
 import com.semicolon.design.color.primary.white.white
 import com.semicolon.design.notoSansFamily
+import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.pick.ClassPositionEntity
 import com.xquare.domain.entity.pick.PassTimeEntity
-import com.xquare.domain.entity.meal.MealEntity
 import com.xquare.domain.entity.user.HomeUserEntity
 import com.xquare.xquare_android.MainActivity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.navigation.AppNavigationItem
 import com.xquare.xquare_android.util.DevicePaddings
+import com.xquare.xquare_android.util.rememberAsyncGifImagePainter
 import org.threeten.bp.LocalDateTime
 
 @Composable
@@ -179,16 +202,15 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
                 indication = null,
                 enabled = true
             ) { onClick() }
-
     ) {
-        AsyncImage(
-            model = userData.profileFileImage,
-            error = painterResource(id = R.drawable.ic_profile_default),
+
+        Image(
+            painter = rememberAsyncGifImagePainter(data = userData.profileFileImage),
             contentDescription = "profileImage",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(44.dp)
-                .clip(RoundedCornerShape(22.dp))
+                .clip(CircleShape),
         )
         Spacer(Modifier.size(12.dp))
         Column {
@@ -197,11 +219,11 @@ fun HomeUserCard(userData: HomeUserEntity, onClick: () -> Unit) {
                 fontSize = 16.sp,
                 fontFamily = notoSansFamily,
                 fontWeight = FontWeight.Bold,
-                color = gray900
+                color = gray900,
             )
             Body2(
                 text = "상점 ${userData.goodPoint}점 벌점 ${userData.badPoint}점",
-                color = gray700
+                color = gray700,
             )
         }
     }
@@ -268,7 +290,7 @@ fun HomeMealCard(
                 .size(12.dp)
                 .padding(horizontal = 12.dp)
         )
-        CompositionLocalProvider{
+        CompositionLocalProvider {
             Row(
                 Modifier
                     .horizontalScroll(scrollState)
@@ -310,11 +332,10 @@ fun HomeMealCard(
 }
 
 
-
 @Composable
 fun HomeMealItem(
     title: String, menus: List<String>, calorie: String,
-    borderColor:Color,
+    borderColor: Color,
 ) {
     val scrollState = rememberScrollState()
     var borderColor = borderColor
@@ -418,6 +439,7 @@ fun HomePickContent(
         }
     }
 }
+
 @Composable
 fun HomePickCard(
     state: HomePickCardButtonState,
