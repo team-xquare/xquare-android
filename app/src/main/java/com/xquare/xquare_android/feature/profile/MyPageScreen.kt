@@ -41,7 +41,6 @@ import coil.compose.AsyncImage
 import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
-import com.semicolon.design.color.primary.gray.gray200
 import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
@@ -61,7 +60,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.io.File
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun MyPageScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: ProfileViewModel = hiltViewModel()
     var profile: ProfileEntity? by remember { mutableStateOf(null) }
