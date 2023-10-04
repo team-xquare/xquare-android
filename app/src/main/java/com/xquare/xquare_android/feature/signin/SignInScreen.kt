@@ -10,7 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,18 +49,23 @@ fun SignInScreen(navController: NavController) {
                 is SignInViewModel.Event.Success -> {
                     navController.navigate(AppNavigationItem.Main.route) { popUpTo(0) }
                 }
+
                 is SignInViewModel.Event.BadRequest -> {
                     makeToast(context, "잘못된 요청입니다")
                 }
+
                 is SignInViewModel.Event.NotFound -> {
                     makeToast(context, "아이디와 비밀번호를 확인해주세요")
                 }
+
                 is SignInViewModel.Event.Timeout -> {
                     makeToast(context, "요청 시간이 초과되었습니다")
                 }
+
                 is SignInViewModel.Event.TooManyRequest -> {
                     makeToast(context, "현재 요청이 너무 많습니다")
                 }
+
                 is SignInViewModel.Event.FetchIdSuccess -> {
                     userId = it.data
                 }
@@ -67,7 +77,10 @@ fun SignInScreen(navController: NavController) {
         onSignInClick = { signInViewModel.signIn(it) },
         onFindAccountClick = {
             //makeToast(context, "Xquare 페이스북 페이지로 문의 해주세요.")
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=100091948951498"))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://www.facebook.com/profile.php?id=100091948951498")
+            )
             context.startActivity(intent)
             //TODO("아이디/비밀번호 찾기로 이동")
         },
@@ -85,7 +98,7 @@ private fun SignIn(
     val context = LocalContext.current
     var accountId by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    if (userId.isNotBlank()) accountId = userId
+
     val isSignInEnabled = accountId.isNotEmpty() && password.isNotEmpty()
     Scaffold(
         modifier = Modifier
@@ -109,7 +122,7 @@ private fun SignIn(
             Column(Modifier.padding(horizontal = 16.dp)) {
                 TextField(
                     text = accountId,
-                    placeholder = "아이디",
+                    placeholder = userId.ifBlank { "아이디" },
                     onTextChange = { text ->
                         accountId = text
                     }
@@ -126,7 +139,7 @@ private fun SignIn(
             }
             Spacer(Modifier.size(16.dp))
             ColoredLargeButton(text = "로그인", isEnabled = isSignInEnabled) {
-                onSignInClick(SignInEntity(accountId, password, getToken(context).toString() ))
+                onSignInClick(SignInEntity(accountId, password, getToken(context).toString()))
             }
             Spacer(Modifier.size(16.dp))
             Body2(

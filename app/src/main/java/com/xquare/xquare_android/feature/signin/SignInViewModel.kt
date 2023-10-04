@@ -1,7 +1,10 @@
 package com.xquare.xquare_android.feature.signin
 
 import com.xquare.domain.entity.auth.SignInEntity
-import com.xquare.domain.exception.*
+import com.xquare.domain.exception.BadRequestException
+import com.xquare.domain.exception.NotFoundException
+import com.xquare.domain.exception.TimeoutException
+import com.xquare.domain.exception.TooManyRequestException
 import com.xquare.domain.usecase.auth.FetchIdUseCase
 import com.xquare.domain.usecase.auth.SignInUseCase
 import com.xquare.xquare_android.base.BaseViewModel
@@ -30,11 +33,11 @@ class SignInViewModel @Inject constructor(
     fun fetchId() = execute(
         job = { fetchIdUseCase.execute(Unit) },
         onSuccess = { emitEvent(Event.FetchIdSuccess(it)) },
-        onFailure = {  }
+        onFailure = { }
     )
 
     sealed class Event {
-        object Success : SignInViewModel.Event()
+        object Success : Event()
         object BadRequest : Event()
         object NotFound : Event()
         object Timeout : Event()
