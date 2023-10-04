@@ -19,7 +19,7 @@ interface GithubApi {
     @PATCH("gits")
     suspend fun githubUpdateRanking()
 
-    @GET("gits")
+    @GET("gits/")
     suspend fun githubInformation(): GithubInformationResponse
 
     @GET("gits/all")

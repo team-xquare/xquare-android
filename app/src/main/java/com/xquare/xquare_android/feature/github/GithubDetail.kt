@@ -63,7 +63,7 @@ fun GithubRankingItem(
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                model = githubInformation?.profile_file_name,
+                model = githubInformation?.profileFilename,
                 placeholder = ColorPainter(gray200),
                 error = painterResource(id = R.drawable.ic_profile_default)
             ),

@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.semicolon.design.Body1
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.white.white
@@ -48,22 +47,17 @@ fun GithubScreen(
     var information: GithubInformationEntity? by remember { mutableStateOf(null) }
     var githubList: GithubListEntity? by remember { mutableStateOf(null) }
 
-
     LaunchedEffect(Unit) {
-        viewModel.fetchInformation()
-        viewModel.fetchUserList()
-        viewModel.eventFlow.collect() {
+        viewModel.eventFlow.collect {
             when (it) {
                 is GithubViewModel.Event.InformationSuccess -> {
                     information = it.data
                 }
 
-                is GithubViewModel.Event.GithubInformationFailure -> {
-                    makeToast(context, "내 정보를 불러오기에 실패했습니다.")
-                }
+                is GithubViewModel.Event.GithubInformationFailure -> {}
 
                 is GithubViewModel.Event.GithubUserListFailure -> {
-                    makeToast(context, "Github List를 불러오는데 실패했습니다.")
+                    makeToast(context, "Github 랭킹을 불러올 수 없습니다.")
                 }
 
                 is GithubViewModel.Event.UserListSuccess -> {
@@ -76,8 +70,8 @@ fun GithubScreen(
     Github(
         githubInformation = information,
         githubList = githubList,
-        onBack = { navController.popBackStack() })
-
+        onBack = { navController.popBackStack() },
+    )
 }
 
 @Composable
@@ -102,14 +96,11 @@ fun Github(
                 onIconClick = onBack
             )
         },
-    ) {
+    ) { padValues ->
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(
-                    top = it.calculateTopPadding(),
-                    bottom = it.calculateBottomPadding(),
-                ),
+                .padding(padValues),
         ) {
             Spacer(modifier = Modifier.size(20.dp))
             githubList?.run {
@@ -150,16 +141,18 @@ fun Github(
                 }
             }
             Spacer(Modifier.size(17.dp))
-            Body1(text = "나의 순위", color = gray900, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.size(16.dp))
-            GithubRankingItem(
-                githubInformation = githubInformation,
-                borderState = true
-            )
-            Spacer(Modifier.size(16.dp))
-            Body1(text = "전체 순위", color = gray900, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.size(16.dp))
-            githubList?.run {
+            if (githubInformation != null) {
+                Body1(text = "나의 순위", color = gray900, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.size(16.dp))
+                GithubRankingItem(
+                    githubInformation = githubInformation,
+                    borderState = true
+                )
+                Spacer(Modifier.size(16.dp))
+            }
+            if (githubList != null) {
+                Body1(text = "전체 순위", color = gray900, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.size(16.dp))
                 LazyColumn(
                     state = lazyListState
                 ) {

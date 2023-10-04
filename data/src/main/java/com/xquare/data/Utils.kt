@@ -1,21 +1,25 @@
 package com.xquare.data
 
-import com.xquare.domain.exception.*
+import com.xquare.domain.exception.BadRequestException
+import com.xquare.domain.exception.ConflictException
+import com.xquare.domain.exception.ForbiddenException
+import com.xquare.domain.exception.NeedLoginException
+import com.xquare.domain.exception.NoInternetException
+import com.xquare.domain.exception.NotFoundException
+import com.xquare.domain.exception.ServerException
+import com.xquare.domain.exception.TimeoutException
+import com.xquare.domain.exception.UnauthorizedException
+import com.xquare.domain.exception.UnknownException
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.threeten.bp.LocalDate
 import retrofit2.HttpException
 import java.io.File
-import java.lang.NullPointerException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 fun File.toMultipart(): MultipartBody.Part =
     MultipartBody.Part.createFormData(
@@ -23,14 +27,7 @@ fun File.toMultipart(): MultipartBody.Part =
         this.name,
         this.asRequestBody("image/*".toMediaTypeOrNull())
     )
-fun cancelAllApiCalls() {
-    for (job in apiJobMap.values) {
-        job.cancel()
-    }
-    apiJobMap.clear()
-}
 
-val apiJobMap: MutableMap<CoroutineContext.Element, Job> = mutableMapOf()
 suspend fun <T> sendHttpRequest(
     httpRequest: suspend () -> T,
     onBadRequest: (message: String) -> Throwable = { BadRequestException() },
@@ -41,18 +38,11 @@ suspend fun <T> sendHttpRequest(
     onServerError: (code: Int) -> Throwable = { ServerException() },
     onOtherHttpStatusCode: (code: Int, message: String) -> Throwable = { _, _ -> UnknownException() }
 ): T {
-    val coroutineContext = coroutineContext
-    val apiJob = Job(coroutineContext[Job])
-    apiJobMap[coroutineContext[Job]!!] = apiJob
-
     return try {
-        withContext(coroutineContext + apiJob) {
-            httpRequest()
-        }
+        httpRequest()
     } catch (e: HttpException) {
         val code = e.code()
         val message = e.message()
-        cancelAllApiCalls()
         throw when (code) {
             400 -> onBadRequest(message)
             401 -> onUnauthorized(message)
@@ -71,12 +61,9 @@ suspend fun <T> sendHttpRequest(
     } catch (e: CancellationException) {
         throw CancellationException()
     } catch (e: UnknownException) {
-        cancelAllApiCalls()
         throw e
     } catch (e: Throwable) {
         throw UnknownException()
-    } finally {
-        apiJobMap.remove(coroutineContext[Job]!!)
     }
 }
 

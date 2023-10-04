@@ -46,6 +46,7 @@ import com.semicolon.design.color.primary.gray.gray50
 import com.semicolon.design.color.primary.gray.gray700
 import com.semicolon.design.color.primary.gray.gray900
 import com.semicolon.design.color.primary.purple.purple200
+import com.semicolon.design.color.primary.purple.purple300
 import com.semicolon.design.color.primary.purple.purple50
 import com.semicolon.design.color.primary.white.white
 import com.xquare.domain.entity.profile.ProfileEntity
@@ -358,7 +359,7 @@ private fun ButtonColumnMenu(
     }
     val buttonColor = when(isConnected) {
         true -> purple50
-        else -> white
+        else -> purple300
     }
     Box(
         modifier = Modifier
@@ -366,7 +367,7 @@ private fun ButtonColumnMenu(
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = null,
-                enabled = true
+                enabled = isConnected == false,
             ) { onClick() }
             .fillMaxWidth()
             .height(52.dp)
