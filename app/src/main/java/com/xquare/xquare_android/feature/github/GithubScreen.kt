@@ -113,7 +113,7 @@ fun Github(
                 ) {
                     GithubItem(
                         modifier = Modifier.weight(1f),
-                        githubList = githubList.users[1],
+                        githubUser = githubList.users[1],
                         crown = painterResource(id = R.drawable.ic_github_crown),
                         color = Silver,
                         centerPadding = 10.dp,
@@ -122,7 +122,7 @@ fun Github(
                     )
                     GithubItem(
                         modifier = Modifier.weight(1f),
-                        githubList = githubList.users[0],
+                        githubUser = githubList.users[0],
                         crown = painterResource(id = R.drawable.ic_github_crown),
                         color = Gold,
                         centerPadding = 25.dp,
@@ -131,7 +131,7 @@ fun Github(
                     )
                     GithubItem(
                         modifier = Modifier.weight(1f),
-                        githubList = githubList.users[2],
+                        githubUser = githubList.users[2],
                         crown = painterResource(id = R.drawable.ic_github_crown),
                         color = Bronze,
                         centerPadding = 8.dp,
@@ -158,7 +158,7 @@ fun Github(
                 ) {
                     items(githubList.users.count()) {
                         GithubAllRankingItem(
-                            githubList = githubList.users[it],
+                            githubUser = githubList.users[it],
                             borderState = false
                         )
                     }
