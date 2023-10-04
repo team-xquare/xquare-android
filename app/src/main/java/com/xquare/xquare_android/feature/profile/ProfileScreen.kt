@@ -367,7 +367,7 @@ private fun ButtonColumnMenu(
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = null,
-                enabled = true
+                enabled = isConnected == false,
             ) { onClick() }
             .fillMaxWidth()
             .height(52.dp)
