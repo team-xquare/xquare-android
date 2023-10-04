@@ -11,7 +11,6 @@ import com.xquare.domain.exception.TimeoutException
 import com.xquare.domain.exception.UnauthorizedException
 import com.xquare.domain.exception.UnknownException
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -21,8 +20,6 @@ import retrofit2.HttpException
 import java.io.File
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 fun File.toMultipart(): MultipartBody.Part =
     MultipartBody.Part.createFormData(
@@ -31,14 +28,6 @@ fun File.toMultipart(): MultipartBody.Part =
         this.asRequestBody("image/*".toMediaTypeOrNull())
     )
 
-fun cancelAllApiCalls() {
-    for (job in apiJobMap.values) {
-        job.cancel()
-    }
-    apiJobMap.clear()
-}
-
-val apiJobMap: MutableMap<CoroutineContext.Element, Job> = mutableMapOf()
 suspend fun <T> sendHttpRequest(
     httpRequest: suspend () -> T,
     onBadRequest: (message: String) -> Throwable = { BadRequestException() },
@@ -54,7 +43,6 @@ suspend fun <T> sendHttpRequest(
     } catch (e: HttpException) {
         val code = e.code()
         val message = e.message()
-        cancelAllApiCalls()
         throw when (code) {
             400 -> onBadRequest(message)
             401 -> onUnauthorized(message)
@@ -73,12 +61,9 @@ suspend fun <T> sendHttpRequest(
     } catch (e: CancellationException) {
         throw CancellationException()
     } catch (e: UnknownException) {
-        cancelAllApiCalls()
         throw e
     } catch (e: Throwable) {
         throw UnknownException()
-    } finally {
-        apiJobMap.remove(coroutineContext[Job]!!)
     }
 }
 
