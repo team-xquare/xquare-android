@@ -58,11 +58,6 @@ fun GithubRankingItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            /*painter = rememberAsyncImagePainter(
-                model = githubInformation?.profileFilename,
-                placeholder = ColorPainter(gray200),
-                error = painterResource(id = R.drawable.ic_profile_default)
-            ),*/
             painter = rememberAsyncGifImagePainter(githubInformation?.profileFilename),
             contentScale = ContentScale.Crop,
             contentDescription = null,
