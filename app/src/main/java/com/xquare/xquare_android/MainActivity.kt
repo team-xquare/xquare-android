@@ -315,13 +315,6 @@ fun saveDeviceToken(context: Context) {
 
 }
 
-fun getToken(context: Context): String? {
-    val pref = context.getSharedPreferences("token", Context.MODE_PRIVATE)
-    val token = pref.getString("token", null)
-    Log.d("TAG", "FCM token retrieved: $token")
-    return token
-}
-
 fun Context.getActivity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
     is ContextWrapper -> baseContext.getActivity()

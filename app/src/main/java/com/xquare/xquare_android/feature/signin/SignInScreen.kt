@@ -32,8 +32,8 @@ import com.xquare.domain.entity.auth.SignInEntity
 import com.xquare.xquare_android.R
 import com.xquare.xquare_android.component.AppBar
 import com.xquare.xquare_android.component.TextField
-import com.xquare.xquare_android.getToken
 import com.xquare.xquare_android.navigation.AppNavigationItem
+import com.xquare.xquare_android.saveDeviceToken
 import com.xquare.xquare_android.util.DevicePaddings
 import com.xquare.xquare_android.util.makeToast
 
@@ -139,7 +139,7 @@ private fun SignIn(
             }
             Spacer(Modifier.size(16.dp))
             ColoredLargeButton(text = "로그인", isEnabled = isSignInEnabled) {
-                onSignInClick(SignInEntity(accountId, password, getToken(context).toString()))
+                onSignInClick(SignInEntity(accountId, password, saveDeviceToken(context).toString() ))
             }
             Spacer(Modifier.size(16.dp))
             Body2(
