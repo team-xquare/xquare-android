@@ -59,21 +59,21 @@ fun MealDetail(
         )
         if (breakfast.isNotEmpty()) {
             Meal(
-                mealWithDateEntity = mealWithDateEntity,
+                mealCalories = mealWithDateEntity.caloriesOfBreakfast,
                 meal = breakfast,
                 time = "아침",
             )
         }
         if (lunch.isNotEmpty()) {
             Meal(
-                mealWithDateEntity = mealWithDateEntity,
+                mealCalories = mealWithDateEntity.caloriesOfLunch,
                 meal = lunch,
                 time = "점심",
             )
         }
         if (dinner.isNotEmpty()) {
             Meal(
-                mealWithDateEntity = mealWithDateEntity,
+                mealCalories = mealWithDateEntity.caloriesOfDinner,
                 meal = dinner,
                 time = "저녁",
             )
@@ -83,7 +83,7 @@ fun MealDetail(
 
 @Composable
 fun Meal(
-    mealWithDateEntity: AllMealEntity.MealWithDateEntity,
+    mealCalories: String,
     meal: String,
     time: String,
 ) {
@@ -91,7 +91,7 @@ fun Meal(
     Row(verticalAlignment = Alignment.CenterVertically) {
         Body1(text = time, color = gray800)
         Body3(
-            text = mealWithDateEntity.caloriesOfLunch,
+            text = mealCalories,
             color = gray700,
             modifier = Modifier
                 .fillMaxWidth()

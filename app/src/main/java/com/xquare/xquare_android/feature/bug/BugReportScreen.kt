@@ -14,7 +14,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -33,9 +31,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenu
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,7 +61,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import com.semicolon.design.Body1
 import com.semicolon.design.Body2
 import com.semicolon.design.Body3
 import com.semicolon.design.color.primary.black.black
@@ -355,14 +354,16 @@ private fun BugreportWhereMenu(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun BugreportExplanationText(
     text: String,
     isSecret: Boolean = false,
     onTextChange: (String) -> Unit,
-    placeholder: String = "",
+    placeholder: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     BasicTextField(
         value = text,
         onValueChange = onTextChange,
@@ -373,24 +374,6 @@ private fun BugreportExplanationText(
             color = black,
             lineHeight = 24.sp,
         ),
-        decorationBox = {
-            Box(contentAlignment = Alignment.TopStart) {
-                if (text.isEmpty()) {
-                    Body1(
-                        text = placeholder,
-                        color = gray300,
-                        modifier = Modifier
-                            .height(100.dp)
-                            .wrapContentSize(align = Alignment.TopStart)
-                    )
-                    Box(modifier = Modifier.padding(top = 4.dp)) {
-                        it()
-                    }
-                } else {
-                    it()
-                }
-            }
-        },
         keyboardOptions = keyboardOptions,
         cursorBrush = SolidColor(purple400),
         visualTransformation = if (isSecret) PasswordVisualTransformation() else VisualTransformation.None,
@@ -401,5 +384,18 @@ private fun BugreportExplanationText(
             .background(gray50)
             .border(width = 1.dp, color = gray300, shape = RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp, vertical = 12.dp)
-    )
+    ) {
+        TextFieldDefaults.TextFieldDecorationBox(
+            value = text,
+            visualTransformation = VisualTransformation.None,
+            innerTextField = it,
+            singleLine = false,
+            enabled = false,
+            placeholder = { Text(text = placeholder) },
+            interactionSource = interactionSource,
+            contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
+                start = 2.dp, top = 1.dp
+            )
+        )
+    }
 }
